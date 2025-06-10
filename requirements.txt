@@ -4,3 +4,5 @@ drf-yasg==1.21.7
 social-auth-app-django==5.4.1
 djangorestframework-simplejwt==5.3.1
 python-decouple==3.8
+django-filter==24.2
+Pillow==10.3.0

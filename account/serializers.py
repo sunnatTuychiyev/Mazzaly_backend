@@ -10,10 +10,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name', 'email', 'password')
 
     def validate_password(self, value):
-        if (len(value) < 8 or
+        if (
+            len(value) < 8 or
             not re.search(r'[A-Z]', value) or
             not re.search(r'[a-z]', value) or
-            not re.search(r'\d', value)):
+            not re.search(r'\d', value)
+        ):
             raise serializers.ValidationError(
                 'Password must be at least 8 characters, contain uppercase, lowercase, and digit.'
             )
