@@ -1,0 +1,14 @@
+/* Custom styles for Mazzaly admin */
+body {
+    background-color: #f8f9fa;
+}
+#header {
+    background-color: #343a40;
+}
+#header h1 a:link,
+#header h1 a:visited {
+    color: #ffffff;
+}
+#content-main th {
+    background-color: #dee2e6;
+}

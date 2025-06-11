@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
+
+admin.site.site_header = "Mazzaly Administration"
+admin.site.site_title = "Mazzaly Admin Portal"
+admin.site.index_title = "Welcome to Mazzaly Dashboard"
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi

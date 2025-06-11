@@ -23,3 +23,11 @@ This is a Django REST API for managing recipes, meal plans and user accounts wit
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
 
+## Admin Panel
+
+The project includes a customized Django admin interface with a cleaner
+appearance. To access the admin panel, create a superuser and run the server as
+described above. Navigate to `http://localhost:8000/admin/` and log in with your
+credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
+few style tweaks are applied via `account/static/account/css/admin_custom.css`.
+
