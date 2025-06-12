@@ -40,3 +40,10 @@ described above. Navigate to `http://localhost:8000/admin/` and log in with your
 credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
 
+## AI Chat Endpoint
+
+The project now includes a simple AI chatbot powered by ChatGPT. Set the
+`OPENAI_API_KEY` variable in your `.env` file to enable it. Once configured, send
+a POST request to `/api/chat/` with a `message` field to receive food-related
+responses based on your stored recipes.
+

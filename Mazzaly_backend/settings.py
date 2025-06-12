@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'social_django',
     'account',
     'recipes',
-     'django_filters'
+    'ai',
+    'django_filters'
 ]
 
 AUTH_USER_MODEL = 'account.User'
@@ -167,6 +168,7 @@ USE_TZ = True
 # emails (e.g. via Gmail).
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
 
 if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
