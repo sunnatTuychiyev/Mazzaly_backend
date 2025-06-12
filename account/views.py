@@ -1,8 +1,10 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import User
-from .serializers import RegisterSerializer, UserSerializer
+from django.core.mail import send_mail
+from .models import User, EmailOTP
+from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializer
+import random
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from drf_yasg.utils import swagger_auto_schema
@@ -23,11 +25,15 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        token = RefreshToken.for_user(user)
-        return Response({
-            'user': UserSerializer(user).data,
-            'token': str(token.access_token)
-        }, status=status.HTTP_201_CREATED)
+        code = f"{random.randint(100000, 999999)}"
+        EmailOTP.objects.update_or_create(user=user, defaults={'code': code})
+        send_mail(
+            'Email Verification',
+            f'Your verification code is {code}',
+            None,
+            [user.email],
+        )
+        return Response({'detail': 'Verification code sent to email.'}, status=status.HTTP_201_CREATED)
 
 class LoginView(APIView):
     @swagger_auto_schema(
@@ -50,6 +56,35 @@ class LoginView(APIView):
         user = authenticate(email=email, password=password)
         if not user:
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        if not user.is_email_verified:
+            return Response({'detail': 'Email not verified'}, status=status.HTTP_400_BAD_REQUEST)
+        token = RefreshToken.for_user(user)
+        return Response({
+            'user': UserSerializer(user).data,
+            'token': str(token.access_token)
+        }, status=status.HTTP_200_OK)
+
+
+class VerifyEmailView(APIView):
+    @swagger_auto_schema(
+        request_body=VerifyEmailSerializer,
+        responses={200: 'Email verified', 400: 'Invalid code'},
+    )
+    def post(self, request):
+        serializer = VerifyEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email']
+        code = serializer.validated_data['code']
+        try:
+            user = User.objects.get(email=email)
+            otp = user.email_otp
+        except (User.DoesNotExist, EmailOTP.DoesNotExist):
+            return Response({'detail': 'Invalid email or code'}, status=status.HTTP_400_BAD_REQUEST)
+        if otp.code != code:
+            return Response({'detail': 'Invalid email or code'}, status=status.HTTP_400_BAD_REQUEST)
+        user.is_email_verified = True
+        user.save()
+        otp.delete()
         token = RefreshToken.for_user(user)
         return Response({
             'user': UserSerializer(user).data,

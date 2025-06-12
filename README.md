@@ -1,6 +1,7 @@
 # Mazzaly Backend
 
 This is a Django REST API for managing recipes, meal plans and user accounts with JWT authentication and Google OAuth support.
+It now includes email verification using one-time passwords (OTP).
 
 ## Setup
 
@@ -20,6 +21,9 @@ This is a Django REST API for managing recipes, meal plans and user accounts wit
    ```bash
    python manage.py runserver
    ```
+
+After registering a new account, a verification code is sent to the provided email address.
+Send a POST request to `/api/verify-email/` with the email and code to activate the account.
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
 
