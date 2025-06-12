@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'social_django',
     'account',
     'recipes',
+    'ai',
      'django_filters'
 ]
 

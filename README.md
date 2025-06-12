@@ -40,3 +40,9 @@ described above. Navigate to `http://localhost:8000/admin/` and log in with your
 credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
 
+## AI Chat
+
+An `/api/chat/` endpoint allows chatting with an AI assistant that only
+answers food-related questions. Set the `OPENAI_API_KEY` variable in your `.env`
+file to enable the integration.
+
