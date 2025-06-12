@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, EmailOTP
 import re
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -28,3 +28,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'email')
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=6)
