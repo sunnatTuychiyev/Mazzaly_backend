@@ -38,17 +38,32 @@ def _short_description(text, max_len=200):
     return text
 
 
-def _download_image(url):
-    """Download an image from a URL and return a filename and ContentFile."""
-    if not url:
+def _download_image(path, base_dir=None):
+    """Download an image from a URL or load it from a local path."""
+    if not path:
         return None, None
+
+    parsed = urlparse(path)
+    if parsed.scheme in ("http", "https"):
+        try:
+            resp = requests.get(path, timeout=10)
+            resp.raise_for_status()
+        except Exception:
+            return None, None
+        filename = os.path.basename(parsed.path) or "image.jpg"
+        return filename, ContentFile(resp.content)
+
+    # Local file path
+    file_path = path
+    if base_dir and not os.path.isabs(file_path):
+        file_path = os.path.join(base_dir, file_path)
     try:
-        resp = requests.get(url, timeout=10)
-        resp.raise_for_status()
+        with open(file_path, "rb") as f:
+            data = f.read()
     except Exception:
         return None, None
-    filename = os.path.basename(urlparse(url).path) or "image.jpg"
-    return filename, ContentFile(resp.content)
+    filename = os.path.basename(file_path)
+    return filename, ContentFile(data)
 
 class Command(BaseCommand):
     help = "Fetch recipes from Spoonacular API and populate the database"
@@ -59,10 +74,12 @@ class Command(BaseCommand):
         parser.add_argument('--file', type=str, help='Path to a local JSON file with Spoonacular format data')
 
     def handle(self, *args, **options):
+        base_dir = None
         if options.get('file'):
             self.stdout.write(f"Loading recipes from {options['file']}")
             with open(options['file'], 'r') as f:
                 data = json.load(f)
+            base_dir = os.path.dirname(options['file']) or None
         else:
             api_key = os.getenv('SPOONACULAR_API_KEY') or getattr(settings, 'SPOONACULAR_API_KEY', None)
             if not api_key:
@@ -90,9 +107,11 @@ class Command(BaseCommand):
                 fats=_get_nutrient(r, 'Fat', 'Fats', 'Total Fat'),
                 carbs=_get_nutrient(r, 'Carbohydrates', 'Carbs', 'Carbohydrate'),
             )
-            filename, content = _download_image(r.get('image'))
+            filename, content = _download_image(r.get('image'), base_dir=base_dir)
             if content:
                 recipe.image.save(filename, content, save=True)
+            elif r.get('image'):
+                self.stderr.write(f"Could not download image for {r.get('title')}")
             for cat in r.get('dishTypes', []) + r.get('diets', []):
                 category, _ = Category.objects.get_or_create(name=cat)
                 recipe.categories.add(category)
