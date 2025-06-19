@@ -32,6 +32,32 @@ variables are provided, the app will use Django's SMTP backend.
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
 
+### Importing Recipes
+
+Recipes can be populated automatically using the Spoonacular API. Set
+`SPOONACULAR_API_KEY` in your `.env` file and run:
+
+```bash
+python manage.py fetch_spoonacular --number 5
+```
+
+If the API is not reachable, you can load recipes from a local JSON file using
+the `--file` option. A small example file is provided at
+`recipes/sample_spoonacular.json`:
+
+```bash
+python manage.py fetch_spoonacular --file recipes/sample_spoonacular.json
+```
+
+The importer also stores any categories (dish types or diets) returned by the
+API and fills the nutrition fields (calories, protein, fats and carbs) if that
+data is available. Nutrient names are matched case-insensitively so values
+are captured even if the API uses slightly different labels. Remote images are
+downloaded and stored in the `MEDIA_ROOT` directory so they can be served by
+Django.
+The recipe description is derived from the summary text with HTML stripped so it
+remains short and readable.
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner

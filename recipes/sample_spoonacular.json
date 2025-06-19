@@ -1,0 +1,57 @@
+{
+  "recipes": [
+    {
+      "title": "Grilled Cheese Sandwich",
+      "summary": "Simple grilled cheese sandwich.",
+      "readyInMinutes": 10,
+      "servings": 1,
+      "image": "https://example.com/grilled-cheese.jpg",
+      "dishTypes": ["lunch"],
+      "nutrition": {"nutrients": [
+        {"name": "Calories", "amount": 250},
+        {"name": "Protein", "amount": 12},
+        {"name": "Fat", "amount": 13},
+        {"name": "Carbohydrates", "amount": 22}
+      ]},
+      "extendedIngredients": [
+        {"name": "bread", "amount": 2, "unit": "slices"},
+        {"name": "cheddar cheese", "amount": 1, "unit": "slice"},
+        {"name": "butter", "amount": 1, "unit": "tbsp"}
+      ],
+      "analyzedInstructions": [
+        {"steps": [
+          {"number": 1, "step": "Butter the bread."},
+          {"number": 2, "step": "Place cheese between bread slices and grill until golden."}
+        ]}
+      ]
+    },
+    {
+      "title": "Quick Chicken Curry",
+      "summary": "A fast and flavorful chicken curry.",
+      "readyInMinutes": 30,
+      "servings": 4,
+      "image": "https://example.com/chicken-curry.jpg",
+      "dishTypes": ["dinner"],
+      "diets": ["gluten free"],
+      "veryHealthy": true,
+      "nutrition": {"nutrients": [
+        {"name": "Calories", "amount": 520},
+        {"name": "Protein", "amount": 46},
+        {"name": "Fat", "amount": 28},
+        {"name": "Carbohydrates", "amount": 15}
+      ]},
+      "extendedIngredients": [
+        {"name": "chicken breast", "amount": 500, "unit": "g"},
+        {"name": "curry powder", "amount": 2, "unit": "tbsp"},
+        {"name": "coconut milk", "amount": 400, "unit": "ml"}
+      ],
+      "analyzedInstructions": [
+        {"steps": [
+          {"number": 1, "step": "Saute chicken until browned."},
+          {"number": 2, "step": "Add curry powder and cook 1 minute."},
+          {"number": 3, "step": "Pour in coconut milk and simmer 20 minutes."}
+        ]}
+      ]
+    }
+  ]
+}
