@@ -65,11 +65,27 @@ remains short and readable.
 
 ### Translating Recipes
 
-Recipes are stored in English by default. A helper endpoint is available to
-get Uzbek and Russian translations for a recipe using `/api/recipes/<id>/translate/`.
-The implementation uses the `googletrans` library if it is installed. Without
-that dependency the translations fall back to a very small built-in dictionary,
-so consider installing `googletrans` for better results.
+Recipes are stored in English by default. The endpoint
+`/api/recipes/<id>/translate/` returns Uzbek and Russian translations of
+the recipe name, description, ingredients and instructions. The response
+structure is organised by field, e.g.:
+
+```json
+{
+  "name": {"uz": "...", "ru": "..."},
+  "description": {"uz": "...", "ru": "..."},
+  "ingredients": {"uz": ["..."], "ru": ["..."]},
+  "instructions": {"uz": ["..."], "ru": ["..."]}
+}
+```
+
+Translations use the optional `googletrans` library if it is installed.
+Without it the helper falls back to a small built-in dictionary. For best
+results install `googletrans`:
+
+```bash
+pip install googletrans==4.0.0rc1
+```
 
 ## Admin Panel
 
