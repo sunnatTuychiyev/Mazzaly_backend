@@ -6,6 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from .translation import translate_recipe
+
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
 )
@@ -103,6 +105,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 item.amount = f"{item.amount} + {ing.amount}"
                 item.save()
         return Response({'status': 'Ingredients added to shopping list'})
+
+    @swagger_auto_schema(
+        operation_description="Translate a recipe to Uzbek and Russian",
+        responses={200: openapi.Response('Translations returned')}
+    )
+    @action(detail=True, methods=['get'], url_path='translate')
+    def translate_recipe(self, request, pk=None):
+        recipe = self.get_object()
+        data = translate_recipe(recipe)
+        return Response(data)
 
 # --- Ingredient autocomplete/search (unique names only) ---
 class IngredientListView(generics.ListAPIView):

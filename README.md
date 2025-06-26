@@ -63,6 +63,14 @@ disk relative to that JSON file.
 The recipe description is derived from the summary text with HTML stripped so it
 remains short and readable.
 
+### Translating Recipes
+
+Recipes are stored in English by default. A helper endpoint is available to
+get Uzbek and Russian translations for a recipe using `/api/recipes/<id>/translate/`.
+The implementation uses the `googletrans` library if it is installed. Without
+that dependency the translations fall back to a very small built-in dictionary,
+so consider installing `googletrans` for better results.
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner
