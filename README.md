@@ -95,3 +95,11 @@ described above. Navigate to `http://localhost:8000/admin/` and log in with your
 credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
 
+## Telegram Mini App Authentication
+
+To use this backend from a Telegram Web App ("mini app"), configure the
+`TELEGRAM_BOT_TOKEN` variable in your `.env` file. The endpoint
+`/api/telegram-auth/` accepts the `initData` string provided by Telegram and
+returns a JWT token. Users authenticated through Telegram are created
+automatically using their Telegram ID.
+

@@ -4,13 +4,18 @@ from rest_framework.views import APIView
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import User, EmailOTP
-from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializer
+from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializer, TelegramAuthSerializer
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from social_django.utils import psa
+from urllib.parse import parse_qsl
+import json
+import hashlib
+import hmac
+import time
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -141,3 +146,44 @@ class GoogleAuthView(APIView):
             return Response({'error': 'Google authentication failed or user is inactive'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': f'Authentication error: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TelegramAuthView(APIView):
+    @swagger_auto_schema(
+        request_body=TelegramAuthSerializer,
+        responses={
+            200: openapi.Response('Authentication successful', UserSerializer),
+            400: 'Invalid init data',
+        },
+    )
+    def post(self, request):
+        serializer = TelegramAuthSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        init_data = serializer.validated_data['init_data']
+        params = dict(parse_qsl(init_data, keep_blank_values=True))
+        hash_value = params.pop('hash', None)
+        if not hash_value:
+            return Response({'error': 'Missing hash'}, status=status.HTTP_400_BAD_REQUEST)
+        data_check_string = '\n'.join(f"{k}={v}" for k, v in sorted(params.items()))
+        secret_key = hashlib.sha256(settings.TELEGRAM_BOT_TOKEN.encode()).digest()
+        calc_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
+        if calc_hash != hash_value:
+            return Response({'error': 'Invalid hash'}, status=status.HTTP_400_BAD_REQUEST)
+        auth_date = int(params.get('auth_date', '0'))
+        if time.time() - auth_date > 86400:
+            return Response({'error': 'Auth date expired'}, status=status.HTTP_400_BAD_REQUEST)
+        user_data = json.loads(params.get('user', '{}'))
+        telegram_id = str(user_data.get('id')) if user_data else None
+        if not telegram_id:
+            return Response({'error': 'Invalid user data'}, status=status.HTTP_400_BAD_REQUEST)
+        user, _ = User.objects.get_or_create(
+            telegram_id=telegram_id,
+            defaults={
+                'email': f'tg_{telegram_id}@example.com',
+                'first_name': user_data.get('first_name', ''),
+                'last_name': user_data.get('last_name', ''),
+                'is_email_verified': True,
+            },
+        )
+        token = RefreshToken.for_user(user)
+        return Response({'user': UserSerializer(user).data, 'token': str(token.access_token)})
