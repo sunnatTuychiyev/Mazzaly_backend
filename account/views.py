@@ -4,13 +4,20 @@ from rest_framework.views import APIView
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import User, EmailOTP
-from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializer
+from .serializers import (
+    RegisterSerializer,
+    UserSerializer,
+    VerifyEmailSerializer,
+    TelegramAuthSerializer,
+)
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from social_django.utils import psa
+import hmac
+import hashlib
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -141,3 +148,47 @@ class GoogleAuthView(APIView):
             return Response({'error': 'Google authentication failed or user is inactive'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': f'Authentication error: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TelegramAuthView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    @swagger_auto_schema(
+        request_body=TelegramAuthSerializer,
+        responses={
+            200: openapi.Response('Authentication successful', UserSerializer),
+            400: 'Invalid auth data',
+        },
+    )
+    def post(self, request):
+        serializer = TelegramAuthSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data.copy()
+        provided_hash = data.pop('hash')
+        check_str = '\n'.join(f"{k}={v}" for k, v in sorted(data.items()))
+        secret_key = hashlib.sha256(settings.TELEGRAM_BOT_TOKEN.encode()).digest()
+        calculated_hash = hmac.new(secret_key, check_str.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(provided_hash, calculated_hash):
+            return Response({'error': 'Invalid auth data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        telegram_id = data['id']
+        email = f"telegram_{telegram_id}@telegram.local"
+        first_name = data.get('first_name', '') or 'Telegram'
+        last_name = data.get('last_name', '') or 'User'
+        user, _ = User.objects.get_or_create(
+            email=email,
+            defaults={
+                'first_name': first_name,
+                'last_name': last_name,
+                'telegram_id': telegram_id,
+                'is_email_verified': True,
+            },
+        )
+        if user.telegram_id != telegram_id:
+            user.telegram_id = telegram_id
+            user.save()
+        token = RefreshToken.for_user(user)
+        return Response({
+            'user': UserSerializer(user).data,
+            'token': str(token.access_token)
+        }, status=status.HTTP_200_OK)

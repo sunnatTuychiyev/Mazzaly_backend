@@ -29,6 +29,7 @@ To send real emails instead of logging them to the console, configure the
 `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` variables (and optionally
 `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USE_TLS`) in your `.env` file. When these
 variables are provided, the app will use Django's SMTP backend.
+Set `TELEGRAM_BOT_TOKEN` if you plan to authenticate users via a Telegram Mini App.
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
 
@@ -86,6 +87,12 @@ results install `googletrans`:
 ```bash
 pip install googletrans==4.0.0rc1
 ```
+
+## Telegram Mini App
+
+Authenticate Telegram users by sending the data provided by `Telegram.WebApp`
+to the `/api/telegram-auth/` endpoint. A valid `TELEGRAM_BOT_TOKEN` must be set
+in the environment for signature verification.
 
 ## Admin Panel
 
