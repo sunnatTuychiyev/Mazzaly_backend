@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 admin.site.site_header = "Mazzaly Administration"
 admin.site.site_title = "Mazzaly Admin Portal"
@@ -28,6 +29,8 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('social/', include('social_django.urls', namespace='social')),  # Google Auth
+    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    path('telegram/', TemplateView.as_view(template_name='telegram/index.html'), name='telegram-app'),
 ]
 
 # Media uchun:

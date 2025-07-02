@@ -19,14 +19,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',          # Sites (kerak bo‘lsa)
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
     'social_django',
     'account',
     'recipes',
-     'django_filters'
+    'django_filters'
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'account.User'
 SITE_ID = 1
@@ -90,6 +93,7 @@ SOCIAL_AUTH_PIPELINE = (
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -104,7 +108,7 @@ ROOT_URLCONF = 'Mazzaly_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -177,4 +181,5 @@ if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
+TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 

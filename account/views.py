@@ -11,6 +11,10 @@ from django.contrib.auth import authenticate
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from social_django.utils import psa
+import hmac
+import hashlib
+import json
+from urllib.parse import parse_qsl
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -141,3 +145,60 @@ class GoogleAuthView(APIView):
             return Response({'error': 'Google authentication failed or user is inactive'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': f'Authentication error: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TelegramAuthView(APIView):
+    """Authenticate Telegram WebApp users by verifying initData."""
+    permission_classes = [permissions.AllowAny]
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'initData': openapi.Schema(type=openapi.TYPE_STRING, description='Telegram initData')
+            },
+            required=['initData']
+        ),
+        responses={
+            200: openapi.Response('Authentication successful', UserSerializer),
+            400: 'Invalid initData'
+        }
+    )
+    def post(self, request):
+        init_data = request.data.get('initData')
+        if not init_data:
+            return Response({'detail': 'initData required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        parsed = dict(parse_qsl(init_data, strict_parsing=True))
+        hash_value = parsed.pop('hash', '')
+        data_check_string = '\n'.join(f"{k}={v}" for k, v in sorted(parsed.items()))
+        secret_key = hashlib.sha256(settings.TELEGRAM_BOT_TOKEN.encode()).digest()
+        calculated_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
+
+        if calculated_hash != hash_value:
+            return Response({'detail': 'Invalid initData'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_data = json.loads(parsed.get('user', '{}'))
+        telegram_id = str(user_data.get('id'))
+        first_name = user_data.get('first_name', '') or user_data.get('username', '')
+        last_name = user_data.get('last_name', '')
+
+        if not telegram_id:
+            return Response({'detail': 'Invalid user data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        email = f"tg_{telegram_id}@telegram.local"
+        user, _ = User.objects.get_or_create(
+            telegram_id=telegram_id,
+            defaults={
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'is_email_verified': True
+            }
+        )
+
+        token = RefreshToken.for_user(user)
+        return Response({
+            'user': UserSerializer(user).data,
+            'token': str(token.access_token)
+        })
