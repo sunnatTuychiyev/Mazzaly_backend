@@ -12,6 +12,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lamb
 
 # === Installed apps ===
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -88,6 +89,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 # === Middleware ===
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -179,3 +181,4 @@ else:
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 
+CORS_ALLOW_ALL_ORIGINS = True
