@@ -8,3 +8,4 @@ django-filter==24.2
 Pillow==10.3.0
 requests==2.31.0
 googletrans==4.0.0rc1
+django-cors-headers==4.3.1
