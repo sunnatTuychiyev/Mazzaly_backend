@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sslserver',
-    'django.contrib.sites',
+    'django.contrib.sites',          # Sites (kerak bo‘lsa)
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
