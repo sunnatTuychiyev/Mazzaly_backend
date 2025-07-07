@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # === Security ===
 SECRET_KEY = config('SECRET_KEY', default='your-dev-secret-key')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
 # Optional HTTPS settings (enabled via environment variables)
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
