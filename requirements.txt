@@ -10,3 +10,6 @@ requests==2.31.0
 googletrans==4.0.0rc1
 django-cors-headers==4.3.1
 django-sslserver==0.22
+django-extensions==0.5.3
+werkzeug==3.0.1
+pyOpenSSL==2.22
