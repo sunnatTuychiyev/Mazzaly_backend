@@ -17,10 +17,12 @@ It now includes email verification using one-time passwords (OTP).
    ```bash
    python manage.py createsuperuser
    ```
-4. Run the development server:
+4. Run the development server with HTTPS:
    ```bash
-   python manage.py runserver
+   ./run_https.sh
    ```
+   The script will generate a self-signed certificate the first time you run it
+   so the server can be accessed via `https://localhost:8000/`.
 
 To enable HTTPS locally, install `django-sslserver` and run:
    ```bash
