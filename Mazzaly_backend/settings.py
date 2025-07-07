@@ -19,15 +19,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',          # Sites (kerak bo‘lsa)
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
     'social_django',
     'account',
     'recipes',
-     'django_filters'
+    'django_filters',         # to‘g‘ri
+    'django_extensions',      # to‘g‘ri
 ]
+
 
 AUTH_USER_MODEL = 'account.User'
 SITE_ID = 1

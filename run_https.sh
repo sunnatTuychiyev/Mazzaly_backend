@@ -1,5 +1,5 @@
 #!/bin/bash
-# Start the Django development server using HTTPS.
+# Start the Django dev server using HTTPS with django-extensions
 CERT_FILE="cert.pem"
 KEY_FILE="key.pem"
 
@@ -10,4 +10,4 @@ if [ ! -f "$CERT_FILE" ] || [ ! -f "$KEY_FILE" ]; then
         -subj "/CN=localhost"
 fi
 
-python manage.py runserver 0.0.0.0:8000 --cert "$CERT_FILE" --key "$KEY_FILE"
+python manage.py runserver_plus 0.0.0.0:8000 --cert-file "$CERT_FILE" --key-file "$KEY_FILE"
