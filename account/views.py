@@ -21,6 +21,7 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
     @swagger_auto_schema(
+        tags=['Auth'],
         request_body=RegisterSerializer,
         responses={
             201: openapi.Response('User created', UserSerializer),
@@ -43,6 +44,7 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(APIView):
     @swagger_auto_schema(
+        tags=['Auth'],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -80,6 +82,7 @@ class LoginView(APIView):
 
 
 class VerifyEmailView(APIView):
+    tags=['Auth'],
     @swagger_auto_schema(
         request_body=VerifyEmailSerializer,
         responses={200: 'Email verified', 400: 'Invalid code'},
@@ -109,6 +112,7 @@ class ProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     @swagger_auto_schema(
+        tags=['Auth'],
         responses={200: UserSerializer},
         security=[{'Bearer': []}],
     )
@@ -117,6 +121,7 @@ class ProfileView(APIView):
 
 class GoogleAuthView(APIView):
     @swagger_auto_schema(
+        tags=['Auth'],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -150,6 +155,7 @@ class GoogleAuthView(APIView):
 
 class TelegramAuthView(APIView):
     @swagger_auto_schema(
+        tags=['Auth'],
         request_body=TelegramAuthSerializer,
         responses={
             200: openapi.Response('Authentication successful', UserSerializer),
