@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sslserver',
     'django.contrib.sites',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -29,7 +30,6 @@ INSTALLED_APPS = [
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
-
 
 AUTH_USER_MODEL = 'account.User'
 SITE_ID = 1
