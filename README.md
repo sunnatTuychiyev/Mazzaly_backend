@@ -22,6 +22,13 @@ It now includes email verification using one-time passwords (OTP).
    python manage.py runserver
    ```
 
+To enable HTTPS locally, install `django-sslserver` and run:
+   ```bash
+   python manage.py runsslserver
+   ```
+Set `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE` and `CSRF_COOKIE_SECURE` in
+your `.env` file to enforce HTTPS and secure cookies in production.
+
 After registering a new account, a verification code is sent to the provided email address.
 Send a POST request to `/api/verify-email/` with the email and code to activate the account.
 
@@ -91,7 +98,7 @@ pip install googletrans==4.0.0rc1
 
 The project includes a customized Django admin interface with a cleaner
 appearance. To access the admin panel, create a superuser and run the server as
-described above. Navigate to `http://localhost:8000/admin/` and log in with your
+described above. Navigate to `http://localhost:8000/admin/` (or `https://localhost:8000/admin/` if using HTTPS) and log in with your
 credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
 
