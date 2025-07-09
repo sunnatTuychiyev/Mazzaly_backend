@@ -40,6 +40,7 @@ AUTH_USER_MODEL = 'account.User'
 SITE_ID = 1
 
 # === REST framework ===
+"""
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -59,6 +60,28 @@ REST_FRAMEWORK = {
     },
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
+"""
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '10000/minute',  # juda katta qiymat — test uchun
+        'anon': '10000/minute',  # ab testi uchun kerak
+    },
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+}
+
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
