@@ -48,6 +48,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_fields = ['categories', 'healthy']
 
     def get_serializer_class(self):
+        if getattr(self, 'swagger_fake_view', False):
+            # Avoid expensive translation calls when generating OpenAPI schema
+            return RecipeSerializer
         if self.request.method in ['GET']:
             from .serializers import MultiLangRecipeSerializer
             return MultiLangRecipeSerializer
