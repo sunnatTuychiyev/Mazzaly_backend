@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .translation import TranslatableModelSerializer
 from .models import (
     Category, MealType, Recipe,
     Ingredient, Instruction,
@@ -7,37 +8,43 @@ from .models import (
 )
 
 # CATEGORY
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(TranslatableModelSerializer):
+    translatable_fields = ['name']
     class Meta:
         model = Category
         fields = ['id', 'name']
 
 # MEAL TYPE
-class MealTypeSerializer(serializers.ModelSerializer):
+class MealTypeSerializer(TranslatableModelSerializer):
+    translatable_fields = ['name']
     class Meta:
         model = MealType
         fields = ['id', 'name']
 
 # INGREDIENT (autocomplete uchun name + id yetarli)
-class IngredientSerializer(serializers.ModelSerializer):
+class IngredientSerializer(TranslatableModelSerializer):
+    translatable_fields = ['name', 'preparation']
     class Meta:
         model = Ingredient
         fields = ['id', 'name', 'amount', 'unit', 'preparation']
 
 # Faqat name va id uchun (autocomplete/search API uchun)
-class IngredientNameSerializer(serializers.ModelSerializer):
+class IngredientNameSerializer(TranslatableModelSerializer):
+    translatable_fields = ['name']
     class Meta:
         model = Ingredient
         fields = ['id', 'name']
 
 # INSTRUCTION
-class InstructionSerializer(serializers.ModelSerializer):
+class InstructionSerializer(TranslatableModelSerializer):
+    translatable_fields = ['description']
     class Meta:
         model = Instruction
         fields = ['id', 'step_number', 'description']
 
 # RECIPE
-class RecipeSerializer(serializers.ModelSerializer):
+class RecipeSerializer(TranslatableModelSerializer):
+    translatable_fields = ['name', 'description']
     categories = CategorySerializer(many=True, read_only=True)
     category_ids = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
@@ -126,7 +133,8 @@ class MealPlanSerializer(serializers.ModelSerializer):
         return MealPlan.objects.create(user=user, **validated_data)
 
 # SHOPPING LIST ITEM
-class ShoppingListItemSerializer(serializers.ModelSerializer):
+class ShoppingListItemSerializer(TranslatableModelSerializer):
+    translatable_fields = ['name']
     class Meta:
         model = ShoppingListItem
         fields = ['id', 'name', 'amount', 'unit', 'checked']

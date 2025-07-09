@@ -1,6 +1,9 @@
 from typing import Dict, List
 
+from rest_framework import serializers
+
 try:
+    from functools import lru_cache
     from googletrans import Translator  # type: ignore
 except Exception:  # pragma: no cover - optional dependency
     Translator = None  # type: ignore
@@ -31,6 +34,7 @@ def _manual_translate(text: str, dest: str) -> str:
     return ' '.join(translated)
 
 
+@lru_cache(maxsize=2048)
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text using googletrans if available, otherwise a small fallback."""
     if not text:
@@ -65,3 +69,29 @@ def get_recipe_translations(recipe) -> Dict[str, Dict[str, str]]:
         },
     }
     return data
+
+
+class TranslatableModelSerializer(serializers.ModelSerializer):
+    """ModelSerializer that translates fields based on `lang` in context."""
+    translatable_fields: List[str] = []
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang in {'uz', 'ru'}:
+            for field in self.translatable_fields:
+                value = data.get(field)
+                if isinstance(value, str):
+                    data[field] = translate_text(value, lang)
+                elif isinstance(value, list):
+                    data[field] = [translate_text(v, lang) for v in value]
+        return data
+
+
+class LanguageContextMixin:
+    """Mixin for viewsets to expose `lang` query parameter to serializers."""
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.query_params.get('lang')
+        return context

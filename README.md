@@ -96,6 +96,10 @@ results install `googletrans`:
 pip install googletrans==4.0.0rc1
 ```
 
+All recipe-related endpoints also accept a `lang` query parameter. Set
+`lang=uz` or `lang=ru` to receive translated fields directly in the response,
+for example `/api/recipes/?lang=uz` or `/api/recipes/5/?lang=ru`.
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner

@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .translation import get_recipe_translations
+from .translation import get_recipe_translations, LanguageContextMixin
 
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
@@ -17,7 +17,7 @@ from .serializers import (
 )
 
 # --- Category CRUD ---
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(LanguageContextMixin, viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -25,7 +25,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
 
 # --- MealType CRUD ---
-class MealTypeViewSet(viewsets.ModelViewSet):
+class MealTypeViewSet(LanguageContextMixin, viewsets.ModelViewSet):
     queryset = MealType.objects.all()
     serializer_class = MealTypeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -33,7 +33,7 @@ class MealTypeViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
 
 # --- Recipe CRUD + Search by Multiple Ingredients ---
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(LanguageContextMixin, viewsets.ModelViewSet):
     """
     CRUD for recipes, including search by name, categories, and ingredients.
     To search recipes by multiple ingredients:  
@@ -163,7 +163,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(data)
 
 # --- Ingredient autocomplete/search (unique names only) ---
-class IngredientListView(generics.ListAPIView):
+class IngredientListView(LanguageContextMixin, generics.ListAPIView):
     serializer_class = IngredientNameSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -186,7 +186,7 @@ class IngredientListView(generics.ListAPIView):
         return Ingredient.objects.filter(id__in=ids)
 
 # --- MealPlan CRUD (user-scoped) ---
-class MealPlanViewSet(viewsets.ModelViewSet):
+class MealPlanViewSet(LanguageContextMixin, viewsets.ModelViewSet):
     serializer_class = MealPlanSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -199,7 +199,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 # --- Shopping List CRUD (user-scoped) ---
-class ShoppingListItemViewSet(viewsets.ModelViewSet):
+class ShoppingListItemViewSet(LanguageContextMixin, viewsets.ModelViewSet):
     serializer_class = ShoppingListItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
