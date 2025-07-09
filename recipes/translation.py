@@ -2,6 +2,12 @@ from typing import Dict, List, Tuple
 from collections import OrderedDict
 
 try:
+    # Optional offline translation library
+    from argostranslate import translate as argos_translate  # type: ignore
+except Exception:  # pragma: no cover - optional dependency
+    argos_translate = None  # type: ignore
+
+try:
     from googletrans import Translator  # type: ignore
 except Exception:  # pragma: no cover - optional dependency
     Translator = None  # type: ignore
@@ -18,6 +24,16 @@ else:
 # Simple in-memory cache for translations
 _CACHE: "OrderedDict[Tuple[str, str, str], str]" = OrderedDict()
 _CACHE_SIZE = 1024
+
+
+def _argos_translate(text: str, dest: str, src: str) -> str | None:
+    """Translate using argostranslate if installed and languages available."""
+    if not argos_translate:
+        return None
+    try:
+        return argos_translate.translate(text, src, dest)
+    except Exception:  # pragma: no cover - optional dependency
+        return None
 
 
 def _get_cached(text: str, dest: str, src: str) -> str | None:
@@ -71,6 +87,12 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     if cached is not None:
         return cached
 
+    # Try offline translation first
+    translated = _argos_translate(text, dest, src)
+    if translated:
+        _set_cache(text, dest, src, translated)
+        return translated
+
     if _TRANSLATOR:
         try:
             translated = _TRANSLATOR.translate(text, src=src, dest=dest).text
@@ -105,16 +127,23 @@ def translate_texts(texts: List[str], dest: str, src: str = 'en') -> List[str]:
 
     translated: List[str] = []
     if to_translate:
-        if _TRANSLATOR:
+        if argos_translate:
             try:
-                response = _TRANSLATOR.translate(to_translate, src=src, dest=dest)
-                if not isinstance(response, list):
-                    response = [response]
-                translated = [t.text for t in response]
+                translated = [argos_translate.translate(t, src, dest) for t in to_translate]
             except Exception:  # pragma: no cover - optional dependency
+                translated = []
+
+        if not translated:
+            if _TRANSLATOR:
+                try:
+                    response = _TRANSLATOR.translate(to_translate, src=src, dest=dest)
+                    if not isinstance(response, list):
+                        response = [response]
+                    translated = [t.text for t in response]
+                except Exception:  # pragma: no cover - optional dependency
+                    translated = [_manual_translate(t, dest) for t in to_translate]
+            else:
                 translated = [_manual_translate(t, dest) for t in to_translate]
-        else:
-            translated = [_manual_translate(t, dest) for t in to_translate]
 
         for idx, inp, out in zip(indices, to_translate, translated):
             results[idx] = out

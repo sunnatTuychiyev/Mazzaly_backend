@@ -97,6 +97,13 @@ results install `googletrans`:
 pip install googletrans==4.0.0rc1
 ```
 
+You can also install [Argos Translate](https://github.com/argosopentech/argos-translate)
+for faster offline translations:
+
+```bash
+pip install argostranslate
+```
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner
