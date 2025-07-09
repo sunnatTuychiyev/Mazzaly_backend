@@ -89,7 +89,8 @@ structure is organised by field, e.g.:
 ```
 
 Translations use the optional `googletrans` library if it is installed.
-Without it the helper falls back to a small built-in dictionary. For best
+Without it the helper falls back to a small built-in dictionary. Translation
+results are cached in memory to speed up repeated requests. For best
 results install `googletrans`:
 
 ```bash
