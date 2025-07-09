@@ -96,6 +96,16 @@ results install `googletrans`:
 pip install googletrans==4.0.0rc1
 ```
 
+### Translating Categories and Meal Types
+
+Category and meal type names are also stored in English. Each has a
+`/translate/` endpoint that returns Uzbek and Russian versions of the name.
+For example, `/api/categories/<id>/translate/` responds with:
+
+```json
+{"uz": "...", "ru": "..."}
+```
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner

@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .translation import get_recipe_translations
+from .translation import get_recipe_translations, get_text_translations
 
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
@@ -24,6 +24,24 @@ class CategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
+    @swagger_auto_schema(
+        operation_description="Translate a category name to Uzbek and Russian",
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'uz': openapi.Schema(type=openapi.TYPE_STRING),
+                    'ru': openapi.Schema(type=openapi.TYPE_STRING),
+                },
+            )
+        }
+    )
+    @action(detail=True, methods=['get'], url_path='translate')
+    def translate_category(self, request, pk=None):
+        category = self.get_object()
+        data = get_text_translations(category.name)
+        return Response(data)
+
 # --- MealType CRUD ---
 class MealTypeViewSet(viewsets.ModelViewSet):
     queryset = MealType.objects.all()
@@ -31,6 +49,24 @@ class MealTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
+
+    @swagger_auto_schema(
+        operation_description="Translate a meal type name to Uzbek and Russian",
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'uz': openapi.Schema(type=openapi.TYPE_STRING),
+                    'ru': openapi.Schema(type=openapi.TYPE_STRING),
+                },
+            )
+        }
+    )
+    @action(detail=True, methods=['get'], url_path='translate')
+    def translate_mealtype(self, request, pk=None):
+        meal_type = self.get_object()
+        data = get_text_translations(meal_type.name)
+        return Response(data)
 
 # --- Recipe CRUD + Search by Multiple Ingredients ---
 class RecipeViewSet(viewsets.ModelViewSet):

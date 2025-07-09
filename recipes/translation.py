@@ -44,6 +44,14 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     return _manual_translate(text, dest)
 
 
+def get_text_translations(text: str) -> Dict[str, str]:
+    """Return Uzbek and Russian translations for a single text value."""
+    return {
+        'uz': translate_text(text, 'uz'),
+        'ru': translate_text(text, 'ru'),
+    }
+
+
 def get_recipe_translations(recipe) -> Dict[str, Dict[str, str]]:
     """Return a dictionary with Uzbek and Russian translations of recipe fields."""
     data = {
