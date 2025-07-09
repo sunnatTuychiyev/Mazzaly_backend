@@ -39,7 +39,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     To search recipes by multiple ingredients:  
     Example: `/api/recipes/?ingredients=egg,milk,flour`
     """
-    queryset = Recipe.objects.all()
+    queryset = Recipe.objects.all().prefetch_related('ingredients', 'instructions')
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
