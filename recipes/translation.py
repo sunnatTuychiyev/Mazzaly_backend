@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Any
 
 try:
     from googletrans import Translator  # type: ignore
@@ -65,3 +65,51 @@ def get_recipe_translations(recipe) -> Dict[str, Dict[str, str]]:
         },
     }
     return data
+
+
+def translate_full_recipe(recipe, dest: str) -> Dict[str, Any]:
+    """Return a full recipe dictionary translated to the given language."""
+    from .serializers import RecipeSerializer
+
+    data = RecipeSerializer(recipe).data
+    data['name'] = translate_text(recipe.name, dest)
+    data['description'] = translate_text(recipe.description, dest)
+    # translate ingredient names
+    data['ingredients'] = [
+        {
+            **ing,
+            'name': translate_text(ing['name'], dest)
+        }
+        for ing in data.get('ingredients', [])
+    ]
+    # translate instruction descriptions
+    data['instructions'] = [
+        {
+            **step,
+            'description': translate_text(step['description'], dest)
+        }
+        for step in data.get('instructions', [])
+    ]
+    # translate category names
+    data['categories'] = [
+        {
+            'id': cat['id'],
+            'name': translate_text(cat['name'], dest)
+        }
+        for cat in data.get('categories', [])
+    ]
+    return data
+
+
+def get_recipe_multilang(recipe) -> Dict[str, Dict[str, Any]]:
+    """Return English, Uzbek and Russian versions of a recipe."""
+    from .serializers import RecipeSerializer
+
+    eng_data = RecipeSerializer(recipe).data
+    uz_data = translate_full_recipe(recipe, 'uz')
+    ru_data = translate_full_recipe(recipe, 'ru')
+    return {
+        'eng': eng_data,
+        'uz': uz_data,
+        'ru': ru_data,
+    }

@@ -98,6 +98,15 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Recipe must have at least one instruction.")
         return data
 
+
+class MultiLangRecipeSerializer(RecipeSerializer):
+    """Return recipe details in English, Uzbek and Russian."""
+
+    def to_representation(self, instance):
+        from .translation import get_recipe_multilang
+
+        return get_recipe_multilang(instance)
+
 # MEAL PLAN
 class MealPlanSerializer(serializers.ModelSerializer):
     meal_type = MealTypeSerializer(read_only=True)
