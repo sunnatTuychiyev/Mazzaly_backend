@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .translation_utils import translate_text
 from .models import (
     Category, MealType, Recipe,
     Ingredient, Instruction,
@@ -8,30 +9,58 @@ from .models import (
 
 # CATEGORY
 class CategorySerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang', 'en')
+        data['name'] = translate_text(data['name'], lang)
+        return data
     class Meta:
         model = Category
         fields = ['id', 'name']
 
 # MEAL TYPE
 class MealTypeSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang', 'en')
+        data['name'] = translate_text(data['name'], lang)
+        return data
     class Meta:
         model = MealType
         fields = ['id', 'name']
 
 # INGREDIENT (autocomplete uchun name + id yetarli)
 class IngredientSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang', 'en')
+        for field in ['name', 'amount', 'unit', 'preparation']:
+            value = data.get(field)
+            if value:
+                data[field] = translate_text(value, lang)
+        return data
     class Meta:
         model = Ingredient
         fields = ['id', 'name', 'amount', 'unit', 'preparation']
 
 # Faqat name va id uchun (autocomplete/search API uchun)
 class IngredientNameSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang', 'en')
+        data['name'] = translate_text(data['name'], lang)
+        return data
     class Meta:
         model = Ingredient
         fields = ['id', 'name']
 
 # INSTRUCTION
 class InstructionSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang', 'en')
+        data['description'] = translate_text(data['description'], lang)
+        return data
     class Meta:
         model = Instruction
         fields = ['id', 'step_number', 'description']
@@ -47,6 +76,22 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
     ingredients = IngredientSerializer(many=True)
     instructions = InstructionSerializer(many=True)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang', 'en')
+        data['name'] = translate_text(data['name'], lang)
+        data['description'] = translate_text(data['description'], lang)
+        for cat in data.get('categories', []):
+            cat['name'] = translate_text(cat['name'], lang)
+        for ing in data.get('ingredients', []):
+            for field in ['name', 'amount', 'unit', 'preparation']:
+                value = ing.get(field)
+                if value:
+                    ing[field] = translate_text(value, lang)
+        for step in data.get('instructions', []):
+            step['description'] = translate_text(step['description'], lang)
+        return data
 
     class Meta:
         model = Recipe
