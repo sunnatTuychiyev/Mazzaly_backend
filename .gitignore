@@ -21,3 +21,4 @@ debug.log
 # Virtual environment
 venv/
 
+db.sqlite3
