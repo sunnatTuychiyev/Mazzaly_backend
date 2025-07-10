@@ -1,5 +1,8 @@
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
+
+# Ensure translation options are registered before admin classes
+from . import modeltranslation  # noqa: F401
 from .models import (
     Category, MealType,
     Recipe, Ingredient, Instruction,
