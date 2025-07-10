@@ -1,5 +1,9 @@
 from django.db import models
 from django.conf import settings
+try:
+    from googletrans import Translator
+except Exception:  # pragma: no cover - library optional
+    Translator = None
 
 # --- CATEGORY ---
 class Category(models.Model):
@@ -32,10 +36,34 @@ class Recipe(models.Model):
     cook_time = models.PositiveIntegerField(help_text="in minutes")
     servings = models.PositiveIntegerField()
     #tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags like 'healthy,vegetarian'")
-    
+
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new and Translator:
+            translator = Translator()
+            changed = False
+            for lang in ['ru', 'uz']:
+                name_field = f'name_{lang}'
+                desc_field = f'description_{lang}'
+                if not getattr(self, name_field, None):
+                    try:
+                        setattr(self, name_field, translator.translate(self.name, dest=lang).text)
+                        changed = True
+                    except Exception:
+                        pass
+                if not getattr(self, desc_field, None):
+                    try:
+                        setattr(self, desc_field, translator.translate(self.description, dest=lang).text)
+                        changed = True
+                    except Exception:
+                        pass
+            if changed:
+                super().save(update_fields=[f'name_{l}' for l in ['ru','uz']] + [f'description_{l}' for l in ['ru','uz']])
 
 # --- INGREDIENT ---
 class Ingredient(models.Model):

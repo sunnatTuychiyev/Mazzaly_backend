@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.i18n import i18n_patterns
 
 admin.site.site_header = "Mazzaly Administration"
 admin.site.site_title = "Mazzaly Admin Portal"
@@ -22,13 +23,16 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('api/', include('account.urls')),     # Auth, user, Google OAuth va h.k.
     path('api/', include('recipes.urls')),     # Recipes, ingredients, meal plan va h.k.
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('social/', include('social_django.urls', namespace='social')),  # Google Auth
 ]
+
+urlpatterns += i18n_patterns(
+    path('admin/', admin.site.urls),
+)
 
 # Media uchun:
 from django.conf import settings
