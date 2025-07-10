@@ -5,5 +5,6 @@ class RecipesConfig(AppConfig):
     name = "recipes"
 
     def ready(self):
-        from . import signals  # noqa
+        from . import signals  # noqa: F401
+        from . import modeltranslation  # noqa: F401
 
