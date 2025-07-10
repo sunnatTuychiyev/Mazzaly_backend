@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .translation import get_recipe_translations
+from .translation import get_recipe_translations, build_multilingual_payload
 
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
@@ -160,6 +160,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def translate_recipe(self, request, pk=None):
         recipe = self.get_object()
         data = get_recipe_translations(recipe)
+        return Response(data)
+
+    @action(detail=False, methods=['get'], url_path='translate')
+    def translate(self, request):
+        """Translate all recipes or a specific one via `?id=`."""
+        recipe_id = request.query_params.get('id')
+        if recipe_id:
+            try:
+                recipe = Recipe.objects.get(id=recipe_id)
+            except Recipe.DoesNotExist:
+                return Response({'error': 'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({recipe.id: get_recipe_translations(recipe)})
+        data = {r.id: get_recipe_translations(r) for r in Recipe.objects.all()}
+        return Response(data)
+
+    @action(detail=True, methods=['get'], url_path='multilingual')
+    def multilingual_recipe(self, request, pk=None):
+        """Return recipe in all supported languages."""
+        recipe = self.get_object()
+        data = build_multilingual_payload(recipe)
         return Response(data)
 
 # --- Ingredient autocomplete/search (unique names only) ---

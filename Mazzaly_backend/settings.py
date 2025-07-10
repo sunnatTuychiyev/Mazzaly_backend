@@ -26,12 +26,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sslserver',
     'django.contrib.sites',          # Sites (kerak bo‘lsa)
+    'modeltranslation',
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
     'social_django',
     'account',
-    'recipes',
+    'recipes.apps.RecipesConfig',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
@@ -187,7 +188,15 @@ SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'Mazzaly_backend.urls.schema_view',
 }
 # === Internationalization ===
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+    ('en', 'English'),
+    ('uz', 'Uzbek'),
+    ('ru', 'Russian'),
+)
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True

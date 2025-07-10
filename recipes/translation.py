@@ -65,3 +65,41 @@ def get_recipe_translations(recipe) -> Dict[str, Dict[str, str]]:
         },
     }
     return data
+
+
+def build_multilingual_payload(recipe) -> Dict[str, Dict[str, any]]:
+    """Build a multilingual representation using stored translation fields."""
+    languages = ['en', 'uz', 'ru']
+    payload: Dict[str, Dict[str, any]] = {}
+    for lang in languages:
+        payload[lang] = {
+            'id': recipe.id,
+            'name': getattr(recipe, f'name_{lang}', recipe.name),
+            'description': getattr(recipe, f'description_{lang}', recipe.description),
+            'prep_time': recipe.prep_time,
+            'cook_time': recipe.cook_time,
+            'servings': recipe.servings,
+            'healthy': recipe.healthy,
+            'calories': recipe.calories,
+            'protein': recipe.protein,
+            'fats': recipe.fats,
+            'carbs': recipe.carbs,
+            'categories': [getattr(cat, f'name_{lang}', cat.name) for cat in recipe.categories.all()],
+            'ingredients': [
+                {
+                    'name': getattr(ing, f'name_{lang}', ing.name),
+                    'amount': ing.amount,
+                    'unit': ing.unit,
+                    'preparation': ing.preparation,
+                }
+                for ing in recipe.ingredients.all()
+            ],
+            'instructions': [
+                {
+                    'step_number': step.step_number,
+                    'description': getattr(step, f'description_{lang}', step.description),
+                }
+                for step in recipe.instructions.all()
+            ],
+        }
+    return payload
