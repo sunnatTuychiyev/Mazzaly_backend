@@ -74,27 +74,12 @@ remains short and readable.
 
 ### Translating Recipes
 
-Recipes are stored in English by default. The endpoint
-`/api/recipes/<id>/translate/` returns Uzbek and Russian translations of
-the recipe name, description, ingredients and instructions. The response
-structure is organised by field, e.g.:
-
-```json
-{
-  "name": {"uz": "...", "ru": "..."},
-  "description": {"uz": "...", "ru": "..."},
-  "ingredients": {"uz": ["..."], "ru": ["..."]},
-  "instructions": {"uz": ["..."], "ru": ["..."]}
-}
-```
-
-Translations use the optional `googletrans` library if it is installed.
-Without it the helper falls back to a small built-in dictionary. For best
-results install `googletrans`:
-
-```bash
-pip install googletrans==4.0.0rc1
-```
+Recipes are entered in English through the admin interface. The project uses
+**django-modeltranslation** to store Uzbek and Russian versions of each field.
+When the site's language is switched, the API automatically returns data in the
+active language. When a recipe is first created, translations are populated
+using Google Translate if the optional `googletrans` package is installed
+(falling back to a small dictionary otherwise).
 
 ## Admin Panel
 

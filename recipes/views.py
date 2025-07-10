@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .translation import get_recipe_translations
+from .translate_utils import get_recipe_translations
 
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType

@@ -18,6 +18,7 @@ CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
 # === Installed apps ===
 INSTALLED_APPS = [
     'corsheaders',
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -122,6 +123,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'modeltranslation.middleware.TranslationMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -188,6 +191,14 @@ SWAGGER_SETTINGS = {
 }
 # === Internationalization ===
 LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('en', 'English'),
+    ('ru', 'Russian'),
+    ('uz', 'Uzbek'),
+]
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODELTRANSLATION_LANGUAGES = ('en', 'ru', 'uz')
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
