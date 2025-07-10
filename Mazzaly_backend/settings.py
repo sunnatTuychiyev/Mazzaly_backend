@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'social_django',
     'account',
-    'recipes',
+    'recipes.apps.RecipesConfig',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]

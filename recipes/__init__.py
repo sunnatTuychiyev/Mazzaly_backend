@@ -1,1 +1,1 @@
-default_app_config = 'recipes.apps.RecipesConfig'
+# Explicit AppConfig registration is handled in INSTALLED_APPS
