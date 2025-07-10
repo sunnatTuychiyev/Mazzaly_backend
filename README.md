@@ -88,6 +88,17 @@ structure is organised by field, e.g.:
 }
 ```
 
+The `/api/recipes/<id>/multilingual/` endpoint returns the entire recipe in
+English, Uzbek and Russian using fields stored by `django-modeltranslation`:
+
+```json
+{
+  "en": {"name": "..."},
+  "uz": {"name": "..."},
+  "ru": {"name": "..."}
+}
+```
+
 Translations use the optional `googletrans` library if it is installed.
 Without it the helper falls back to a small built-in dictionary. For best
 results install `googletrans`:

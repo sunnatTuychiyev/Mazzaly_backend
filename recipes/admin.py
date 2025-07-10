@@ -1,4 +1,5 @@
 from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin
 from .models import (
     Category, MealType,
     Recipe, Ingredient, Instruction,
@@ -7,8 +8,14 @@ from .models import (
 )
 
 # Category va MealType’ni admin panelga qo‘shish
-admin.site.register(Category)
-admin.site.register(MealType)
+@admin.register(Category)
+class CategoryAdmin(TranslationAdmin):
+    pass
+
+
+@admin.register(MealType)
+class MealTypeAdmin(TranslationAdmin):
+    pass
 
 # Ingredient va Instruction inlines
 class IngredientInline(admin.TabularInline):
@@ -21,13 +28,18 @@ class InstructionInline(admin.TabularInline):
     extra = 1
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(TranslationAdmin):
     inlines = [IngredientInline, InstructionInline]
     list_display = ['name', 'healthy', 'get_categories']
     filter_horizontal = ['categories']  # <-- faqat shu qatorni qo‘shing!
     def get_categories(self, obj):
         return ", ".join([cat.name for cat in obj.categories.all()])
     get_categories.short_description = 'Categories'
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        from .signals import auto_translate_recipe
+        auto_translate_recipe(sender=Recipe, instance=obj, created=not change)
 
 
 
