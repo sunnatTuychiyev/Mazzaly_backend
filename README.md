@@ -99,6 +99,6 @@ English text is returned.
 GET /api/recipes/?lang=ru
 ```
 
-Translations are provided in real time using the Google Cloud Translate API
+Translations are provided in real time using the `deep-translator` library
 and are not stored in the database.
 

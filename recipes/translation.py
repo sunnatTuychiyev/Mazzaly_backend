@@ -1,22 +1,19 @@
 from typing import List
-from google.cloud import translate_v2 as translate
+from deep_translator import GoogleTranslator
 
 class TranslationError(Exception):
     """Raised when translation fails."""
 
 
 def translate_texts(texts: List[str], target_language: str) -> List[str]:
-    """Translate a list of texts into the target language using Google API."""
+    """Translate a list of texts into the target language using deep-translator."""
     if not texts:
         return []
-    client = translate.Client()
     try:
-        result = client.translate(texts, target_language=target_language, format_='text')
+        translator = GoogleTranslator(source="en", target=target_language)
+        return translator.translate_batch(texts)
     except Exception as exc:  # pragma: no cover - network call
         raise TranslationError(str(exc))
-    if isinstance(result, dict):
-        result = [result]
-    return [r.get('translatedText', '') for r in result]
 
 
 def translate_recipe_data(data: dict, target_language: str) -> dict:
