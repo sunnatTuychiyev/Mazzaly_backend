@@ -11,9 +11,10 @@ from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
 )
 from .serializers import (
-    RecipeSerializer, IngredientSerializer, IngredientNameSerializer,
+    RecipeSerializer, RecipeReadSerializer, IngredientSerializer, IngredientNameSerializer,
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
 )
+from .translation import translate_recipe_data, TranslationError
 
 # --- Category CRUD ---
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -46,6 +47,23 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories', 'healthy']
 
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return RecipeReadSerializer
+        return RecipeSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        lang = request.query_params.get('lang')
+        if lang in ('ru', 'uz'):
+            try:
+                data = translate_recipe_data(data, lang)
+            except TranslationError:
+                return Response({'detail': 'Translation failed'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        return Response(data)
+
     @swagger_auto_schema(
         operation_description="Search recipes by one or more ingredients. "
                               "For example: ?ingredients=egg,milk,flour (all must be in the recipe)",
@@ -68,9 +86,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            data = serializer.data
+            lang = request.query_params.get('lang')
+            if lang in ('ru', 'uz'):
+                try:
+                    for item in data:
+                        translate_recipe_data(item, lang)
+                except TranslationError:
+                    return Response({'detail': 'Translation failed'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            return self.get_paginated_response(data)
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        data = serializer.data
+        lang = request.query_params.get('lang')
+        if lang in ('ru', 'uz'):
+            try:
+                for item in data:
+                    translate_recipe_data(item, lang)
+            except TranslationError:
+                return Response({'detail': 'Translation failed'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        return Response(data)
 
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",

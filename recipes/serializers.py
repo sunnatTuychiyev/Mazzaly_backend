@@ -98,6 +98,22 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Recipe must have at least one instruction.")
         return data
 
+
+class RecipeReadSerializer(serializers.ModelSerializer):
+    """Read-only serializer with nested fields."""
+    categories = CategorySerializer(many=True, read_only=True)
+    ingredients = IngredientSerializer(many=True, read_only=True)
+    instructions = InstructionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Recipe
+        fields = [
+            'id', 'name', 'categories', 'description', 'image',
+            'prep_time', 'cook_time', 'servings', 'healthy',
+            'calories', 'protein', 'fats', 'carbs',
+            'ingredients', 'instructions'
+        ]
+
 # MEAL PLAN
 class MealPlanSerializer(serializers.ModelSerializer):
     meal_type = MealTypeSerializer(read_only=True)
