@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .translation import get_recipe_translations
+from .translation import get_recipe_translations, translate_recipe_data
 
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
@@ -47,6 +47,23 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories', 'healthy']
 
+    def _get_language(self, request):
+        lang = request.query_params.get('lang')
+        if not lang:
+            header = request.headers.get('Accept-Language', '')
+            if header:
+                lang = header.split(',')[0].split('-')[0]
+        return (lang or 'en').lower()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        lang = self._get_language(request)
+        if lang != 'en':
+            translate_recipe_data(data, lang)
+        return Response(data)
+
     @swagger_auto_schema(
         operation_description="Search recipes by one or more ingredients. "
                               "For example: ?ingredients=egg,milk,flour (all must be in the recipe)",
@@ -67,11 +84,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(ingredients__name__icontains=name)
             queryset = queryset.distinct()
         page = self.paginate_queryset(queryset)
+        lang = self._get_language(request)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            data = serializer.data
+            if lang != 'en':
+                for item in data:
+                    translate_recipe_data(item, lang)
+            return self.get_paginated_response(data)
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        data = serializer.data
+        if lang != 'en':
+            for item in data:
+                translate_recipe_data(item, lang)
+        return Response(data)
 
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",
