@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sslserver',
+    'modeltranslation',
     'django.contrib.sites',          # Sites (kerak bo‘lsa)
     'rest_framework',
     'rest_framework_simplejwt',
@@ -187,7 +188,14 @@ SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'Mazzaly_backend.urls.schema_view',
 }
 # === Internationalization ===
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+LANGUAGES = [
+    ('en', 'English'),
+    ('ru', 'Russian'),
+    ('uz', 'Uzbek'),
+]
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODELTRANSLATION_LANGUAGES = ('en', 'ru', 'uz')
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True

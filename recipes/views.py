@@ -72,6 +72,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'], url_path='translations')
+    def translations(self, request, pk=None):
+        recipe = self.get_object()
+        data = {}
+        from django.utils import translation as trans
+        current = trans.get_language()
+        for lang in ['en', 'ru', 'uz']:
+            trans.activate(lang)
+            data[lang] = RecipeSerializer(recipe).data
+        trans.activate(current)
+        return Response(data)
+
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",
         responses={200: openapi.Response('Ingredients added', schema=openapi.Schema(
