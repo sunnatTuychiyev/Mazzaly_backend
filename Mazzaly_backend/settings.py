@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'recipes',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
+    'modeltranslation',
 ]
 
 AUTH_USER_MODEL = 'account.User'
@@ -187,7 +188,20 @@ SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'Mazzaly_backend.urls.schema_view',
 }
 # === Internationalization ===
-LANGUAGE_CODE = 'en-us'
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('ru', _('Russian')),
+    ('uz', _('Uzbek')),
+]
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODELTRANSLATION_LANGUAGES = [lang[0] for lang in LANGUAGES]
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True

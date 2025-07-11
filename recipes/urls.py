@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     RecipeViewSet, MealPlanViewSet, ShoppingListItemViewSet,
     IngredientListView, CategoryViewSet, MealTypeViewSet,
+    TranslatedRecipeView,
 )
 
 router = DefaultRouter()
@@ -17,4 +18,5 @@ urlpatterns = router.urls
 from django.urls import path
 urlpatterns += [
     path('ingredients/', IngredientListView.as_view(), name='ingredient-list'),
+    path('recipes/<int:pk>/translated/', TranslatedRecipeView.as_view(), name='recipe-translated'),
 ]

@@ -5,6 +5,8 @@ from django.db.models import Min
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.utils import translation
+from django.conf import settings
 
 
 from .models import (
@@ -184,3 +186,17 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
                 item.amount = f"{item.amount} + {ing.amount}"
                 item.save()
         return Response({'status': 'Ingredients added to shopping list'})
+
+
+# --- Translated Recipe View ---
+class TranslatedRecipeView(generics.RetrieveAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        lang = request.GET.get('lang') or request.headers.get('Accept-Language', 'en').split(',')[0]
+        if lang not in settings.MODELTRANSLATION_LANGUAGES:
+            lang = settings.MODELTRANSLATION_DEFAULT_LANGUAGE
+        with translation.override(lang):
+            return super().get(request, *args, **kwargs)
