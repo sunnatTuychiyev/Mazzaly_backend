@@ -19,6 +19,6 @@ media/
 debug.log
 
 # Virtual environment
-venv/
+#venv/
 
-db.sqlite3
+#db.sqlite3
