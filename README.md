@@ -88,3 +88,17 @@ To use this backend from a Telegram Web App ("mini app"), configure the
 returns a JWT token. Users authenticated through Telegram are created
 automatically using their Telegram ID.
 
+## Recipe Translation API
+
+The `/api/recipes/` endpoint supports on-the-fly translation of recipe
+content. Pass the optional `lang` query parameter with a value of `ru` or
+`uz` to receive the response in Russian or Uzbek. When omitted, the original
+English text is returned.
+
+```
+GET /api/recipes/?lang=ru
+```
+
+Translations are provided in real time using the Google Cloud Translate API
+and are not stored in the database.
+
