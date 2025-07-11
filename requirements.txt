@@ -10,4 +10,6 @@ requests==2.31.0
 django-cors-headers==4.3.1
 django-sslserver==0.22
 django-extensions>=3.2.0
-werkzeug==3.0.1pyOpenSSL>=24.0.0
+werkzeug==3.0.1
+pyOpenSSL>=24.0.0
+google-cloud-translate

@@ -1,9 +1,25 @@
 from django.db import models
 from django.conf import settings
 
+from .utils import translate_text
+
 # --- CATEGORY ---
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
+    def save(self, *args, **kwargs):
+        if not getattr(self, '_translation_done', False):
+            for lang in ['ru', 'uz']:
+                field = f'name_{lang}'
+                if hasattr(self, field) and not getattr(self, field):
+                    translated = translate_text(self.name, lang)
+                    if translated:
+                        setattr(self, field, translated)
+            self._translation_done = True
+            super().save(*args, **kwargs)
+            self._translation_done = False
+            return
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -11,6 +27,20 @@ class Category(models.Model):
 # --- MEAL TYPE ---
 class MealType(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    def save(self, *args, **kwargs):
+        if not getattr(self, '_translation_done', False):
+            for lang in ['ru', 'uz']:
+                field = f'name_{lang}'
+                if hasattr(self, field) and not getattr(self, field):
+                    translated = translate_text(self.name, lang)
+                    if translated:
+                        setattr(self, field, translated)
+            self._translation_done = True
+            super().save(*args, **kwargs)
+            self._translation_done = False
+            return
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -37,6 +67,22 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not getattr(self, '_translation_done', False):
+            for field in ['name', 'description']:
+                value = getattr(self, field)
+                for lang in ['ru', 'uz']:
+                    t_field = f"{field}_{lang}"
+                    if hasattr(self, t_field) and not getattr(self, t_field):
+                        translated = translate_text(value, lang)
+                        if translated:
+                            setattr(self, t_field, translated)
+            self._translation_done = True
+            super().save(*args, **kwargs)
+            self._translation_done = False
+            return
+        super().save(*args, **kwargs)
+
 # --- INGREDIENT ---
 class Ingredient(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='ingredients', on_delete=models.CASCADE)
@@ -47,6 +93,22 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f"{self.amount} {self.unit} {self.name}"
+
+    def save(self, *args, **kwargs):
+        if not getattr(self, '_translation_done', False):
+            for field in ['name', 'preparation', 'unit']:
+                base = getattr(self, field)
+                for lang in ['ru', 'uz']:
+                    t_field = f"{field}_{lang}"
+                    if hasattr(self, t_field) and not getattr(self, t_field):
+                        translated = translate_text(base, lang)
+                        if translated:
+                            setattr(self, t_field, translated)
+            self._translation_done = True
+            super().save(*args, **kwargs)
+            self._translation_done = False
+            return
+        super().save(*args, **kwargs)
 
 # --- INSTRUCTION ---
 class Instruction(models.Model):
@@ -59,6 +121,22 @@ class Instruction(models.Model):
 
     def __str__(self):
         return f"Step {self.step_number}: {self.description[:50]}..."
+
+    def save(self, *args, **kwargs):
+        if not getattr(self, '_translation_done', False):
+            if hasattr(self, 'description_ru') and not getattr(self, 'description_ru'):
+                tr = translate_text(self.description, 'ru')
+                if tr:
+                    self.description_ru = tr
+            if hasattr(self, 'description_uz') and not getattr(self, 'description_uz'):
+                tr = translate_text(self.description, 'uz')
+                if tr:
+                    self.description_uz = tr
+            self._translation_done = True
+            super().save(*args, **kwargs)
+            self._translation_done = False
+            return
+        super().save(*args, **kwargs)
 
 # --- MEAL PLAN ---
 class MealPlan(models.Model):

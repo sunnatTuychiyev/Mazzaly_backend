@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions, status, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from django.utils import translation
 from django.db.models import Min
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
@@ -71,6 +72,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_path='translations')
+    def get_translations(self, request, pk=None):
+        recipe = self.get_object()
+        data = {}
+        for lang in ['en', 'ru', 'uz']:
+            with translation.override(lang):
+                serializer = self.get_serializer(recipe)
+                data[lang] = serializer.data
+        return Response(data)
 
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",

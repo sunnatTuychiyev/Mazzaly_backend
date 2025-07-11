@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'social_django',
     'account',
     'recipes',
+    'modeltranslation',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
@@ -192,6 +193,16 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+LANGUAGES = (
+    ('en', 'English'),
+    ('ru', 'Russian'),
+    ('uz', 'Uzbek'),
+)
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODELTRANSLATION_LANGUAGES = ('en', 'ru', 'uz')
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
 
 # === Email Configuration ===
 # Default to console backend for development. If EMAIL_HOST_USER and
