@@ -23,6 +23,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        lang = self.request.query_params.get('lang', 'en') if self.request else 'en'
+        context['lang'] = lang
+        return context
+
 # --- MealType CRUD ---
 class MealTypeViewSet(viewsets.ModelViewSet):
     queryset = MealType.objects.all()
@@ -116,6 +122,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class IngredientListView(generics.ListAPIView):
     serializer_class = IngredientNameSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        lang = self.request.query_params.get('lang', 'en') if self.request else 'en'
+        context['lang'] = lang
+        return context
 
     @swagger_auto_schema(
         operation_description="Autocomplete/search ingredients by name (unique). ?search=onion",

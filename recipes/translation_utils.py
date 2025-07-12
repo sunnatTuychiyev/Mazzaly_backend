@@ -51,6 +51,11 @@ def apply_translations(recipe):
         setattr(recipe, f'description_{lang}', translate_text(recipe.description, lang))
     recipe.save()
 
+    for category in recipe.categories.all():
+        for lang in languages:
+            setattr(category, f'name_{lang}', translate_text(category.name, lang))
+        category.save()
+
     for ingredient in recipe.ingredients.all():
         for lang in languages:
             setattr(ingredient, f'name_{lang}', translate_text(ingredient.name, lang))

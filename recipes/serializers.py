@@ -12,6 +12,15 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name']
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            trans = getattr(instance, f'name_{lang}', '')
+            if trans:
+                data['name'] = trans
+        return data
+
 # MEAL TYPE
 class MealTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,6 +47,15 @@ class IngredientNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ['id', 'name']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            trans = getattr(instance, f'name_{lang}', '')
+            if trans:
+                data['name'] = trans
+        return data
 
 # INSTRUCTION
 class InstructionSerializer(serializers.ModelSerializer):

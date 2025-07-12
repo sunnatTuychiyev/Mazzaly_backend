@@ -75,8 +75,9 @@ remains short and readable.
 ### Recipe Translations
 
 Imported recipes are stored in English and automatically translated to Uzbek and
-Russian. Use the `lang` query parameter on the `/api/recipes/` endpoints to
-retrieve data in a specific language:
+Russian. Ingredient and category names are translated as well. Use the `lang`
+query parameter on the `/api/recipes/`, `/api/categories/` and ingredient search
+endpoints to retrieve data in a specific language:
 
 ```bash
 curl '/api/recipes/?lang=uz'

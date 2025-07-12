@@ -4,6 +4,8 @@ from django.conf import settings
 # --- CATEGORY ---
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    name_ru = models.CharField(max_length=100, blank=True, default="")
+    name_uz = models.CharField(max_length=100, blank=True, default="")
 
     def __str__(self):
         return self.name
