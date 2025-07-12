@@ -14,6 +14,7 @@ from .serializers import (
     RecipeSerializer, IngredientSerializer, IngredientNameSerializer,
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
 )
+from .translation import translate_recipe_data, translate_recipe_list
 
 # --- Category CRUD ---
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -65,12 +66,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
             for name in ingredient_names:
                 queryset = queryset.filter(ingredients__name__icontains=name)
             queryset = queryset.distinct()
+        lang = request.query_params.get('lang', 'en')
         page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page if page is not None else queryset, many=True)
+        data = serializer.data
+        if lang in ['ru', 'uz']:
+            data = translate_recipe_list(list(data), lang)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+            return self.get_paginated_response(data)
+        return Response(data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        lang = request.query_params.get('lang', 'en')
+        if lang in ['ru', 'uz']:
+            data = translate_recipe_data(dict(data), lang)
+        return Response(data)
 
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",
