@@ -10,6 +10,23 @@ from urllib.parse import urlparse
 import re
 
 
+def _parse_amount(value):
+    """Return an integer from a numeric value or string with units."""
+    if value is None or value == "":
+        return None
+    try:
+        return int(round(float(value)))
+    except (TypeError, ValueError):
+        if isinstance(value, str):
+            match = re.search(r"([-\d\.]+)", value)
+            if match:
+                try:
+                    return int(round(float(match.group(1))))
+                except ValueError:
+                    return None
+    return None
+
+
 def _get_nutrient(recipe_data, *names):
     """Return a nutrient value from the Spoonacular nutrition block."""
     nutrients = recipe_data.get("nutrition", {}).get("nutrients") or []
@@ -17,10 +34,7 @@ def _get_nutrient(recipe_data, *names):
     for nutrient in nutrients:
         name = nutrient.get("name", "").lower()
         if name in lowered:
-            try:
-                return int(round(float(nutrient.get("amount", 0))))
-            except (TypeError, ValueError):
-                return None
+            return _parse_amount(nutrient.get("amount"))
     return None
 
 
