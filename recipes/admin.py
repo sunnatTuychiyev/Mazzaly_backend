@@ -1,20 +1,37 @@
 from django.contrib import admin
 from .models import (
-    Category, MealType,
-    Recipe, Ingredient, Instruction,
-    MealPlan, ShoppingListItem,
-    RecipeRating
+    Category,
+    MealType,
+    Recipe,
+    Ingredient,
+    Instruction,
+    MealPlan,
+    ShoppingListItem,
+    RecipeRating,
 )
 
 # Category va MealType’ni admin panelga qo‘shish
-admin.site.register(Category)
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ["name", "name_uz", "name_ru"]
+    fields = ["name", "name_uz", "name_ru"]
+
+
 admin.site.register(MealType)
 
 # Ingredient va Instruction inlines
 class IngredientInline(admin.TabularInline):
     model = Ingredient
     extra = 1
-    fields = ['name', 'amount', 'unit', 'preparation']
+    fields = [
+        "name",
+        "name_uz",
+        "name_ru",
+        "amount",
+        "unit",
+        "preparation",
+    ]
     
 class InstructionInline(admin.TabularInline):
     model = Instruction

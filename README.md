@@ -94,6 +94,9 @@ described above. Navigate to `http://localhost:8000/admin/` (or `https://localho
 credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
 
+Ingredient and category forms expose additional fields for Uzbek and Russian
+translations so names can be entered in all three supported languages.
+
 ## Telegram Mini App Authentication
 
 To use this backend from a Telegram Web App ("mini app"), configure the
