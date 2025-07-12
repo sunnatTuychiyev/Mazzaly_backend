@@ -14,7 +14,17 @@ from .serializers import (
     RecipeSerializer, IngredientSerializer, IngredientNameSerializer,
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
 )
-from .translation_utils import get_requested_lang
+from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
+
+# Shared Swagger parameter for selecting response language
+LANG_PARAM = openapi.Parameter(
+    'lang',
+    openapi.IN_QUERY,
+    description='Response language',
+    type=openapi.TYPE_STRING,
+    enum=SUPPORTED_LANGUAGES,
+    default='en'
+)
 
 # --- Category CRUD ---
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -66,10 +76,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                               "For example: ?ingredients=egg,milk,flour (all must be in the recipe)",
         manual_parameters=[
             openapi.Parameter(
-                'ingredients', openapi.IN_QUERY, 
-                description="Comma-separated ingredient names (AND search)", 
+                'ingredients', openapi.IN_QUERY,
+                description="Comma-separated ingredient names (AND search)",
                 type=openapi.TYPE_STRING
-            )
+            ),
+            LANG_PARAM,
         ]
     )
     def list(self, request, *args, **kwargs):
