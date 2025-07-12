@@ -24,6 +24,15 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ['id', 'name', 'amount', 'unit', 'preparation']
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('language')
+        if lang and lang != 'en':
+            tr = instance.translations.filter(language=lang).first()
+            if tr:
+                data['name'] = tr.name
+        return data
+
 # Faqat name va id uchun (autocomplete/search API uchun)
 class IngredientNameSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,6 +44,15 @@ class InstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instruction
         fields = ['id', 'step_number', 'description']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('language')
+        if lang and lang != 'en':
+            tr = instance.translations.filter(language=lang).first()
+            if tr:
+                data['description'] = tr.description
+        return data
 
 # RECIPE
 class RecipeSerializer(serializers.ModelSerializer):
@@ -90,6 +108,16 @@ class RecipeSerializer(serializers.ModelSerializer):
             for step in instructions_data:
                 Instruction.objects.create(recipe=instance, **step)
         return instance
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('language')
+        if lang and lang != 'en':
+            tr = instance.translations.filter(language=lang).first()
+            if tr:
+                data['name'] = tr.name
+                data['description'] = tr.description
+        return data
 
     def validate(self, data):
         if 'ingredients' in data and not data['ingredients']:

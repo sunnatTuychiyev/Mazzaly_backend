@@ -1,7 +1,16 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.core.files.base import ContentFile
 from django.conf import settings
-from recipes.models import Recipe, Ingredient, Instruction, Category
+from recipes.models import (
+    Recipe,
+    Ingredient,
+    Instruction,
+    Category,
+    RecipeTranslation,
+    IngredientTranslation,
+    InstructionTranslation,
+)
+from googletrans import Translator
 import os
 import json
 import requests
@@ -65,6 +74,17 @@ def _download_image(path, base_dir=None):
     filename = os.path.basename(file_path)
     return filename, ContentFile(data)
 
+translator = Translator()
+LANGS = ["ru", "uz"]
+
+def _translate(text, lang):
+    if not text:
+        return ""
+    try:
+        return translator.translate(text, dest=lang).text
+    except Exception:
+        return text
+
 class Command(BaseCommand):
     help = "Fetch recipes from Spoonacular API and populate the database"
 
@@ -102,7 +122,7 @@ class Command(BaseCommand):
         for r in recipes:
             recipe = Recipe.objects.create(
                 name=r.get('title', 'No title'),
-                description=_short_description(r.get('summary')), 
+                description=_short_description(r.get('summary')),
                 prep_time=r.get('readyInMinutes') or 0,
                 cook_time=r.get('readyInMinutes') or 0,
                 servings=r.get('servings', 1),
@@ -112,6 +132,13 @@ class Command(BaseCommand):
                 fats=_get_nutrient(r, 'Fat', 'Fats', 'Total Fat'),
                 carbs=_get_nutrient(r, 'Carbohydrates', 'Carbs', 'Carbohydrate'),
             )
+            for lang in LANGS:
+                RecipeTranslation.objects.create(
+                    recipe=recipe,
+                    language=lang,
+                    name=_translate(recipe.name, lang),
+                    description=_translate(recipe.description, lang),
+                )
             filename, content = _download_image(r.get('image'), base_dir=base_dir)
             if content:
                 recipe.image.save(filename, content, save=True)
@@ -121,28 +148,46 @@ class Command(BaseCommand):
                 category, _ = Category.objects.get_or_create(name=cat)
                 recipe.categories.add(category)
             for ing in r.get('extendedIngredients', []):
-                Ingredient.objects.create(
+                ingredient = Ingredient.objects.create(
                     recipe=recipe,
                     name=ing.get('name', ''),
                     amount=str(ing.get('amount', '')),
                     unit=ing.get('unit', ''),
                 )
+                for lang in LANGS:
+                    IngredientTranslation.objects.create(
+                        ingredient=ingredient,
+                        language=lang,
+                        name=_translate(ingredient.name, lang),
+                    )
             instructions = r.get('analyzedInstructions') or []
             if instructions:
                 for inst in instructions:
                     for step in inst.get('steps', []):
-                        Instruction.objects.create(
+                        instruction = Instruction.objects.create(
                             recipe=recipe,
                             step_number=step.get('number', 1),
                             description=step.get('step', ''),
                         )
+                        for lang in LANGS:
+                            InstructionTranslation.objects.create(
+                                instruction=instruction,
+                                language=lang,
+                                description=_translate(instruction.description, lang),
+                            )
             else:
                 raw_instructions = r.get('instructions', '')
                 parts = [p.strip() for p in re.split(r"[\n\.]", raw_instructions) if p.strip()]
                 for num, desc in enumerate(parts, 1):
-                    Instruction.objects.create(
+                    instruction = Instruction.objects.create(
                         recipe=recipe,
                         step_number=num,
                         description=desc,
                     )
+                    for lang in LANGS:
+                        InstructionTranslation.objects.create(
+                            instruction=instruction,
+                            language=lang,
+                            description=_translate(instruction.description, lang),
+                        )
             self.stdout.write(self.style.SUCCESS(f'Added {recipe.name}'))

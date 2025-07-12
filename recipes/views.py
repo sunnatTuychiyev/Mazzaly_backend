@@ -46,6 +46,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories', 'healthy']
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        lang = self.request.query_params.get('lang', 'en') if self.request else 'en'
+        context['language'] = lang
+        return context
+
     @swagger_auto_schema(
         operation_description="Search recipes by one or more ingredients. "
                               "For example: ?ingredients=egg,milk,flour (all must be in the recipe)",

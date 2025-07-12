@@ -91,3 +91,38 @@ class RecipeRating(models.Model):
 
     def __str__(self):
         return f"{self.user} rated {self.recipe} as {self.rating}"
+
+
+LANG_CHOICES = [
+    ("en", "English"),
+    ("ru", "Russian"),
+    ("uz", "Uzbek"),
+]
+
+
+class RecipeTranslation(models.Model):
+    recipe = models.ForeignKey(Recipe, related_name="translations", on_delete=models.CASCADE)
+    language = models.CharField(max_length=2, choices=LANG_CHOICES)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+    class Meta:
+        unique_together = ("recipe", "language")
+
+
+class IngredientTranslation(models.Model):
+    ingredient = models.ForeignKey(Ingredient, related_name="translations", on_delete=models.CASCADE)
+    language = models.CharField(max_length=2, choices=LANG_CHOICES)
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ("ingredient", "language")
+
+
+class InstructionTranslation(models.Model):
+    instruction = models.ForeignKey(Instruction, related_name="translations", on_delete=models.CASCADE)
+    language = models.CharField(max_length=2, choices=LANG_CHOICES)
+    description = models.TextField()
+
+    class Meta:
+        unique_together = ("instruction", "language")
