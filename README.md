@@ -63,7 +63,8 @@ python manage.py fetch_spoonacular --file recipes/sample_spoonacular.json
 
 The importer also stores any categories (dish types or diets) returned by the
 API and fills the nutrition fields (calories, protein, fats and carbs) if that
-data is available. Nutrient names are matched case-insensitively so values
+data is available. Amounts are parsed even when units like ``"kcal"`` or ``"g"``
+appear next to the number. Nutrient names are matched case-insensitively so values
 are captured even if the API uses slightly different labels. Remote images are
 downloaded and stored in the `MEDIA_ROOT` directory so they can be served by
 Django.
@@ -80,7 +81,8 @@ remains short and readable.
 Imported recipes are stored in English and automatically translated to Uzbek and
 Russian. Ingredient and category names are translated as well. Use the `lang`
 query parameter on the `/api/recipes/`, `/api/categories/` and ingredient search
-endpoints to retrieve data in a specific language:
+endpoints to retrieve data in a specific language. Valid values are `en`, `uz`
+or `ru`; any other value defaults to English:
 
 ```bash
 curl '/api/recipes/?lang=uz'

@@ -1,5 +1,17 @@
 from typing import Dict, List
 
+# Supported languages for translations and API responses
+SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
+
+def get_requested_lang(request) -> str:
+    """Return a supported language code from the request query params."""
+    if not request:
+        return 'en'
+    lang = request.query_params.get('lang', 'en')
+    if lang not in SUPPORTED_LANGUAGES:
+        return 'en'
+    return lang
+
 try:
     from googletrans import Translator  # type: ignore
 except Exception:  # pragma: no cover - optional dependency
