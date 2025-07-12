@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, status, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.db.models import Min
+from django.db.models import Min, Q
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -21,7 +21,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
+    search_fields = ['name', 'name_uz', 'name_ru']
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -48,7 +48,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
-    search_fields = ['name', 'categories__name', 'ingredients__name']
+    search_fields = [
+        'name', 'name_uz', 'name_ru',
+        'categories__name', 'categories__name_uz', 'categories__name_ru',
+        'ingredients__name', 'ingredients__name_uz', 'ingredients__name_ru',
+    ]
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories', 'healthy']
 
@@ -142,7 +146,11 @@ class IngredientListView(generics.ListAPIView):
         search = self.request.query_params.get('search')
         qs = Ingredient.objects.all()
         if search:
-            qs = qs.filter(name__icontains=search)
+            qs = qs.filter(
+                Q(name__icontains=search)
+                | Q(name_uz__icontains=search)
+                | Q(name_ru__icontains=search)
+            )
         qs = qs.values('name').annotate(id=Min('id'))
         ids = [item['id'] for item in qs]
         return Ingredient.objects.filter(id__in=ids)
