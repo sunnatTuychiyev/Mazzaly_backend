@@ -49,13 +49,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @swagger_auto_schema(
         operation_description="Search recipes by one or more ingredients. "
-                              "For example: ?ingredients=egg,milk,flour (all must be in the recipe)",
+                              "For example: ?ingredients=egg,milk,flour (all must be in the recipe). "
+                              "Use ?lang=ru or ?lang=uz to translate the results.",
         manual_parameters=[
             openapi.Parameter(
-                'ingredients', openapi.IN_QUERY, 
-                description="Comma-separated ingredient names (AND search)", 
+                'ingredients', openapi.IN_QUERY,
+                description="Comma-separated ingredient names (AND search)",
                 type=openapi.TYPE_STRING
-            )
+            ),
+            openapi.Parameter(
+                'lang', openapi.IN_QUERY,
+                description="Language code for translation (ru or uz)",
+                type=openapi.TYPE_STRING,
+                enum=['en', 'ru', 'uz']
+            ),
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -76,6 +83,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(data)
         return Response(data)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                'lang', openapi.IN_QUERY,
+                description="Language code for translation (ru or uz)",
+                type=openapi.TYPE_STRING,
+                enum=['en', 'ru', 'uz']
+            )
+        ]
+    )
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
