@@ -2,11 +2,29 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.files.base import ContentFile
 from django.conf import settings
 from recipes.models import Recipe, Ingredient, Instruction, Category
+from recipes.translation_utils import apply_translations
 import os
 import json
 import requests
 from urllib.parse import urlparse
 import re
+
+
+def _parse_amount(value):
+    """Return an integer from a numeric value or string with units."""
+    if value is None or value == "":
+        return None
+    try:
+        return int(round(float(value)))
+    except (TypeError, ValueError):
+        if isinstance(value, str):
+            match = re.search(r"([-\d\.]+)", value)
+            if match:
+                try:
+                    return int(round(float(match.group(1))))
+                except ValueError:
+                    return None
+    return None
 
 
 def _get_nutrient(recipe_data, *names):
@@ -16,10 +34,7 @@ def _get_nutrient(recipe_data, *names):
     for nutrient in nutrients:
         name = nutrient.get("name", "").lower()
         if name in lowered:
-            try:
-                return int(round(float(nutrient.get("amount", 0))))
-            except (TypeError, ValueError):
-                return None
+            return _parse_amount(nutrient.get("amount"))
     return None
 
 
@@ -145,4 +160,5 @@ class Command(BaseCommand):
                         step_number=num,
                         description=desc,
                     )
+            apply_translations(recipe)
             self.stdout.write(self.style.SUCCESS(f'Added {recipe.name}'))

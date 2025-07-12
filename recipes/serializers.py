@@ -12,6 +12,15 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name']
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            trans = getattr(instance, f'name_{lang}', '')
+            if trans:
+                data['name'] = trans
+        return data
+
 # MEAL TYPE
 class MealTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,17 +33,44 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ['id', 'name', 'amount', 'unit', 'preparation']
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            trans = getattr(instance, f'name_{lang}', '')
+            if trans:
+                data['name'] = trans
+        return data
+
 # Faqat name va id uchun (autocomplete/search API uchun)
 class IngredientNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ['id', 'name']
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            trans = getattr(instance, f'name_{lang}', '')
+            if trans:
+                data['name'] = trans
+        return data
+
 # INSTRUCTION
 class InstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instruction
         fields = ['id', 'step_number', 'description']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            trans = getattr(instance, f'description_{lang}', '')
+            if trans:
+                data['description'] = trans
+        return data
 
 # RECIPE
 class RecipeSerializer(serializers.ModelSerializer):
@@ -56,6 +92,16 @@ class RecipeSerializer(serializers.ModelSerializer):
             'calories', 'protein', 'fats', 'carbs',
             'ingredients', 'instructions'
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            for field in ['name', 'description']:
+                trans = getattr(instance, f'{field}_{lang}', '')
+                if trans:
+                    data[field] = trans
+        return data
 
     def create(self, validated_data):
         categories_data = validated_data.pop('categories', [])

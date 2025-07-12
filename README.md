@@ -63,38 +63,33 @@ python manage.py fetch_spoonacular --file recipes/sample_spoonacular.json
 
 The importer also stores any categories (dish types or diets) returned by the
 API and fills the nutrition fields (calories, protein, fats and carbs) if that
-data is available. Nutrient names are matched case-insensitively so values
+data is available. Amounts are parsed even when units like ``"kcal"`` or ``"g"``
+appear next to the number. Nutrient names are matched case-insensitively so values
 are captured even if the API uses slightly different labels. Remote images are
 downloaded and stored in the `MEDIA_ROOT` directory so they can be served by
 Django.
+Recipes include optional nutrition fields for calories (kcal) and macronutrients
+in grams. These values are editable through the admin panel and returned by the
+API.
 If you import from a local JSON file, image paths can also point to files on
 disk relative to that JSON file.
 The recipe description is derived from the summary text with HTML stripped so it
 remains short and readable.
 
-### Translating Recipes
+### Recipe Translations
 
-Recipes are stored in English by default. The endpoint
-`/api/recipes/<id>/translate/` returns Uzbek and Russian translations of
-the recipe name, description, ingredients and instructions. The response
-structure is organised by field, e.g.:
-
-```json
-{
-  "name": {"uz": "...", "ru": "..."},
-  "description": {"uz": "...", "ru": "..."},
-  "ingredients": {"uz": ["..."], "ru": ["..."]},
-  "instructions": {"uz": ["..."], "ru": ["..."]}
-}
-```
-
-Translations use the optional `googletrans` library if it is installed.
-Without it the helper falls back to a small built-in dictionary. For best
-results install `googletrans`:
+Imported recipes are stored in English and automatically translated to Uzbek and
+Russian. Ingredient and category names are translated as well. Use the `lang`
+query parameter on the `/api/recipes/`, `/api/categories/` and ingredient search
+endpoints to retrieve data in a specific language. Valid values are `en`, `uz`
+or `ru`; any other value defaults to English:
 
 ```bash
-pip install googletrans==4.0.0rc1
+curl '/api/recipes/?lang=uz'
 ```
+
+Translations are generated during import using the optional `googletrans`
+library. If the library is not available, a small built-in dictionary is used.
 
 ## Admin Panel
 
@@ -103,6 +98,10 @@ appearance. To access the admin panel, create a superuser and run the server as
 described above. Navigate to `http://localhost:8000/admin/` (or `https://localhost:8000/admin/` if using HTTPS) and log in with your
 credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
+
+Ingredient, category, recipe and instruction forms expose additional fields
+for Uzbek and Russian translations so text can be entered in all three
+supported languages.
 
 ## Telegram Mini App Authentication
 

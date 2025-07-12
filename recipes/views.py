@@ -1,12 +1,11 @@
 from rest_framework import viewsets, permissions, status, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.db.models import Min
+from django.db.models import Min, Q
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .translation import get_recipe_translations
 
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
@@ -15,6 +14,17 @@ from .serializers import (
     RecipeSerializer, IngredientSerializer, IngredientNameSerializer,
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
 )
+from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
+
+# Shared Swagger parameter for selecting response language
+LANG_PARAM = openapi.Parameter(
+    'lang',
+    openapi.IN_QUERY,
+    description='Response language',
+    type=openapi.TYPE_STRING,
+    enum=SUPPORTED_LANGUAGES,
+    default='en'
+)
 
 # --- Category CRUD ---
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -22,7 +32,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
+    search_fields = ['name', 'name_uz', 'name_ru']
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = get_requested_lang(self.request)
+        return context
 
 # --- MealType CRUD ---
 class MealTypeViewSet(viewsets.ModelViewSet):
@@ -43,19 +58,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
-    search_fields = ['name', 'categories__name', 'ingredients__name']
+    search_fields = [
+        'name', 'name_uz', 'name_ru',
+        'categories__name', 'categories__name_uz', 'categories__name_ru',
+        'ingredients__name', 'ingredients__name_uz', 'ingredients__name_ru',
+    ]
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories', 'healthy']
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = get_requested_lang(self.request)
+        return context
 
     @swagger_auto_schema(
         operation_description="Search recipes by one or more ingredients. "
                               "For example: ?ingredients=egg,milk,flour (all must be in the recipe)",
         manual_parameters=[
             openapi.Parameter(
-                'ingredients', openapi.IN_QUERY, 
-                description="Comma-separated ingredient names (AND search)", 
+                'ingredients', openapi.IN_QUERY,
+                description="Comma-separated ingredient names (AND search)",
                 type=openapi.TYPE_STRING
-            )
+            ),
+            LANG_PARAM,
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -106,66 +131,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 item.save()
         return Response({'status': 'Ingredients added to shopping list'})
 
-    @swagger_auto_schema(
-        operation_description="Translate a recipe to Uzbek and Russian",
-        responses={
-            200: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'name': openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'uz': openapi.Schema(type=openapi.TYPE_STRING),
-                            'ru': openapi.Schema(type=openapi.TYPE_STRING),
-                        },
-                    ),
-                    'description': openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'uz': openapi.Schema(type=openapi.TYPE_STRING),
-                            'ru': openapi.Schema(type=openapi.TYPE_STRING),
-                        },
-                    ),
-                    'ingredients': openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'uz': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                            ),
-                            'ru': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                            ),
-                        },
-                    ),
-                    'instructions': openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'uz': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                            ),
-                            'ru': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                            ),
-                        },
-                    ),
-                },
-            )
-        }
-    )
-    @action(detail=True, methods=['get'], url_path='translate')
-    def translate_recipe(self, request, pk=None):
-        recipe = self.get_object()
-        data = get_recipe_translations(recipe)
-        return Response(data)
 
 # --- Ingredient autocomplete/search (unique names only) ---
 class IngredientListView(generics.ListAPIView):
     serializer_class = IngredientNameSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = get_requested_lang(self.request)
+        return context
 
     @swagger_auto_schema(
         operation_description="Autocomplete/search ingredients by name (unique). ?search=onion",
@@ -180,7 +155,11 @@ class IngredientListView(generics.ListAPIView):
         search = self.request.query_params.get('search')
         qs = Ingredient.objects.all()
         if search:
-            qs = qs.filter(name__icontains=search)
+            qs = qs.filter(
+                Q(name__icontains=search)
+                | Q(name_uz__icontains=search)
+                | Q(name_ru__icontains=search)
+            )
         qs = qs.values('name').annotate(id=Min('id'))
         ids = [item['id'] for item in qs]
         return Ingredient.objects.filter(id__in=ids)
