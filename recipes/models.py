@@ -24,9 +24,13 @@ class Recipe(models.Model):
     carbs = models.PositiveIntegerField(blank=True, null=True, help_text="Carbs in grams (optional)")
 
     name = models.CharField(max_length=255)
+    name_ru = models.CharField(max_length=255, blank=True, default="")
+    name_uz = models.CharField(max_length=255, blank=True, default="")
     categories = models.ManyToManyField(Category, blank=True, related_name='recipes')
 
     description = models.TextField()
+    description_ru = models.TextField(blank=True, default="")
+    description_uz = models.TextField(blank=True, default="")
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
     prep_time = models.PositiveIntegerField(help_text="in minutes")
     cook_time = models.PositiveIntegerField(help_text="in minutes")
@@ -41,6 +45,8 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='ingredients', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    name_ru = models.CharField(max_length=255, blank=True, default="")
+    name_uz = models.CharField(max_length=255, blank=True, default="")
     amount = models.CharField(max_length=100)
     unit = models.CharField(max_length=50, blank=True, null=True)
     preparation = models.CharField(max_length=100, blank=True, null=True, help_text="Optional: large, grated, cubed, etc.")
@@ -53,6 +59,8 @@ class Instruction(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='instructions', on_delete=models.CASCADE)
     step_number = models.PositiveIntegerField()
     description = models.TextField()
+    description_ru = models.TextField(blank=True, default="")
+    description_uz = models.TextField(blank=True, default="")
 
     class Meta:
         ordering = ['step_number']

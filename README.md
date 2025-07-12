@@ -72,6 +72,19 @@ disk relative to that JSON file.
 The recipe description is derived from the summary text with HTML stripped so it
 remains short and readable.
 
+### Recipe Translations
+
+Imported recipes are stored in English and automatically translated to Uzbek and
+Russian. Use the `lang` query parameter on the `/api/recipes/` endpoints to
+retrieve data in a specific language:
+
+```bash
+curl '/api/recipes/?lang=uz'
+```
+
+Translations are generated during import using the optional `googletrans`
+library. If the library is not available, a small built-in dictionary is used.
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner
