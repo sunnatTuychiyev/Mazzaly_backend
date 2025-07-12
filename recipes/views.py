@@ -14,6 +14,7 @@ from .serializers import (
     RecipeSerializer, IngredientSerializer, IngredientNameSerializer,
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
 )
+from .translation_utils import get_requested_lang
 
 # --- Category CRUD ---
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -25,8 +26,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        lang = self.request.query_params.get('lang', 'en') if self.request else 'en'
-        context['lang'] = lang
+        context['lang'] = get_requested_lang(self.request)
         return context
 
 # --- MealType CRUD ---
@@ -58,8 +58,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        lang = self.request.query_params.get('lang', 'en') if self.request else 'en'
-        context['lang'] = lang
+        context['lang'] = get_requested_lang(self.request)
         return context
 
     @swagger_auto_schema(
@@ -129,8 +128,7 @@ class IngredientListView(generics.ListAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        lang = self.request.query_params.get('lang', 'en') if self.request else 'en'
-        context['lang'] = lang
+        context['lang'] = get_requested_lang(self.request)
         return context
 
     @swagger_auto_schema(
