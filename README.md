@@ -67,6 +67,9 @@ data is available. Nutrient names are matched case-insensitively so values
 are captured even if the API uses slightly different labels. Remote images are
 downloaded and stored in the `MEDIA_ROOT` directory so they can be served by
 Django.
+Recipes include optional nutrition fields for calories (kcal) and macronutrients
+in grams. These values are editable through the admin panel and returned by the
+API.
 If you import from a local JSON file, image paths can also point to files on
 disk relative to that JSON file.
 The recipe description is derived from the summary text with HTML stripped so it
