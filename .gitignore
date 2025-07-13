@@ -22,3 +22,5 @@ debug.log
 venv/
 
 db.sqlite3
+
+media/recipes/
