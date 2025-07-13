@@ -1,7 +1,7 @@
 # Mazzaly Backend
 
 This is a Django REST API for managing recipes, meal plans and user accounts with JWT authentication and Google OAuth support.
-It now includes email verification using one-time passwords (OTP).
+It now includes email verification using one-time passwords (OTP) and paginated list endpoints.
 
 ## Setup
 
@@ -40,6 +40,8 @@ To send real emails instead of logging them to the console, configure the
 variables are provided, the app will use Django's SMTP backend.
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
+
+All list endpoints use page number pagination. Pass `?page=<number>` to navigate through results. By default each page contains 10 items, but recipe lists use a smaller size of 5 for faster loading. You can adjust the global size with the `PAGE_SIZE` setting or use `?page_size=` with recipe requests to override it.
 
 ### Importing Recipes
 

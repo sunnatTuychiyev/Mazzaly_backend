@@ -79,6 +79,8 @@ REST_FRAMEWORK = {
         'user': '10000/minute',  # juda katta qiymat — test uchun
         'anon': '10000/minute',  # ab testi uchun kerak
     },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
 

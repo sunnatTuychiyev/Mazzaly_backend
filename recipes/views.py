@@ -6,6 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from .pagination import RecipePagination
+
 
 from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
@@ -57,6 +59,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = RecipePagination
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     search_fields = [
         'name', 'name_uz', 'name_ru',
