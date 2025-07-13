@@ -91,6 +91,16 @@ curl '/api/recipes/?lang=uz'
 Translations are generated during import using the optional `googletrans`
 library. If the library is not available, a small built-in dictionary is used.
 
+### Pagination
+
+Recipe lists are paginated using DRF's standard page number pagination.
+Ten recipes are returned per page.
+Request a specific page with the `page` query parameter:
+
+```bash
+curl '/api/recipes/?page=2'
+```
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner
