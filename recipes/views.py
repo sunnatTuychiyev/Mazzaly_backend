@@ -108,6 +108,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
+    def retrieve(self, request, *args, **kwargs):  # pragma: no cover - docs only
+        """Retrieve a recipe in the requested language."""
+        return super().retrieve(request, *args, **kwargs)
+
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",
         responses={200: openapi.Response('Ingredients added', schema=openapi.Schema(

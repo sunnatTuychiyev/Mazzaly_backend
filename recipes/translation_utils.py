@@ -12,10 +12,6 @@ def get_requested_lang(request) -> str:
         return 'en'
     return lang
 
-try:
-    from googletrans import Translator  # type: ignore
-except Exception:  # pragma: no cover - optional dependency
-    Translator = None  # type: ignore
 
 FALLBACK_DICT: Dict[str, Dict[str, str]] = {
     'uz': {
@@ -74,24 +70,37 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
     },
 }
 
+# Additional phrase-level translations for better accuracy
+PHRASE_DICT: Dict[str, Dict[str, str]] = {
+    'ru': {
+        "gluten free": 'без глютена',
+        "main course": 'основное блюдо',
+        "hor d'oeuvre": 'закуска',
+    },
+    'uz': {
+        "gluten free": 'glyutensiz',
+        "main course": 'asosiy taom',
+        "hor d'oeuvre": 'aperitif',
+    },
+}
+
 
 def _manual_translate(text: str, dest: str) -> str:
-    words = text.split()
+    """Simple phrase and word based translation."""
     mapping = FALLBACK_DICT.get(dest, {})
+    phrases = PHRASE_DICT.get(dest, {})
+    lowered = text.lower()
+    if lowered in phrases:
+        return phrases[lowered]
+    words = text.split()
     translated: List[str] = [mapping.get(word.lower(), word) for word in words]
     return ' '.join(translated)
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
-    """Translate text using googletrans if available, otherwise a small fallback."""
+    """Translate text using a small built-in dictionary."""
     if not text:
         return ''
-    if Translator:
-        try:
-            translator = Translator()
-            return translator.translate(text, src=src, dest=dest).text
-        except Exception:
-            pass
     return _manual_translate(text, dest)
 
 
