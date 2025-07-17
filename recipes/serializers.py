@@ -5,12 +5,13 @@ from .models import (
     MealPlan, ShoppingListItem,
     RecipeRating
 )
+from .translation_utils import translate_text
 
 # CATEGORY
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'name_uz', 'name_ru']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -19,6 +20,10 @@ class CategorySerializer(serializers.ModelSerializer):
             trans = getattr(instance, f'name_{lang}', '')
             if trans:
                 data['name'] = trans
+        for code in ['uz', 'ru']:
+            field = f'name_{code}'
+            if not data.get(field):
+                data[field] = translate_text(instance.name, code)
         return data
 
 # MEAL TYPE
