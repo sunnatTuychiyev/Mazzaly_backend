@@ -39,6 +39,16 @@ class CategoryViewSet(viewsets.ModelViewSet):
         context['lang'] = get_requested_lang(self.request)
         return context
 
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
+    def list(self, request, *args, **kwargs):  # pragma: no cover - docs only
+        """List categories with optional language selection."""
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
+    def retrieve(self, request, *args, **kwargs):  # pragma: no cover - docs only
+        """Retrieve a single category with optional language selection."""
+        return super().retrieve(request, *args, **kwargs)
+
 # --- MealType CRUD ---
 class MealTypeViewSet(viewsets.ModelViewSet):
     queryset = MealType.objects.all()
@@ -97,6 +107,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
+    def retrieve(self, request, *args, **kwargs):  # pragma: no cover - docs only
+        """Retrieve a recipe in the requested language."""
+        return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",
