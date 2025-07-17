@@ -17,6 +17,9 @@ class CategorySerializer(serializers.ModelSerializer):
         lang = self.context.get('lang')
         if lang and lang != 'en':
             trans = getattr(instance, f'name_{lang}', '')
+            if not trans:
+                from .translation_utils import translate_text
+                trans = translate_text(instance.name, lang)
             if trans:
                 data['name'] = trans
         return data
