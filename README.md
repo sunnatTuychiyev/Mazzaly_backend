@@ -123,8 +123,9 @@ automatically using their Telegram ID.
 
 ## Authenticated Requests
 
-Include the JWT access token in the `Authorization` header using the `Bearer`
-prefix. The recipe list endpoint automatically filters by the user's active
+Include the JWT access token in the `Authorization` header. The token may be
+provided either with or without the `Bearer` prefix. The recipe list endpoint
+automatically filters by the user's active
 subscription so no `subscription_plan` query parameter is needed:
 
 ```bash
