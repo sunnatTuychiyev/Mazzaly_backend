@@ -76,7 +76,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         'ingredients__name', 'ingredients__name_uz', 'ingredients__name_ru',
     ]
     ordering_fields = ['prep_time', 'cook_time', 'servings']
-    filterset_fields = ['categories', 'subscription_plan']
+    filterset_fields = ['categories']
 
     def get_queryset(self):
         """Return recipes allowed for the current user's subscription."""

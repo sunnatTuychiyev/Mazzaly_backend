@@ -121,3 +121,14 @@ To use this backend from a Telegram Web App ("mini app"), configure the
 returns a JWT token. Users authenticated through Telegram are created
 automatically using their Telegram ID.
 
+## Authenticated Requests
+
+Include the JWT access token in the `Authorization` header using the `Bearer`
+prefix. The recipe list endpoint automatically filters by the user's active
+subscription so no `subscription_plan` query parameter is needed:
+
+```bash
+curl -H "Authorization: Bearer <ACCESS_TOKEN>" \
+     'https://localhost:8000/api/recipes/'
+```
+
