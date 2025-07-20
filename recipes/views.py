@@ -79,17 +79,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_fields = ['categories', 'subscription_plan']
 
     def get_queryset(self):
+        """Return recipes allowed for the current user's subscription."""
         qs = super().get_queryset()
         user = self.request.user
-        plan = (
-            getattr(user, 'current_plan', Subscription.PLAN_STANDARD)
-            if user.is_authenticated
-            else Subscription.PLAN_STANDARD
-        )
+
+        # Unauthenticated requests only see Standard recipes
+        if not user.is_authenticated:
+            return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
+
+        plan = user.current_plan
+
+        # Premium users can see everything
         if plan == Subscription.PLAN_PREMIUM:
             return qs
+
+        # Healthy users see Standard + Healthy recipes
         if plan == Subscription.PLAN_HEALTHY:
             return qs.exclude(subscription_plan=Subscription.PLAN_PREMIUM)
+
+        # Standard or expired subscriptions see only Standard recipes
         return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
 
     def get_serializer_context(self):
