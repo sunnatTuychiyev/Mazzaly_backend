@@ -1,5 +1,6 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
 from recipes.models import Recipe, Ingredient, Instruction
 
@@ -84,4 +85,13 @@ class RecipeSubscriptionTests(APITestCase):
         assert self.standard_recipe.id in ids
         assert self.healthy_recipe.id in ids
         assert self.premium_recipe.id in ids
+
+    def test_auth_header_without_bearer(self):
+        token = str(AccessToken.for_user(self.healthy_user))
+        url = reverse("recipe-list")
+        res = self.client.get(url, HTTP_AUTHORIZATION=token)
+        ids = self._get_ids(res)
+        assert self.standard_recipe.id in ids
+        assert self.healthy_recipe.id in ids
+        assert self.premium_recipe.id not in ids
 
