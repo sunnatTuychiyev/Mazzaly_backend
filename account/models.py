@@ -89,11 +89,10 @@ def get_user_current_plan(user):
     active = (
         user.subscriptions
         .filter(start_date__lte=now)
+        .filter(models.Q(end_date__isnull=True) | models.Q(end_date__gte=now))
         .order_by('-start_date')
         .first()
     )
-    if active and (
-        active.end_date is None or active.end_date >= now
-    ):
+    if active:
         return active.plan
     return Subscription.PLAN_STANDARD
