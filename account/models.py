@@ -85,9 +85,15 @@ class Subscription(models.Model):
 
 
 def get_user_current_plan(user):
-    active = user.subscriptions.filter(
-        start_date__lte=timezone.now()
-    ).order_by('-start_date').first()
-    if active and active.is_active:
+    now = timezone.now()
+    active = (
+        user.subscriptions
+        .filter(start_date__lte=now)
+        .order_by('-start_date')
+        .first()
+    )
+    if active and (
+        active.end_date is None or active.end_date >= now
+    ):
         return active.plan
     return Subscription.PLAN_STANDARD
