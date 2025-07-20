@@ -52,6 +52,16 @@ class Recipe(models.Model):
     cook_time = models.PositiveIntegerField(help_text="in minutes")
     servings = models.PositiveIntegerField()
     #tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags like 'healthy,vegetarian'")
+
+    def save(self, *args, **kwargs):
+        """Ensure subscription_plan value matches premium/healthy flags."""
+        if self.premium:
+            self.subscription_plan = self.PLAN_PREMIUM
+        elif self.healthy:
+            self.subscription_plan = self.PLAN_HEALTHY
+        else:
+            self.subscription_plan = self.PLAN_STANDARD
+        super().save(*args, **kwargs)
     
 
     def __str__(self):

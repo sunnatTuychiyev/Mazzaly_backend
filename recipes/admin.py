@@ -67,7 +67,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "carbs",
         "categories",
     ]
-    filter_horizontal = ['categories']  # <-- faqat shu qatorni qo‘shing!
+    filter_horizontal = ['categories']
     def get_categories(self, obj):
         return ", ".join([cat.name for cat in obj.categories.all()])
     get_categories.short_description = 'Categories'
