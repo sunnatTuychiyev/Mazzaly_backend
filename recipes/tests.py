@@ -95,3 +95,19 @@ class RecipeSubscriptionTests(APITestCase):
         assert self.healthy_recipe.id in ids
         assert self.premium_recipe.id not in ids
 
+    def test_updating_plan_updates_flags(self):
+        recipe = Recipe.objects.create(
+            name="Change Me",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        recipe.subscription_plan = Subscription.PLAN_PREMIUM
+        recipe.save()
+        recipe.refresh_from_db()
+        assert recipe.subscription_plan == Subscription.PLAN_PREMIUM
+        assert recipe.premium is True
+        assert recipe.healthy is False
+
