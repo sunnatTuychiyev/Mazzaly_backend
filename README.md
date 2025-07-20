@@ -132,3 +132,8 @@ curl -H "Authorization: Bearer <ACCESS_TOKEN>" \
      'https://localhost:8000/api/recipes/'
 ```
 
+Unauthenticated requests always return only the free **Standard** recipes. When
+a user is logged in, recipes for their current subscription tier are included in
+the results. If the subscription has expired, the response again falls back to
+Standard recipes only.
+

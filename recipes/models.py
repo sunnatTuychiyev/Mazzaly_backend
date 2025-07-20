@@ -54,13 +54,27 @@ class Recipe(models.Model):
     #tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags like 'healthy,vegetarian'")
 
     def save(self, *args, **kwargs):
-        """Ensure subscription_plan value matches premium/healthy flags."""
+        """Synchronize plan and flag fields before saving."""
+        # When premium or healthy flags are set explicitly, use them to
+        # determine the required subscription tier. Otherwise ensure the flags
+        # match whatever subscription_plan is selected.
         if self.premium:
             self.subscription_plan = self.PLAN_PREMIUM
         elif self.healthy:
             self.subscription_plan = self.PLAN_HEALTHY
         else:
             self.subscription_plan = self.PLAN_STANDARD
+
+        if self.subscription_plan == self.PLAN_PREMIUM:
+            self.premium = True
+            self.healthy = False
+        elif self.subscription_plan == self.PLAN_HEALTHY:
+            self.healthy = True
+            self.premium = False
+        else:
+            self.healthy = False
+            self.premium = False
+
         super().save(*args, **kwargs)
     
 
