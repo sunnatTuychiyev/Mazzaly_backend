@@ -15,6 +15,8 @@ from .serializers import (
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
 )
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
+from .permissions import IsHealthySubscriber, IsPremiumSubscriber
+from account.models import Subscription
 
 # Shared Swagger parameter for selecting response language
 LANG_PARAM = openapi.Parameter(
@@ -74,7 +76,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
         'ingredients__name', 'ingredients__name_uz', 'ingredients__name_ru',
     ]
     ordering_fields = ['prep_time', 'cook_time', 'servings']
-    filterset_fields = ['categories', 'healthy']
+    filterset_fields = ['categories']
+
+    def get_queryset(self):
+        """Return recipes allowed for the current user's subscription."""
+        qs = super().get_queryset()
+        user = self.request.user
+
+        # Unauthenticated requests only see Standard recipes
+        if not user.is_authenticated:
+            return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
+
+        plan = user.current_plan
+
+        # Premium users can see everything
+        if plan == Subscription.PLAN_PREMIUM:
+            return qs
+
+        # Healthy users see Standard + Healthy recipes
+        if plan == Subscription.PLAN_HEALTHY:
+            return qs.exclude(subscription_plan=Subscription.PLAN_PREMIUM)
+
+        # Standard or expired subscriptions see only Standard recipes
+        return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -150,7 +174,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 # --- Ingredient autocomplete/search (unique names only) ---
 class IngredientListView(generics.ListAPIView):
     serializer_class = IngredientNameSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsHealthySubscriber]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -182,7 +206,7 @@ class IngredientListView(generics.ListAPIView):
 # --- MealPlan CRUD (user-scoped) ---
 class MealPlanViewSet(viewsets.ModelViewSet):
     serializer_class = MealPlanSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsPremiumSubscriber]
 
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
@@ -195,7 +219,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
 # --- Shopping List CRUD (user-scoped) ---
 class ShoppingListItemViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingListItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsPremiumSubscriber]
 
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
