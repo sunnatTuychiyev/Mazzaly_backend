@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
+from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None):
@@ -35,6 +38,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    @property
+    def current_plan(self):
+        return get_user_current_plan(self)
+
 
 class EmailOTP(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='email_otp')
@@ -43,3 +50,44 @@ class EmailOTP(models.Model):
 
     def __str__(self):
         return f"OTP for {self.user.email}"
+
+
+class Subscription(models.Model):
+    PLAN_STANDARD = 'standard'
+    PLAN_HEALTHY = 'healthy'
+    PLAN_PREMIUM = 'premium'
+
+    PLAN_CHOICES = [
+        (PLAN_STANDARD, 'Standard'),
+        (PLAN_HEALTHY, 'Healthy'),
+        (PLAN_PREMIUM, 'Premium'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='subscriptions')
+    plan = models.CharField(max_length=20, choices=PLAN_CHOICES)
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.plan != self.PLAN_STANDARD and not self.end_date:
+            self.end_date = self.start_date + timedelta(days=30)
+        super().save(*args, **kwargs)
+
+    @property
+    def is_active(self):
+        return (
+            self.start_date <= timezone.now()
+            and (self.end_date is None or self.end_date >= timezone.now())
+        )
+
+    def __str__(self):
+        return f"{self.user.email} - {self.plan}"
+
+
+def get_user_current_plan(user):
+    active = user.subscriptions.filter(
+        start_date__lte=timezone.now()
+    ).order_by('-start_date').first()
+    if active and active.is_active:
+        return active.plan
+    return Subscription.PLAN_STANDARD

@@ -15,6 +15,7 @@ from .serializers import (
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
 )
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
+from .permissions import IsHealthySubscriber, IsPremiumSubscriber
 
 # Shared Swagger parameter for selecting response language
 LANG_PARAM = openapi.Parameter(
@@ -75,6 +76,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ]
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories', 'healthy']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        plan = getattr(user, 'current_plan', 'standard') if user.is_authenticated else 'standard'
+        if plan == 'premium':
+            return qs
+        if plan == 'healthy':
+            return qs.filter(premium=False)
+        return qs.filter(healthy=False, premium=False)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -150,7 +161,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 # --- Ingredient autocomplete/search (unique names only) ---
 class IngredientListView(generics.ListAPIView):
     serializer_class = IngredientNameSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsHealthySubscriber]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -182,7 +193,7 @@ class IngredientListView(generics.ListAPIView):
 # --- MealPlan CRUD (user-scoped) ---
 class MealPlanViewSet(viewsets.ModelViewSet):
     serializer_class = MealPlanSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsPremiumSubscriber]
 
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
@@ -195,7 +206,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
 # --- Shopping List CRUD (user-scoped) ---
 class ShoppingListItemViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingListItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsPremiumSubscriber]
 
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):

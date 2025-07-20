@@ -91,7 +91,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = [
             'id', 'name', 'categories', 'category_ids', 'description', 'image',
-            'prep_time', 'cook_time', 'servings', 'healthy', #'tags',
+            'prep_time', 'cook_time', 'servings', 'healthy', 'premium', #'tags',
             'calories', 'protein', 'fats', 'carbs',
             'ingredients', 'instructions'
         ]

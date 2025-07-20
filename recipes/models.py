@@ -20,6 +20,7 @@ class MealType(models.Model):
 # --- RECIPE ---
 class Recipe(models.Model):
     healthy = models.BooleanField(default=False, help_text="Show as Healthy Recipe")
+    premium = models.BooleanField(default=False, help_text="Show as Premium Recipe")
     calories = models.PositiveIntegerField(blank=True, null=True, help_text="Calories in kcal (optional)")
     protein = models.PositiveIntegerField(blank=True, null=True, help_text="Protein in grams (optional)")
     fats = models.PositiveIntegerField(blank=True, null=True, help_text="Fats in grams (optional)")
