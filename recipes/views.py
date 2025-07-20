@@ -74,7 +74,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
         'ingredients__name', 'ingredients__name_uz', 'ingredients__name_ru',
     ]
     ordering_fields = ['prep_time', 'cook_time', 'servings']
-    filterset_fields = ['categories', 'healthy']
+    filterset_fields = ['categories', 'healthy', 'premium']
+
+    def get_queryset(self):
+        qs = Recipe.objects.all()
+        if getattr(self, 'swagger_fake_view', False):
+            return Recipe.objects.none()
+        user = self.request.user
+        if not user.is_authenticated:
+            return qs.filter(healthy=False, premium=False)
+        subscription = getattr(user, 'subscription_type', 'Standard')
+        expires = getattr(user, 'subscription_expiration', None)
+        from django.utils import timezone
+        if not subscription or (expires and expires < timezone.now()):
+            subscription = 'Standard'
+        if subscription == 'Standard':
+            return qs.filter(healthy=False, premium=False)
+        if subscription == 'Healthy':
+            return qs.filter(Q(healthy=True, premium=False) | Q(healthy=False, premium=False))
+        return qs
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
