@@ -16,6 +16,7 @@ from .serializers import (
 )
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
+from account.models import Subscription
 
 # Shared Swagger parameter for selecting response language
 LANG_PARAM = openapi.Parameter(
@@ -75,17 +76,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
         'ingredients__name', 'ingredients__name_uz', 'ingredients__name_ru',
     ]
     ordering_fields = ['prep_time', 'cook_time', 'servings']
-    filterset_fields = ['categories', 'healthy']
+    filterset_fields = ['categories', 'subscription_plan']
 
     def get_queryset(self):
         qs = super().get_queryset()
         user = self.request.user
-        plan = getattr(user, 'current_plan', 'standard') if user.is_authenticated else 'standard'
-        if plan == 'premium':
+        plan = (
+            getattr(user, 'current_plan', Subscription.PLAN_STANDARD)
+            if user.is_authenticated
+            else Subscription.PLAN_STANDARD
+        )
+        if plan == Subscription.PLAN_PREMIUM:
             return qs
-        if plan == 'healthy':
-            return qs.filter(premium=False)
-        return qs.filter(healthy=False, premium=False)
+        if plan == Subscription.PLAN_HEALTHY:
+            return qs.exclude(subscription_plan=Subscription.PLAN_PREMIUM)
+        return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

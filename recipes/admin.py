@@ -46,7 +46,8 @@ class InstructionInline(admin.TabularInline):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [IngredientInline, InstructionInline]
-    list_display = ["name", "name_uz", "name_ru", "healthy", "get_categories"]
+    list_display = ["name", "name_uz", "name_ru", "subscription_plan", "get_categories"]
+    list_filter = ["subscription_plan"]
     fields = [
         "name",
         "name_uz",
@@ -58,6 +59,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "prep_time",
         "cook_time",
         "servings",
+        "subscription_plan",
         "healthy",
         "calories",
         "protein",

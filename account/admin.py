@@ -1,9 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
+from .models import User, Subscription
 from django.contrib.sites.models import Site
 
+class SubscriptionInline(admin.TabularInline):
+    model = Subscription
+    extra = 0
+
 class UserAdmin(BaseUserAdmin):
+    inlines = [SubscriptionInline]
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'telegram_id')}),
@@ -21,3 +26,4 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.unregister(Site)
 admin.site.register(User, UserAdmin)
+admin.site.register(Subscription)

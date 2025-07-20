@@ -19,6 +19,19 @@ class MealType(models.Model):
 
 # --- RECIPE ---
 class Recipe(models.Model):
+    from account.models import Subscription
+
+    PLAN_STANDARD = Subscription.PLAN_STANDARD
+    PLAN_HEALTHY = Subscription.PLAN_HEALTHY
+    PLAN_PREMIUM = Subscription.PLAN_PREMIUM
+    PLAN_CHOICES = Subscription.PLAN_CHOICES
+
+    subscription_plan = models.CharField(
+        max_length=20,
+        choices=PLAN_CHOICES,
+        default=PLAN_STANDARD,
+        help_text="Required subscription tier",
+    )
     healthy = models.BooleanField(default=False, help_text="Show as Healthy Recipe")
     premium = models.BooleanField(default=False, help_text="Show as Premium Recipe")
     calories = models.PositiveIntegerField(blank=True, null=True, help_text="Calories in kcal (optional)")
