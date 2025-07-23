@@ -82,8 +82,8 @@ class LoginView(APIView):
 
 
 class VerifyEmailView(APIView):
-    tags=['Auth'],
     @swagger_auto_schema(
+        tags=['Auth'],
         request_body=VerifyEmailSerializer,
         responses={200: 'Email verified', 400: 'Invalid code'},
     )
