@@ -40,11 +40,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_email_verified = models.BooleanField(default=False)
-    subscription_type = models.CharField(
-        max_length=20,
-        choices=SUB_PLAN_CHOICES,
-        default=SUB_PLAN_STANDARD,
-    )
 
     objects = UserManager()
 

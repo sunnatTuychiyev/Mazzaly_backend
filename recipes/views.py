@@ -162,7 +162,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             item, created = ShoppingListItem.objects.get_or_create(
                 user=request.user,
                 name=ing.name,
-                unit=ing.unit,
+                unit=ing.unit or "",
                 defaults={'amount': ing.amount, 'checked': False}
             )
             if not created:
@@ -251,7 +251,7 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
             item, created = ShoppingListItem.objects.get_or_create(
                 user=request.user,
                 name=ing.name,
-                unit=ing.unit,
+                unit=ing.unit or "",
                 defaults={'amount': ing.amount, 'checked': False}
             )
             if not created:
