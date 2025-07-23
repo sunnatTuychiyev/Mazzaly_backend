@@ -4,6 +4,17 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 
+# Subscription plan constants shared between User and Subscription models
+SUB_PLAN_STANDARD = 'standard'
+SUB_PLAN_HEALTHY = 'healthy'
+SUB_PLAN_PREMIUM = 'premium'
+
+SUB_PLAN_CHOICES = [
+    (SUB_PLAN_STANDARD, 'Standard'),
+    (SUB_PLAN_HEALTHY, 'Healthy'),
+    (SUB_PLAN_PREMIUM, 'Premium'),
+]
+
 class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None):
         if not email:
@@ -29,6 +40,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_email_verified = models.BooleanField(default=False)
+    subscription_type = models.CharField(
+        max_length=20,
+        choices=SUB_PLAN_CHOICES,
+        default=SUB_PLAN_STANDARD,
+    )
 
     objects = UserManager()
 
@@ -53,18 +69,14 @@ class EmailOTP(models.Model):
 
 
 class Subscription(models.Model):
-    PLAN_STANDARD = 'standard'
-    PLAN_HEALTHY = 'healthy'
-    PLAN_PREMIUM = 'premium'
+    PLAN_STANDARD = SUB_PLAN_STANDARD
+    PLAN_HEALTHY = SUB_PLAN_HEALTHY
+    PLAN_PREMIUM = SUB_PLAN_PREMIUM
 
-    PLAN_CHOICES = [
-        (PLAN_STANDARD, 'Standard'),
-        (PLAN_HEALTHY, 'Healthy'),
-        (PLAN_PREMIUM, 'Premium'),
-    ]
+    PLAN_CHOICES = SUB_PLAN_CHOICES
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='subscriptions')
-    plan = models.CharField(max_length=20, choices=PLAN_CHOICES)
+    plan = models.CharField(max_length=20, choices=SUB_PLAN_CHOICES)
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(null=True, blank=True)
 
