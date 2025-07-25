@@ -23,6 +23,8 @@ It now includes email verification using one-time passwords (OTP).
    ```
    The script will generate a self-signed certificate the first time you run it
    so the server can be accessed via `https://localhost:8000/`.
+   Migrations are automatically applied each time this script runs so the
+   database schema stays up to date.
 
 To enable HTTPS locally, install `django-sslserver` and run:
    ```bash

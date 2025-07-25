@@ -10,4 +10,7 @@ if [ ! -f "$CERT_FILE" ] || [ ! -f "$KEY_FILE" ]; then
         -subj "/CN=localhost"
 fi
 
+# Ensure database schema is up to date
+python manage.py migrate --noinput
+
 python manage.py runserver_plus 0.0.0.0:8000 --cert-file "$CERT_FILE" --key-file "$KEY_FILE"
