@@ -24,6 +24,11 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'first_name', 'last_name', 'telegram_id')
     ordering = ('email',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Show only verified users in the admin list
+        return qs.filter(is_email_verified=True)
+
 
 
 admin.site.unregister(Site)
