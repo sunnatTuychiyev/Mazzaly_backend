@@ -11,18 +11,20 @@ class UserAdmin(BaseUserAdmin):
     inlines = [SubscriptionInline]
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal Info', {'fields': ('first_name', 'last_name', 'telegram_id')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Personal Info', {'fields': ('first_name', 'last_name', 'telegram_id', 'subscription_type')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_email_verified', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'telegram_id', 'password1', 'password2'),
+            'fields': ('email', 'first_name', 'last_name', 'telegram_id', 'subscription_type', 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'telegram_id', 'is_staff')
+    list_display = ('email', 'first_name', 'last_name', 'telegram_id', 'subscription_type', 'is_staff', 'is_email_verified')
     search_fields = ('email', 'first_name', 'last_name', 'telegram_id')
     ordering = ('email',)
+
+
 
 admin.site.unregister(Site)
 admin.site.register(User, UserAdmin)

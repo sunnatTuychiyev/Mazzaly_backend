@@ -27,7 +27,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'telegram_id')
+        fields = ('id', 'first_name', 'last_name', 'email', 'telegram_id', 'subscription_type')
 
 
 class VerifyEmailSerializer(serializers.Serializer):
