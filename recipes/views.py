@@ -11,8 +11,10 @@ from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
 )
 from .serializers import (
-    RecipeSerializer, IngredientSerializer, IngredientNameSerializer,
-    MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
+    RecipeSerializer, RecipeCardSerializer,
+    IngredientSerializer, IngredientNameSerializer,
+    MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer,
+    MealTypeSerializer
 )
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
@@ -169,6 +171,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 item.amount = f"{item.amount} + {ing.amount}"
                 item.save()
         return Response({'status': 'Ingredients added to shopping list'})
+
+
+class RecipeCardViewSet(RecipeViewSet):
+    """Read-only viewset providing simplified recipe data for cards."""
+    serializer_class = RecipeCardSerializer
+    http_method_names = ['get']
 
 
 # --- Ingredient autocomplete/search (unique names only) ---

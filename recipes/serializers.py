@@ -147,6 +147,28 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Recipe must have at least one instruction.")
         return data
 
+
+class RecipeCardSerializer(serializers.ModelSerializer):
+    """Simplified recipe info for listing cards."""
+    categories = CategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Recipe
+        fields = [
+            'id', 'name', 'categories', 'description', 'image',
+            'prep_time', 'cook_time', 'subscription_plan'
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            for field in ['name', 'description']:
+                trans = getattr(instance, f'{field}_{lang}', '')
+                if trans:
+                    data[field] = trans
+        return data
+
 # MEAL PLAN
 class MealPlanSerializer(serializers.ModelSerializer):
     meal_type = MealTypeSerializer(read_only=True)
