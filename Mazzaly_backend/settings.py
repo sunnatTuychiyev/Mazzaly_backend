@@ -227,7 +227,14 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS settings
+# Do not use wildcard when credentials are included. Instead specify
+# allowed origins and enable credentials.
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:8080',
+).split(',')
+CORS_ALLOW_CREDENTIALS = True
 
 # === HTTPS / Security Settings ===
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
