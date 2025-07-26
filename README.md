@@ -153,4 +153,5 @@ Charts are rendered with Chart.js and include:
 - **Views per Recipe** – bar chart
 - **Subscription Distribution** – pie chart
 - **Views per Day** – line chart showing the last week
+The page uses Bootstrap cards so the charts and tables have a clean, responsive layout.
 

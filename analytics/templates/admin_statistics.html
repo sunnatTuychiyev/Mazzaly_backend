@@ -1,107 +1,98 @@
 {% extends 'admin/base_site.html' %}
 {% load static %}
+
 {% block title %}Statistics{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'analytics/css/statistics.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1 class="mb-3">Usage Statistics</h1>
-<div class="charts" style="display:flex;flex-wrap:wrap;gap:40px;">
-    <div style="flex:1 1 300px;">
-        <canvas id="viewsChart"></canvas>
-    </div>
-    <div style="flex:1 1 300px;">
-        <canvas id="subsChart"></canvas>
-        <p id="totalUsers" class="mt-2"></p>
-    </div>
-</div>
-<div class="mt-4" style="max-width:600px;">
-    <canvas id="viewsDayChart"></canvas>
-</div>
-<h2>Top Recipes (7 days)</h2>
-<ul>
-{% for r in top_week %}
-<li>{{ r.name }}: {{ r.total }}</li>
-{% endfor %}
-</ul>
-<h2>Top Recipes (30 days)</h2>
-<ul>
-{% for r in top_month %}
-<li>{{ r.name }}: {{ r.total }}</li>
-{% endfor %}
-</ul>
-<p>Active sessions: {{ active_sessions }} | New users this week: {{ new_users_week }}</p>
-<h2>User Activity (recent)</h2>
-<table class="table">
-<thead><tr><th>User</th><th>Recipe</th><th>Time</th></tr></thead>
-<tbody>
-{% for log in user_activity %}
-<tr><td>{{ log.user }}</td><td>{{ log.recipe }}</td><td>{{ log.timestamp }}</td></tr>
-{% endfor %}
-</tbody>
-</table>
+<div class="container-fluid my-4">
+  <h1 class="mb-4">Usage Statistics</h1>
+  <input type="hidden" id="statistics-data-url" value="{% url 'admin:statistics-data' %}">
 
-<h2>Total Views per Recipe</h2>
-<table class="table">
-<thead><tr><th>Recipe</th><th>Views</th></tr></thead>
-<tbody>
-{% for r in total_views %}
-<tr><td>{{ r.name }}</td><td>{{ r.total }}</td></tr>
-{% endfor %}
-</tbody>
-</table>
+  <div class="row gy-4">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header">Views per Recipe</div>
+        <div class="card-body">
+          <canvas id="viewsChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header">Subscription Breakdown</div>
+        <div class="card-body">
+          <canvas id="subsChart"></canvas>
+          <p id="totalUsers" class="mt-3 text-center"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Daily Views (Last 7 Days)</div>
+        <div class="card-body">
+          <canvas id="viewsDayChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5 gy-4">
+    <div class="col-lg-6">
+      <h3>Most Viewed Recipes (7 days)</h3>
+      <ul class="list-group mb-4">
+        {% for r in top_week %}
+        <li class="list-group-item d-flex justify-content-between">
+          {{ r.name }} <span>{{ r.total }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No data</li>
+        {% endfor %}
+      </ul>
+      <h3>Most Viewed Recipes (30 days)</h3>
+      <ul class="list-group">
+        {% for r in top_month %}
+        <li class="list-group-item d-flex justify-content-between">
+          {{ r.name }} <span>{{ r.total }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No data</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-lg-6">
+      <h3>User Activity (recent)</h3>
+      <table class="table table-striped">
+        <thead><tr><th>User</th><th>Recipe</th><th>Time</th></tr></thead>
+        <tbody>
+          {% for log in user_activity %}
+          <tr><td>{{ log.user }}</td><td>{{ log.recipe }}</td><td>{{ log.timestamp }}</td></tr>
+          {% empty %}
+          <tr><td colspan="3">No activity</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col">
+      <h3>Total Views per Recipe</h3>
+      <table class="table table-bordered">
+        <thead><tr><th>Recipe</th><th>Views</th></tr></thead>
+        <tbody>
+        {% for r in total_views %}
+          <tr><td>{{ r.name }}</td><td>{{ r.total }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <p>Active sessions: {{ active_sessions }} | New users this week: {{ new_users_week }}</p>
+    </div>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-fetch('{% url "admin:statistics-data" %}')
-  .then(r => r.json())
-  .then(data => {
-    const ctx = document.getElementById('viewsChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: data.views_per_recipe.map(v => v.name),
-        datasets: [{
-          label: 'Views',
-          data: data.views_per_recipe.map(v => v.total),
-          backgroundColor: 'rgba(54,162,235,0.5)'
-        }]
-      },
-    });
-
-    const ctx2 = document.getElementById('subsChart').getContext('2d');
-    new Chart(ctx2, {
-      type: 'pie',
-      data: {
-        labels: ['Standard', 'Healthy', 'Premium'],
-        datasets: [{
-          data: [
-            data.subscription_breakdown.standard,
-            data.subscription_breakdown.healthy,
-            data.subscription_breakdown.premium
-          ],
-          backgroundColor: [
-            'rgba(54,162,235,0.5)',
-            'rgba(75,192,192,0.5)',
-            'rgba(255,99,132,0.5)'
-          ]
-        }]
-      },
-    });
-
-    const ctx3 = document.getElementById('viewsDayChart').getContext('2d');
-    new Chart(ctx3, {
-      type: 'line',
-      data: {
-        labels: data.views_per_day.map(v => v.day),
-        datasets: [{
-          label: 'Views per day',
-          data: data.views_per_day.map(v => v.total),
-          borderColor: 'rgba(153,102,255,0.8)',
-          fill: false
-        }]
-      },
-      options: {scales: {y: {beginAtZero: true}}}
-    });
-
-    document.getElementById('totalUsers').innerText =
-      'Total users: ' + data.subscription_breakdown.total;
-  });
-</script>
+<script src="{% static 'analytics/js/statistics.js' %}"></script>
 {% endblock %}
