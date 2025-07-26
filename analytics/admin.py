@@ -56,8 +56,10 @@ def register_statistics(admin_site):
         )
         return TemplateResponse(request, 'admin_statistics.html', context)
 
+    original_get_urls = admin_site.get_urls
+
     def get_urls():
-        urls = admin_site.get_urls()
+        urls = original_get_urls()
         custom = [
             path('statistics/', admin_site.admin_view(statistics_view), name='statistics'),
             path('statistics/data/', statistics_data, name='statistics-data'),
