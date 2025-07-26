@@ -9,10 +9,13 @@ It now includes email verification using one-time passwords (OTP).
    ```bash
    pip install -r requirements.txt
    ```
+   The statistics dashboard requires the optional packages `django-admin-charts` and `django-geoip2` which are included in `requirements.txt`.
 2. Apply migrations:
    ```bash
    python manage.py migrate
    ```
+   This creates the tables including the `created_at` timestamp on recipes used
+   for the new recipe statistics.
 3. Create a superuser (optional):
    ```bash
    python manage.py createsuperuser
@@ -140,4 +143,22 @@ Unauthenticated requests always return only the free **Standard** recipes. When
 a user is logged in, recipes for their current subscription tier are included in
 the results. If the subscription has expired, the response again falls back to
 Standard recipes only.
+
+## Admin Statistics
+
+The admin panel provides a `/admin/statistics/` page with charts and tables
+showing recipe views, daily traffic and subscription breakdowns. Data comes from
+the `RecipeViewLog` model and the GeoIP database configured via `GEOIP_PATH`.
+
+Charts are rendered with Chart.js and include:
+
+- **Views per Recipe** – bar chart
+- **Subscription Distribution** – pie chart
+- **Views per Day** – line chart showing the last week
+- **Verification Status** – doughnut chart of verified vs unverified users
+- **New Recipes** – bar chart of recipes added in the last 30 days
+Tables for user activity and total recipe views are paginated 20 rows per page.
+Clicking "Download Monthly PDF" first asks for the month you want to report on
+and then generates the PDF using WeasyPrint.
+The page uses Bootstrap cards so the charts and tables have a clean, responsive layout.
 
