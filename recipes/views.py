@@ -178,6 +178,10 @@ class RecipeCardViewSet(RecipeViewSet):
     serializer_class = RecipeCardSerializer
     http_method_names = ['get']
 
+    def get_queryset(self):
+        """Return all recipes regardless of user subscription."""
+        return Recipe.objects.all()
+
 
 # --- Ingredient autocomplete/search (unique names only) ---
 class IngredientListView(generics.ListAPIView):

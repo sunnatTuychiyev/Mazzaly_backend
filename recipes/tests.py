@@ -183,20 +183,20 @@ class RecipeCardAPITests(APITestCase):
         }
         assert expected_keys.issubset(item.keys())
 
-    def test_subscription_filtering(self):
+    def test_returns_all_recipes(self):
         url = reverse("recipecard-list")
         res = self.client.get(url)
         ids = self._get_ids(res)
         assert self.standard_recipe.id in ids
-        assert self.healthy_recipe.id not in ids
-        assert self.premium_recipe.id not in ids
+        assert self.healthy_recipe.id in ids
+        assert self.premium_recipe.id in ids
 
         self.client.force_authenticate(self.healthy_user)
         res = self.client.get(url)
         ids = self._get_ids(res)
         assert self.standard_recipe.id in ids
         assert self.healthy_recipe.id in ids
-        assert self.premium_recipe.id not in ids
+        assert self.premium_recipe.id in ids
 
         self.client.force_authenticate(self.premium_user)
         res = self.client.get(url)
