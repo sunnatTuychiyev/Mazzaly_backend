@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'social_django',
     'account',
     'recipes',
+    'analytics',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
@@ -48,7 +49,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'account.authentication.FlexibleJWTAuthentication',
     ),
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
@@ -69,7 +70,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'account.authentication.FlexibleJWTAuthentication',
     ),
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
@@ -79,6 +80,8 @@ REST_FRAMEWORK = {
         'user': '10000/minute',  # juda katta qiymat — test uchun
         'anon': '10000/minute',  # ab testi uchun kerak
     },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
 
@@ -168,6 +171,9 @@ STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Path to GeoIP database for country lookup
+GEOIP_PATH = BASE_DIR / 'geoip'
+
 # .gitignore faylida **media/** ni qo‘shing!
 
 # === Default primary key field type ===
@@ -225,7 +231,15 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS settings
+# Do not use wildcard when credentials are included. Instead specify
+# allowed origins and enable credentials.
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    # Default to localhost for development and the production domain
+    default='http://localhost:8080,https://mazzaly.uz',
+).split(',')
+CORS_ALLOW_CREDENTIALS = True
 
 # === HTTPS / Security Settings ===
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)

@@ -46,7 +46,8 @@ class InstructionInline(admin.TabularInline):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [IngredientInline, InstructionInline]
-    list_display = ["name", "name_uz", "name_ru", "healthy", "get_categories"]
+    list_display = ["name", "name_uz", "name_ru", "subscription_plan", "get_categories"]
+    list_filter = ["subscription_plan"]
     fields = [
         "name",
         "name_uz",
@@ -58,6 +59,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "prep_time",
         "cook_time",
         "servings",
+        "subscription_plan",
         "healthy",
         "calories",
         "protein",
@@ -65,7 +67,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "carbs",
         "categories",
     ]
-    filter_horizontal = ['categories']  # <-- faqat shu qatorni qo‘shing!
+    filter_horizontal = ['categories']
     def get_categories(self, obj):
         return ", ".join([cat.name for cat in obj.categories.all()])
     get_categories.short_description = 'Categories'

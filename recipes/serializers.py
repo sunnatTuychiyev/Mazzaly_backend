@@ -16,7 +16,10 @@ class CategorySerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
         if lang and lang != 'en':
-            trans = getattr(instance, f'name_{lang}', '')
+            trans = getattr(instance, f'name_{lang}', '').strip()
+            if not trans or trans.lower() == instance.name.lower():
+                from .translation_utils import translate_text
+                trans = translate_text(instance.name, lang)
             if trans:
                 data['name'] = trans
         return data
@@ -88,8 +91,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = [
             'id', 'name', 'categories', 'category_ids', 'description', 'image',
-            'prep_time', 'cook_time', 'servings', 'healthy', #'tags',
-            'calories', 'protein', 'fats', 'carbs',
+            'prep_time', 'cook_time', 'servings', 'subscription_plan', 'healthy',
+            'premium', 'calories', 'protein', 'fats', 'carbs',
             'ingredients', 'instructions'
         ]
 
@@ -142,6 +145,28 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Recipe must have at least one ingredient.")
         if 'instructions' in data and not data['instructions']:
             raise serializers.ValidationError("Recipe must have at least one instruction.")
+        return data
+
+
+class RecipeCardSerializer(serializers.ModelSerializer):
+    """Simplified recipe info for listing cards."""
+    categories = CategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Recipe
+        fields = [
+            'id', 'name', 'categories', 'description', 'image',
+            'prep_time', 'cook_time', 'subscription_plan', 'views'
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        lang = self.context.get('lang')
+        if lang and lang != 'en':
+            for field in ['name', 'description']:
+                trans = getattr(instance, f'{field}_{lang}', '')
+                if trans:
+                    data[field] = trans
         return data
 
 # MEAL PLAN

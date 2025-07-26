@@ -12,10 +12,6 @@ def get_requested_lang(request) -> str:
         return 'en'
     return lang
 
-try:
-    from googletrans import Translator  # type: ignore
-except Exception:  # pragma: no cover - optional dependency
-    Translator = None  # type: ignore
 
 FALLBACK_DICT: Dict[str, Dict[str, str]] = {
     'uz': {
@@ -24,6 +20,26 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
         'salt': 'tuz',
         'pepper': 'qalampir',
         'water': 'suv',
+        'dinner': 'kechki ovqat',
+        'breakfast': 'nonushta',
+        'lunch': 'tushlik',
+        'italian': 'italyan',
+        'condiment': "qo'shimcha",
+        'dip': 'dip',
+        'spread': 'surma',
+        'soup': "sho'rva",
+        'gluten': 'glyuten',
+        'free': 'siz',
+        'ketogenic': 'ketogen',
+        'starter': 'aperitif',
+        'appetizer': 'ishtaha ochuvchi',
+        'dessert': 'shirinlik',
+        'snack': 'tamaddi',
+        'main': 'asosiy',
+        'course': 'taom',
+        'antipasti': 'antipasti',
+        'hor': 'hor',
+        "d'oeuvre": 'doeuvre',
     },
     'ru': {
         'chicken': 'курица',
@@ -31,27 +47,60 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
         'salt': 'соль',
         'pepper': 'перец',
         'water': 'вода',
+        'dinner': 'ужин',
+        'breakfast': 'завтрак',
+        'lunch': 'обед',
+        'italian': 'итальянский',
+        'condiment': 'приправа',
+        'dip': 'соус',
+        'spread': 'намазка',
+        'soup': 'суп',
+        'gluten': 'глютен',
+        'free': 'свободный',
+        'ketogenic': 'кетогенный',
+        'starter': 'закуска',
+        'appetizer': 'закуска',
+        'dessert': 'десерт',
+        'snack': 'перекус',
+        'main': 'основное',
+        'course': 'блюдо',
+        'antipasti': 'антипасти',
+        'hor': 'гор',
+        "d'oeuvre": 'девр',
+    },
+}
+
+# Additional phrase-level translations for better accuracy
+PHRASE_DICT: Dict[str, Dict[str, str]] = {
+    'ru': {
+        "gluten free": 'без глютена',
+        "main course": 'основное блюдо',
+        "hor d'oeuvre": 'закуска',
+    },
+    'uz': {
+        "gluten free": 'glyutensiz',
+        "main course": 'asosiy taom',
+        "hor d'oeuvre": 'aperitif',
     },
 }
 
 
 def _manual_translate(text: str, dest: str) -> str:
-    words = text.split()
+    """Simple phrase and word based translation."""
     mapping = FALLBACK_DICT.get(dest, {})
+    phrases = PHRASE_DICT.get(dest, {})
+    lowered = text.lower()
+    if lowered in phrases:
+        return phrases[lowered]
+    words = text.split()
     translated: List[str] = [mapping.get(word.lower(), word) for word in words]
     return ' '.join(translated)
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
-    """Translate text using googletrans if available, otherwise a small fallback."""
+    """Translate text using a small built-in dictionary."""
     if not text:
         return ''
-    if Translator:
-        try:
-            translator = Translator()
-            return translator.translate(text, src=src, dest=dest).text
-        except Exception:
-            pass
     return _manual_translate(text, dest)
 
 

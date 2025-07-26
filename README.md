@@ -9,10 +9,13 @@ It now includes email verification using one-time passwords (OTP).
    ```bash
    pip install -r requirements.txt
    ```
+   The statistics dashboard requires the optional packages `django-admin-charts` and `django-geoip2` which are included in `requirements.txt`.
 2. Apply migrations:
    ```bash
    python manage.py migrate
    ```
+   This creates the tables including the `created_at` timestamp on recipes used
+   for the new recipe statistics.
 3. Create a superuser (optional):
    ```bash
    python manage.py createsuperuser
@@ -40,6 +43,9 @@ To send real emails instead of logging them to the console, configure the
 variables are provided, the app will use Django's SMTP backend.
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
+Set `CORS_ALLOWED_ORIGINS` to the URLs of any frontend applications that should
+be allowed to make authenticated requests, e.g.
+`http://localhost:8080,https://mazzaly.uz`.
 
 ### Importing Recipes
 
@@ -91,6 +97,16 @@ curl '/api/recipes/?lang=uz'
 Translations are generated during import using the optional `googletrans`
 library. If the library is not available, a small built-in dictionary is used.
 
+### Pagination
+
+Recipe lists are paginated using DRF's standard page number pagination.
+Ten recipes are returned per page.
+Request a specific page with the `page` query parameter:
+
+```bash
+curl '/api/recipes/?page=2'
+```
+
 ## Admin Panel
 
 The project includes a customized Django admin interface with a cleaner
@@ -110,4 +126,39 @@ To use this backend from a Telegram Web App ("mini app"), configure the
 `/api/telegram-auth/` accepts the `initData` string provided by Telegram and
 returns a JWT token. Users authenticated through Telegram are created
 automatically using their Telegram ID.
+
+## Authenticated Requests
+
+Include the JWT access token in the `Authorization` header. The token may be
+provided either with or without the `Bearer` prefix. The recipe list endpoint
+automatically filters by the user's active
+subscription so no `subscription_plan` query parameter is needed:
+
+```bash
+curl -H "Authorization: Bearer <ACCESS_TOKEN>" \
+     'https://localhost:8000/api/recipes/'
+```
+
+Unauthenticated requests always return only the free **Standard** recipes. When
+a user is logged in, recipes for their current subscription tier are included in
+the results. If the subscription has expired, the response again falls back to
+Standard recipes only.
+
+## Admin Statistics
+
+The admin panel provides a `/admin/statistics/` page with charts and tables
+showing recipe views, daily traffic and subscription breakdowns. Data comes from
+the `RecipeViewLog` model and the GeoIP database configured via `GEOIP_PATH`.
+
+Charts are rendered with Chart.js and include:
+
+- **Views per Recipe** – bar chart
+- **Subscription Distribution** – pie chart
+- **Views per Day** – line chart showing the last week
+- **Verification Status** – doughnut chart of verified vs unverified users
+- **New Recipes** – bar chart of recipes added in the last 30 days
+Tables for user activity and total recipe views are paginated 20 rows per page.
+Clicking "Download Monthly PDF" first asks for the month you want to report on
+and then generates the PDF using WeasyPrint.
+The page uses Bootstrap cards so the charts and tables have a clean, responsive layout.
 

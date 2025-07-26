@@ -19,7 +19,21 @@ class MealType(models.Model):
 
 # --- RECIPE ---
 class Recipe(models.Model):
+    from account.models import Subscription
+
+    PLAN_STANDARD = Subscription.PLAN_STANDARD
+    PLAN_HEALTHY = Subscription.PLAN_HEALTHY
+    PLAN_PREMIUM = Subscription.PLAN_PREMIUM
+    PLAN_CHOICES = Subscription.PLAN_CHOICES
+
+    subscription_plan = models.CharField(
+        max_length=20,
+        choices=PLAN_CHOICES,
+        default=PLAN_STANDARD,
+        help_text="Required subscription tier",
+    )
     healthy = models.BooleanField(default=False, help_text="Show as Healthy Recipe")
+    premium = models.BooleanField(default=False, help_text="Show as Premium Recipe")
     calories = models.PositiveIntegerField(blank=True, null=True, help_text="Calories in kcal (optional)")
     protein = models.PositiveIntegerField(blank=True, null=True, help_text="Protein in grams (optional)")
     fats = models.PositiveIntegerField(blank=True, null=True, help_text="Fats in grams (optional)")
@@ -37,7 +51,23 @@ class Recipe(models.Model):
     prep_time = models.PositiveIntegerField(help_text="in minutes")
     cook_time = models.PositiveIntegerField(help_text="in minutes")
     servings = models.PositiveIntegerField()
+    views = models.PositiveIntegerField(default=0, help_text="Number of times the recipe has been viewed")
+    created_at = models.DateTimeField(auto_now_add=True)
     #tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags like 'healthy,vegetarian'")
+
+    def save(self, *args, **kwargs):
+        """Ensure flag fields follow the selected subscription tier."""
+        if self.subscription_plan == self.PLAN_PREMIUM:
+            self.premium = True
+            self.healthy = False
+        elif self.subscription_plan == self.PLAN_HEALTHY:
+            self.healthy = True
+            self.premium = False
+        else:
+            self.premium = False
+            self.healthy = False
+
+        super().save(*args, **kwargs)
     
 
     def __str__(self):
