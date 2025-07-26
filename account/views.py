@@ -17,6 +17,14 @@ import hashlib
 import hmac
 import time
 
+def get_tokens_for_user(user):
+    """Return refresh and access tokens for the given user."""
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
@@ -50,34 +58,48 @@ class LoginView(APIView):
             properties={
                 'email': openapi.Schema(type=openapi.TYPE_STRING, format='email'),
                 'password': openapi.Schema(type=openapi.TYPE_STRING, format='password'),
+                'code': openapi.Schema(type=openapi.TYPE_STRING, description='Optional verification code'),
             },
             required=['email', 'password'],
         ),
         responses={
             200: openapi.Response('Login successful', UserSerializer),
-            400: 'Invalid credentials',
+            400: 'Invalid credentials or verification required',
         },
     )
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
+        code = request.data.get('code')
         user = authenticate(email=email, password=password)
         if not user:
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
         if not user.is_email_verified:
-            code = f"{random.randint(100000, 999999)}"
-            EmailOTP.objects.update_or_create(user=user, defaults={'code': code})
-            send_mail(
-                'Email Verification',
-                f'Your verification code is {code}',
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-            )
-            return Response({'detail': 'Email not verified. Verification code sent.'}, status=status.HTTP_400_BAD_REQUEST)
-        token = RefreshToken.for_user(user)
+            if code:
+                try:
+                    otp = user.email_otp
+                except EmailOTP.DoesNotExist:
+                    return Response({'detail': 'Verification code required'}, status=status.HTTP_400_BAD_REQUEST)
+                if otp.code != code:
+                    return Response({'detail': 'Invalid verification code'}, status=status.HTTP_400_BAD_REQUEST)
+                user.is_email_verified = True
+                user.save()
+                otp.delete()
+            else:
+                code = f"{random.randint(100000, 999999)}"
+                EmailOTP.objects.update_or_create(user=user, defaults={'code': code})
+                send_mail(
+                    'Email Verification',
+                    f'Your verification code is {code}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                )
+                return Response({'detail': 'Email not verified. Verification code sent.'}, status=status.HTTP_400_BAD_REQUEST)
+        tokens = get_tokens_for_user(user)
         return Response({
             'user': UserSerializer(user).data,
-            'token': str(token.access_token)
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
         }, status=status.HTTP_200_OK)
 
 
@@ -102,10 +124,11 @@ class VerifyEmailView(APIView):
         user.is_email_verified = True
         user.save()
         otp.delete()
-        token = RefreshToken.for_user(user)
+        tokens = get_tokens_for_user(user)
         return Response({
             'user': UserSerializer(user).data,
-            'token': str(token.access_token)
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
         }, status=status.HTTP_200_OK)
 
 class ProfileView(APIView):
