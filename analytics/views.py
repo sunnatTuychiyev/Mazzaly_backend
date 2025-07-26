@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
+from django.db.models.functions import TruncDate
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse
 from django.db.models import Q
@@ -38,6 +39,14 @@ def statistics_data(request):
         .values('user__email', 'recipe__name', 'timestamp')[:100]
     )
 
+    views_per_day = (
+        RecipeViewLog.objects.filter(timestamp__gte=week_ago)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+
     active_sessions = Session.objects.filter(expire_date__gte=now).count()
     total_users = User.objects.count()
 
@@ -69,6 +78,7 @@ def statistics_data(request):
         'top_month': list(top_month),
         'user_activity': list(user_activity),
         'active_sessions': active_sessions,
+        'views_per_day': list(views_per_day),
         'subscription_breakdown': {
             'total': total_users,
             'premium': premium_users,

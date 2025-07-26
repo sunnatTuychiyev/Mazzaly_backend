@@ -2,13 +2,18 @@
 {% load static %}
 {% block title %}Statistics{% endblock %}
 {% block content %}
-<h1>Usage Statistics</h1>
-<div>
-    <canvas id="viewsChart" style="max-width:600px"></canvas>
+<h1 class="mb-3">Usage Statistics</h1>
+<div class="charts" style="display:flex;flex-wrap:wrap;gap:40px;">
+    <div style="flex:1 1 300px;">
+        <canvas id="viewsChart"></canvas>
+    </div>
+    <div style="flex:1 1 300px;">
+        <canvas id="subsChart"></canvas>
+        <p id="totalUsers" class="mt-2"></p>
+    </div>
 </div>
-<div>
-    <canvas id="subsChart" style="max-width:600px"></canvas>
-    <p id="totalUsers"></p>
+<div class="mt-4" style="max-width:600px;">
+    <canvas id="viewsDayChart"></canvas>
 </div>
 <h2>Top Recipes (7 days)</h2>
 <ul>
@@ -78,6 +83,21 @@ fetch('{% url "admin:statistics-data" %}')
           ]
         }]
       },
+    });
+
+    const ctx3 = document.getElementById('viewsDayChart').getContext('2d');
+    new Chart(ctx3, {
+      type: 'line',
+      data: {
+        labels: data.views_per_day.map(v => v.day),
+        datasets: [{
+          label: 'Views per day',
+          data: data.views_per_day.map(v => v.total),
+          borderColor: 'rgba(153,102,255,0.8)',
+          fill: false
+        }]
+      },
+      options: {scales: {y: {beginAtZero: true}}}
     });
 
     document.getElementById('totalUsers').innerText =

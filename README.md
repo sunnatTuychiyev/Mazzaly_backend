@@ -145,6 +145,12 @@ Standard recipes only.
 ## Admin Statistics
 
 The admin panel provides a `/admin/statistics/` page with charts and tables
-showing recipe views, user activity and subscription breakdowns. Data comes from
+showing recipe views, daily traffic and subscription breakdowns. Data comes from
 the `RecipeViewLog` model and the GeoIP database configured via `GEOIP_PATH`.
+
+Charts are rendered with Chart.js and include:
+
+- **Views per Recipe** – bar chart
+- **Subscription Distribution** – pie chart
+- **Views per Day** – line chart showing the last week
 
