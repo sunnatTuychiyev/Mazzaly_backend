@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'social_django',
     'account',
     'recipes',
+    'analytics',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
@@ -169,6 +170,9 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Path to GeoIP database for country lookup
+GEOIP_PATH = BASE_DIR / 'geoip'
 
 # .gitignore faylida **media/** ni qo‘shing!
 

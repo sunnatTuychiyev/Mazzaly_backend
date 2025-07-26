@@ -9,6 +9,7 @@ It now includes email verification using one-time passwords (OTP).
    ```bash
    pip install -r requirements.txt
    ```
+   The statistics dashboard requires the optional packages `django-admin-charts` and `django-geoip2` which are included in `requirements.txt`.
 2. Apply migrations:
    ```bash
    python manage.py migrate
@@ -140,4 +141,10 @@ Unauthenticated requests always return only the free **Standard** recipes. When
 a user is logged in, recipes for their current subscription tier are included in
 the results. If the subscription has expired, the response again falls back to
 Standard recipes only.
+
+## Admin Statistics
+
+The admin panel provides a `/admin/statistics/` page with charts and tables
+showing recipe views and user activity. Data comes from the `RecipeViewLog`
+model and the GeoIP database configured via `GEOIP_PATH`.
 

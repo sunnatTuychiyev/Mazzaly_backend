@@ -1,4 +1,5 @@
 from django.contrib import admin
+from analytics import admin as analytics_admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -26,11 +27,12 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('account.urls')),     # Auth, user, Google OAuth va h.k.
     path('api/', include('recipes.urls')),     # Recipes, ingredients, meal plan va h.k.
+    path('analytics/', include('analytics.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('social/', include('social_django.urls', namespace='social')),  # Google Auth

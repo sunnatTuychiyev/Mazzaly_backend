@@ -1,0 +1,60 @@
+{% extends 'admin/base_site.html' %}
+{% load static %}
+{% block title %}Statistics{% endblock %}
+{% block content %}
+<h1>Usage Statistics</h1>
+<div>
+    <canvas id="viewsChart" style="max-width:600px"></canvas>
+</div>
+<h2>Top Recipes (7 days)</h2>
+<ul>
+{% for r in top_week %}
+<li>{{ r.name }}: {{ r.total }}</li>
+{% endfor %}
+</ul>
+<h2>Top Recipes (30 days)</h2>
+<ul>
+{% for r in top_month %}
+<li>{{ r.name }}: {{ r.total }}</li>
+{% endfor %}
+</ul>
+<p>Active sessions: {{ active_sessions }} | New users this week: {{ new_users_week }}</p>
+<h2>User Activity (recent)</h2>
+<table class="table">
+<thead><tr><th>User</th><th>Recipe</th><th>Time</th></tr></thead>
+<tbody>
+{% for log in user_activity %}
+<tr><td>{{ log.user }}</td><td>{{ log.recipe }}</td><td>{{ log.timestamp }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h2>Total Views per Recipe</h2>
+<table class="table">
+<thead><tr><th>Recipe</th><th>Views</th></tr></thead>
+<tbody>
+{% for r in total_views %}
+<tr><td>{{ r.name }}</td><td>{{ r.total }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+fetch('{% url "admin:statistics-data" %}')
+  .then(r => r.json())
+  .then(data => {
+    const ctx = document.getElementById('viewsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: data.views_per_recipe.map(v => v.name),
+        datasets: [{
+          label: 'Views',
+          data: data.views_per_recipe.map(v => v.total),
+          backgroundColor: 'rgba(54,162,235,0.5)'
+        }]
+      },
+    });
+  });
+</script>
+{% endblock %}
