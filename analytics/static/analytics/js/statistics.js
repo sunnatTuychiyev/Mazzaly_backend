@@ -40,6 +40,41 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const ctxVerify = document.getElementById('verifyChart').getContext('2d');
+    new Chart(ctxVerify, {
+      type: 'doughnut',
+      data: {
+        labels: ['Unverified', 'Verified'],
+        datasets: [{
+          data: [data.verification.unverified, data.verification.verified],
+          backgroundColor: ['rgba(201, 203, 207, 0.6)', 'rgba(40,167,69,0.6)']
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    const ctxVerifySubs = document.getElementById('verifySubsChart').getContext('2d');
+    new Chart(ctxVerifySubs, {
+      type: 'bar',
+      data: {
+        labels: ['Standard', 'Healthy', 'Premium'],
+        datasets: [{
+          label: 'Verified users',
+          data: [
+            data.verification.verified_standard,
+            data.verification.verified_healthy,
+            data.verification.verified_premium
+          ],
+          backgroundColor: [
+            'rgba(54,162,235,0.6)',
+            'rgba(75,192,192,0.6)',
+            'rgba(255,99,132,0.6)'
+          ]
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
     const ctx3 = document.getElementById('viewsDayChart').getContext('2d');
     new Chart(ctx3, {
       type: 'line',
@@ -57,6 +92,20 @@
         maintainAspectRatio: false,
         scales: {y: {beginAtZero: true}}
       }
+    });
+
+    const ctxNew = document.getElementById('newRecipeChart').getContext('2d');
+    new Chart(ctxNew, {
+      type: 'bar',
+      data: {
+        labels: data.new_recipes.map(v => v.day),
+        datasets: [{
+          label: 'New recipes',
+          data: data.new_recipes.map(v => v.total),
+          backgroundColor: 'rgba(255,159,64,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
     });
 
     document.getElementById('totalUsers').innerText =

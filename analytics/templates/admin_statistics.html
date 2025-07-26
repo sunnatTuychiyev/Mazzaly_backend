@@ -13,7 +13,7 @@
   <input type="hidden" id="statistics-data-url" value="{% url 'admin:statistics-data' %}">
 
   <div class="row gy-4">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="card h-100">
         <div class="card-header">Views per Recipe</div>
         <div class="card-body">
@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="card h-100">
         <div class="card-header">Subscription Breakdown</div>
         <div class="card-body">
@@ -30,11 +30,28 @@
         </div>
       </div>
     </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header">Verification Stats</div>
+        <div class="card-body">
+          <canvas id="verifyChart"></canvas>
+          <canvas id="verifySubsChart" class="mt-3"></canvas>
+        </div>
+      </div>
+    </div>
     <div class="col-12">
       <div class="card">
         <div class="card-header">Daily Views (Last 7 Days)</div>
         <div class="card-body">
           <canvas id="viewsDayChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">New Recipes Added (Last 30 Days)</div>
+        <div class="card-body">
+          <canvas id="newRecipeChart"></canvas>
         </div>
       </div>
     </div>
@@ -68,13 +85,24 @@
       <table class="table table-striped">
         <thead><tr><th>User</th><th>Recipe</th><th>Time</th></tr></thead>
         <tbody>
-          {% for log in user_activity %}
+          {% for log in user_activity_page %}
           <tr><td>{{ log.user }}</td><td>{{ log.recipe }}</td><td>{{ log.timestamp }}</td></tr>
           {% empty %}
           <tr><td colspan="3">No activity</td></tr>
           {% endfor %}
         </tbody>
       </table>
+      <nav>
+        <ul class="pagination">
+          {% if user_activity_page.has_previous %}
+          <li class="page-item"><a class="page-link" href="?activity_page={{ user_activity_page.previous_page_number }}">Previous</a></li>
+          {% endif %}
+          <li class="page-item disabled"><span class="page-link">Page {{ user_activity_page.number }} of {{ user_activity_paginator.num_pages }}</span></li>
+          {% if user_activity_page.has_next %}
+          <li class="page-item"><a class="page-link" href="?activity_page={{ user_activity_page.next_page_number }}">Next</a></li>
+          {% endif %}
+        </ul>
+      </nav>
     </div>
   </div>
 
@@ -84,15 +112,28 @@
       <table class="table table-bordered">
         <thead><tr><th>Recipe</th><th>Views</th></tr></thead>
         <tbody>
-        {% for r in total_views %}
+        {% for r in total_views_page %}
           <tr><td>{{ r.name }}</td><td>{{ r.total }}</td></tr>
         {% endfor %}
         </tbody>
       </table>
+      <nav>
+        <ul class="pagination">
+          {% if total_views_page.has_previous %}
+          <li class="page-item"><a class="page-link" href="?views_page={{ total_views_page.previous_page_number }}">Previous</a></li>
+          {% endif %}
+          <li class="page-item disabled"><span class="page-link">Page {{ total_views_page.number }} of {{ total_views_paginator.num_pages }}</span></li>
+          {% if total_views_page.has_next %}
+          <li class="page-item"><a class="page-link" href="?views_page={{ total_views_page.next_page_number }}">Next</a></li>
+          {% endif %}
+        </ul>
+      </nav>
       <p>Active sessions: {{ active_sessions }} | New users this week: {{ new_users_week }}</p>
+      <a href="{% url 'admin:statistics-report' %}" class="btn btn-primary">Download Monthly PDF</a>
     </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-3d@1.0.0/dist/chartjs-chart-3d.min.js"></script>
 <script src="{% static 'analytics/js/statistics.js' %}"></script>
 {% endblock %}

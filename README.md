@@ -153,5 +153,9 @@ Charts are rendered with Chart.js and include:
 - **Views per Recipe** – bar chart
 - **Subscription Distribution** – pie chart
 - **Views per Day** – line chart showing the last week
+- **Verification Status** – doughnut chart of verified vs unverified users
+- **New Recipes** – bar chart of recipes added in the last 30 days
+Tables for user activity and total recipe views are paginated 20 rows per page.
+A "Download Monthly PDF" button exports a summary report using WeasyPrint.
 The page uses Bootstrap cards so the charts and tables have a clean, responsive layout.
 

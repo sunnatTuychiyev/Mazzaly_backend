@@ -3,12 +3,13 @@ from django.urls import path
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.db.models import Count
+from django.core.paginator import Paginator
 
 from .models import RecipeViewLog
 from recipes.models import Recipe
 from account.models import User
 from django.contrib.sessions.models import Session
-from .views import statistics_data
+from .views import statistics_data, monthly_report_pdf
 
 
 @admin.register(RecipeViewLog)
@@ -34,8 +35,13 @@ def register_statistics(admin_site):
             .annotate(total=Count('view_logs'))
             .order_by('-total')[:5]
         )
-        total_views = Recipe.objects.annotate(total=Count('view_logs'))
-        user_activity = RecipeViewLog.objects.select_related('user', 'recipe')[:50]
+        total_views_qs = Recipe.objects.annotate(total=Count('view_logs')).order_by('-total')
+        views_paginator = Paginator(total_views_qs, 20)
+        views_page = views_paginator.get_page(request.GET.get('views_page'))
+
+        user_activity_qs = RecipeViewLog.objects.select_related('user', 'recipe').order_by('-timestamp')
+        activity_paginator = Paginator(user_activity_qs, 20)
+        activity_page = activity_paginator.get_page(request.GET.get('activity_page'))
 
         active_sessions = Session.objects.filter(expire_date__gte=now).count()
         new_users_week = (
@@ -49,8 +55,10 @@ def register_statistics(admin_site):
             admin_site.each_context(request),
             top_week=top_week,
             top_month=top_month,
-            total_views=total_views,
-            user_activity=user_activity,
+            total_views_page=views_page,
+            total_views_paginator=views_paginator,
+            user_activity_page=activity_page,
+            user_activity_paginator=activity_paginator,
             active_sessions=active_sessions,
             new_users_week=new_users_week,
         )
@@ -63,6 +71,7 @@ def register_statistics(admin_site):
         custom = [
             path('statistics/', admin_site.admin_view(statistics_view), name='statistics'),
             path('statistics/data/', statistics_data, name='statistics-data'),
+            path('statistics/report/', monthly_report_pdf, name='statistics-report'),
         ]
         return custom + urls
 
