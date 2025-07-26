@@ -7,6 +7,7 @@ from .models import User, EmailOTP
 from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializer, TelegramAuthSerializer
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.contrib.auth import authenticate
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -24,6 +25,22 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    """JWT token obtain endpoint with Swagger tag."""
+
+    @swagger_auto_schema(tags=['Auth'])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    """JWT token refresh endpoint with Swagger tag."""
+
+    @swagger_auto_schema(tags=['Auth'])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer

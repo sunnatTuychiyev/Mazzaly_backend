@@ -1,10 +1,6 @@
 from django.contrib import admin
 from analytics import admin as analytics_admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 admin.site.site_header = "Mazzaly Administration"
 admin.site.site_title = "Mazzaly Admin Portal"
@@ -28,8 +24,6 @@ schema_view = get_schema_view(
 
 urlpatterns = [
 path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('account.urls')),     # Auth, user, Google OAuth va h.k.
     path('api/', include('recipes.urls')),     # Recipes, ingredients, meal plan va h.k.
     path('analytics/', include('analytics.urls')),

@@ -220,6 +220,14 @@ class RecipeCardViewSet(RecipeViewSet):
         """Return all recipes regardless of user subscription."""
         return Recipe.objects.all()
 
+    @swagger_auto_schema(tags=['Recipes'])
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['Recipes'])
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
 
 # --- Ingredient autocomplete/search (unique names only) ---
 class IngredientListView(generics.ListAPIView):
@@ -235,7 +243,8 @@ class IngredientListView(generics.ListAPIView):
         operation_description="Autocomplete/search ingredients by name (unique). ?search=onion",
         manual_parameters=[
             openapi.Parameter('search', openapi.IN_QUERY, description="Ingredient name", type=openapi.TYPE_STRING)
-        ]
+        ],
+        tags=['Recipes']
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
