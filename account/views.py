@@ -17,6 +17,14 @@ import hashlib
 import hmac
 import time
 
+def get_tokens_for_user(user):
+    """Return refresh and access tokens for the given user."""
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
@@ -74,10 +82,11 @@ class LoginView(APIView):
                 [user.email],
             )
             return Response({'detail': 'Email not verified. Verification code sent.'}, status=status.HTTP_400_BAD_REQUEST)
-        token = RefreshToken.for_user(user)
+        tokens = get_tokens_for_user(user)
         return Response({
             'user': UserSerializer(user).data,
-            'token': str(token.access_token)
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
         }, status=status.HTTP_200_OK)
 
 
@@ -102,10 +111,11 @@ class VerifyEmailView(APIView):
         user.is_email_verified = True
         user.save()
         otp.delete()
-        token = RefreshToken.for_user(user)
+        tokens = get_tokens_for_user(user)
         return Response({
             'user': UserSerializer(user).data,
-            'token': str(token.access_token)
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
         }, status=status.HTTP_200_OK)
 
 class ProfileView(APIView):

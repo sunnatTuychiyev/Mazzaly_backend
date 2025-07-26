@@ -1,11 +1,13 @@
 from rest_framework.routers import DefaultRouter
 from .views import (
-    RecipeViewSet, MealPlanViewSet, ShoppingListItemViewSet,
+    RecipeViewSet, RecipeCardViewSet,
+    MealPlanViewSet, ShoppingListItemViewSet,
     IngredientListView, CategoryViewSet, MealTypeViewSet,
 )
 
 router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet, basename='recipe')
+router.register(r'recipe-cards', RecipeCardViewSet, basename='recipecard')
 router.register(r'meal-plan', MealPlanViewSet, basename='mealplan')
 router.register(r'shopping-list', ShoppingListItemViewSet, basename='shoppinglist')
 router.register(r'categories', CategoryViewSet, basename='category')

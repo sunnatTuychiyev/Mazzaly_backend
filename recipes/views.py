@@ -1,7 +1,8 @@
 from rest_framework import viewsets, permissions, status, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.db.models import Min, Q
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+from django.db.models import Min, Q, F
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -11,8 +12,10 @@ from .models import (
     Recipe, Ingredient, MealPlan, ShoppingListItem, Category, MealType
 )
 from .serializers import (
-    RecipeSerializer, IngredientSerializer, IngredientNameSerializer,
-    MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer, MealTypeSerializer
+    RecipeSerializer, RecipeCardSerializer,
+    IngredientSerializer, IngredientNameSerializer,
+    MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer,
+    MealTypeSerializer
 )
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
@@ -78,6 +81,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories']
 
+    def get_permissions(self):
+        if self.action == 'retrieve':
+            return [permissions.IsAuthenticated()]
+        return super().get_permissions()
+
     def get_queryset(self):
         """Return recipes allowed for the current user's subscription."""
         qs = super().get_queryset()
@@ -134,8 +142,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     def retrieve(self, request, *args, **kwargs):  # pragma: no cover - docs only
-        """Retrieve a recipe in the requested language."""
-        return super().retrieve(request, *args, **kwargs)
+        """Retrieve a recipe in the requested language with subscription check."""
+        if not request.user or not request.user.is_authenticated:
+            raise NotAuthenticated()
+        try:
+            recipe = Recipe.objects.get(pk=kwargs.get('pk'))
+        except Recipe.DoesNotExist:
+            from django.http import Http404
+            raise Http404
+
+        plan = request.user.current_plan
+        if recipe.subscription_plan == Subscription.PLAN_PREMIUM and plan != Subscription.PLAN_PREMIUM:
+            raise PermissionDenied()
+        if recipe.subscription_plan == Subscription.PLAN_HEALTHY and plan not in [Subscription.PLAN_HEALTHY, Subscription.PLAN_PREMIUM]:
+            raise PermissionDenied()
+        Recipe.objects.filter(pk=recipe.pk).update(views=F('views') + 1)
+        recipe.refresh_from_db()
+        serializer = self.get_serializer(recipe)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",
@@ -169,6 +193,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 item.amount = f"{item.amount} + {ing.amount}"
                 item.save()
         return Response({'status': 'Ingredients added to shopping list'})
+
+
+class RecipeCardViewSet(RecipeViewSet):
+    """Read-only viewset providing simplified recipe data for cards."""
+    serializer_class = RecipeCardSerializer
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        """Return all recipes regardless of user subscription."""
+        return Recipe.objects.all()
 
 
 # --- Ingredient autocomplete/search (unique names only) ---
