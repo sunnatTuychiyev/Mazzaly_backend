@@ -20,6 +20,7 @@ class RecipeViewLogAdmin(admin.ModelAdmin):
 
 
 def register_statistics(admin_site):
+    """Attach statistics views to the given ``AdminSite`` instance."""
     def statistics_view(request):
         now = timezone.now()
         week_ago = now - timezone.timedelta(days=7)
@@ -64,15 +65,17 @@ def register_statistics(admin_site):
         )
         return TemplateResponse(request, 'admin_statistics.html', context)
 
+    # Preserve the original ``get_urls`` so we can call it without recursion
     original_get_urls = admin_site.get_urls
 
     def get_urls():
-        urls = original_get_urls()
+        """Return the default admin URLs plus the custom statistics routes."""
         custom = [
             path('statistics/', admin_site.admin_view(statistics_view), name='statistics'),
             path('statistics/data/', admin_site.admin_view(statistics_data), name='statistics-data'),
             path('statistics/report/', admin_site.admin_view(monthly_report_pdf), name='statistics-report'),
         ]
+        urls = original_get_urls()
         return custom + urls
 
     admin_site.get_urls = get_urls
