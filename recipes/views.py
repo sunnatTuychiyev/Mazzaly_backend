@@ -220,11 +220,11 @@ class RecipeCardViewSet(RecipeViewSet):
         """Return all recipes regardless of user subscription."""
         return Recipe.objects.all()
 
-    @swagger_auto_schema(tags=['Recipes'])
+    @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(tags=['Recipes'])
+    @swagger_auto_schema(tags=['recipes'])
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
@@ -244,7 +244,7 @@ class IngredientListView(generics.ListAPIView):
         manual_parameters=[
             openapi.Parameter('search', openapi.IN_QUERY, description="Ingredient name", type=openapi.TYPE_STRING)
         ],
-        tags=['Recipes']
+        tags=['recipes']
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
