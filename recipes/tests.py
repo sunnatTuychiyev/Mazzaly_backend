@@ -111,6 +111,24 @@ class RecipeSubscriptionTests(APITestCase):
         assert recipe.premium is True
         assert recipe.healthy is False
 
+    def test_detail_requires_authentication(self):
+        url = reverse("recipe-detail", args=[self.standard_recipe.id])
+        res = self.client.get(url)
+        assert res.status_code == 401
+
+    def test_insufficient_subscription_returns_403(self):
+        self.client.force_authenticate(self.healthy_user)
+        url = reverse("recipe-detail", args=[self.premium_recipe.id])
+        res = self.client.get(url)
+        assert res.status_code == 403
+
+    def test_allowed_user_can_retrieve(self):
+        self.client.force_authenticate(self.healthy_user)
+        url = reverse("recipe-detail", args=[self.healthy_recipe.id])
+        res = self.client.get(url)
+        assert res.status_code == 200
+        assert res.data["id"] == self.healthy_recipe.id
+
 
 class RecipeCardAPITests(APITestCase):
     def setUp(self):

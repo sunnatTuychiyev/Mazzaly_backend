@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions, status, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from django.db.models import Min, Q
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
@@ -80,6 +81,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ordering_fields = ['prep_time', 'cook_time', 'servings']
     filterset_fields = ['categories']
 
+    def get_permissions(self):
+        if self.action == 'retrieve':
+            return [permissions.IsAuthenticated()]
+        return super().get_permissions()
+
     def get_queryset(self):
         """Return recipes allowed for the current user's subscription."""
         qs = super().get_queryset()
@@ -136,8 +142,23 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     def retrieve(self, request, *args, **kwargs):  # pragma: no cover - docs only
-        """Retrieve a recipe in the requested language."""
-        return super().retrieve(request, *args, **kwargs)
+        """Retrieve a recipe in the requested language with subscription check."""
+        if not request.user or not request.user.is_authenticated:
+            raise NotAuthenticated()
+        try:
+            recipe = Recipe.objects.get(pk=kwargs.get('pk'))
+        except Recipe.DoesNotExist:
+            from django.http import Http404
+            raise Http404
+
+        plan = request.user.current_plan
+        if recipe.subscription_plan == Subscription.PLAN_PREMIUM and plan != Subscription.PLAN_PREMIUM:
+            raise PermissionDenied()
+        if recipe.subscription_plan == Subscription.PLAN_HEALTHY and plan not in [Subscription.PLAN_HEALTHY, Subscription.PLAN_PREMIUM]:
+            raise PermissionDenied()
+
+        serializer = self.get_serializer(recipe)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         operation_description="Add all ingredients from a recipe to the current user's shopping list",
