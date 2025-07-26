@@ -14,6 +14,8 @@ It now includes email verification using one-time passwords (OTP).
    ```bash
    python manage.py migrate
    ```
+   This creates the tables including the `created_at` timestamp on recipes used
+   for the new recipe statistics.
 3. Create a superuser (optional):
    ```bash
    python manage.py createsuperuser
