@@ -40,9 +40,9 @@ To send real emails instead of logging them to the console, configure the
 variables are provided, the app will use Django's SMTP backend.
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
-For local development, set `CORS_ALLOWED_ORIGINS` to the URL of your frontend
-application (e.g. `http://localhost:8080`) so browsers can send authenticated
-requests.
+Set `CORS_ALLOWED_ORIGINS` to the URLs of any frontend applications that should
+be allowed to make authenticated requests, e.g.
+`http://localhost:8080,https://mazzaly.uz`.
 
 ### Importing Recipes
 

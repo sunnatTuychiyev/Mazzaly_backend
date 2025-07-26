@@ -232,7 +232,8 @@ TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 # allowed origins and enable credentials.
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:8080',
+    # Default to localhost for development and the production domain
+    default='http://localhost:8080,https://mazzaly.uz',
 ).split(',')
 CORS_ALLOW_CREDENTIALS = True
 
