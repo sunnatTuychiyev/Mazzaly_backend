@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, status, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
-from django.db.models import Min, Q
+from django.db.models import Min, Q, F
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -156,7 +156,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             raise PermissionDenied()
         if recipe.subscription_plan == Subscription.PLAN_HEALTHY and plan not in [Subscription.PLAN_HEALTHY, Subscription.PLAN_PREMIUM]:
             raise PermissionDenied()
-
+        Recipe.objects.filter(pk=recipe.pk).update(views=F('views') + 1)
+        recipe.refresh_from_db()
         serializer = self.get_serializer(recipe)
         return Response(serializer.data)
 

@@ -156,7 +156,7 @@ class RecipeCardSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = [
             'id', 'name', 'categories', 'description', 'image',
-            'prep_time', 'cook_time', 'subscription_plan'
+            'prep_time', 'cook_time', 'subscription_plan', 'views'
         ]
 
     def to_representation(self, instance):

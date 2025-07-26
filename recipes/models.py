@@ -51,6 +51,7 @@ class Recipe(models.Model):
     prep_time = models.PositiveIntegerField(help_text="in minutes")
     cook_time = models.PositiveIntegerField(help_text="in minutes")
     servings = models.PositiveIntegerField()
+    views = models.PositiveIntegerField(default=0, help_text="Number of times the recipe has been viewed")
     #tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags like 'healthy,vegetarian'")
 
     def save(self, *args, **kwargs):

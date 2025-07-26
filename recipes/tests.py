@@ -198,6 +198,7 @@ class RecipeCardAPITests(APITestCase):
             "prep_time",
             "cook_time",
             "subscription_plan",
+            "views",
         }
         assert expected_keys.issubset(item.keys())
 
@@ -222,4 +223,18 @@ class RecipeCardAPITests(APITestCase):
         assert self.standard_recipe.id in ids
         assert self.healthy_recipe.id in ids
         assert self.premium_recipe.id in ids
+
+    def test_detail_increments_views_and_shows_in_cards(self):
+        self.client.force_authenticate(self.premium_user)
+        detail_url = reverse("recipe-detail", args=[self.standard_recipe.id])
+        initial = self.standard_recipe.views
+        res = self.client.get(detail_url)
+        assert res.status_code == 200
+        self.standard_recipe.refresh_from_db()
+        assert self.standard_recipe.views == initial + 1
+
+        cards_url = reverse("recipecard-list")
+        res = self.client.get(cards_url)
+        card = next(item for item in res.data if item["id"] == self.standard_recipe.id)
+        assert card["views"] == self.standard_recipe.views
 
