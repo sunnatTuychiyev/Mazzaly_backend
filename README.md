@@ -145,6 +145,6 @@ Standard recipes only.
 ## Admin Statistics
 
 The admin panel provides a `/admin/statistics/` page with charts and tables
-showing recipe views and user activity. Data comes from the `RecipeViewLog`
-model and the GeoIP database configured via `GEOIP_PATH`.
+showing recipe views, user activity and subscription breakdowns. Data comes from
+the `RecipeViewLog` model and the GeoIP database configured via `GEOIP_PATH`.
 
