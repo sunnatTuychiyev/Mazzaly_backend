@@ -157,6 +157,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if recipe.subscription_plan == Subscription.PLAN_HEALTHY and plan not in [Subscription.PLAN_HEALTHY, Subscription.PLAN_PREMIUM]:
             raise PermissionDenied()
         Recipe.objects.filter(pk=recipe.pk).update(views=F('views') + 1)
+        # Log the view for analytics
+        from analytics.models import RecipeViewLog
+        ip = request.META.get('REMOTE_ADDR')
+        country = ''
+        try:
+            from django.contrib.gis.geoip2 import GeoIP2
+            g = GeoIP2()
+            country = g.country(ip)['country_name']
+        except Exception:
+            country = ''
+        RecipeViewLog.objects.create(
+            user=request.user,
+            recipe=recipe,
+            ip_address=ip,
+            country=country,
+        )
         recipe.refresh_from_db()
         serializer = self.get_serializer(recipe)
         return Response(serializer.data)

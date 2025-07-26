@@ -1,0 +1,15 @@
+{% extends 'admin/base_site.html' %}
+{% block title %}Select Report Month{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Select Report Month</h1>
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+  <form method="get" action="">
+    <div class="mb-3">
+      <label for="month" class="form-label">Month</label>
+      <input type="month" id="month" name="month" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Generate PDF</button>
+  </form>
+</div>
+{% endblock %}
