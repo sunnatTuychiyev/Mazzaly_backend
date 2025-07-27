@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'account',
     'recipes',
     'analytics',
+    'chatbot',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
@@ -230,6 +231,7 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
+HUGGINGFACE_API_TOKEN = config('HUGGINGFACE_API_TOKEN', default='')
 
 # CORS settings
 # Do not use wildcard when credentials are included. Instead specify

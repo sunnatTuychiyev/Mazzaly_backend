@@ -162,3 +162,25 @@ Clicking "Download Monthly PDF" first asks for the month you want to report on
 and then generates the PDF using WeasyPrint.
 The page uses Bootstrap cards so the charts and tables have a clean, responsive layout.
 
+## Chatbot Endpoints
+
+Two API endpoints expose the AI chatbot:
+
+- `POST /api/chatbot/message/` – send a text message and receive a reply.
+- `POST /api/chatbot/image/` – upload an image of food and get the predicted food name and kcal value.
+
+Example request sending a text message:
+
+```bash
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"message": "What can I make with chicken and rice?"}' \
+     https://localhost:8000/api/chatbot/message/
+```
+
+Example request uploading an image:
+
+```bash
+curl -X POST -F image=@photo.jpg \
+     https://localhost:8000/api/chatbot/image/
+```
+
