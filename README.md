@@ -196,3 +196,5 @@ It understands questions like:
 - "What can I make with chicken and rice?" – suggests recipes that use those ingredients.
 - "Give me healthy options" – lists a few recipes marked as healthy.
 
+For a quick smoke test of the chatbot endpoints you can run `python scripts/test_chatbot.py`. Set the `BASE_URL` environment variable if your server isn't running on `http://localhost:8000`.
+
