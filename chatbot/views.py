@@ -48,53 +48,91 @@ def generate_text_response(text: str) -> str:
 
 
 def handle_recipe_query(message: str) -> str | None:
-    lower = message.lower()
-    if 'what can i make with' in lower or 'what can i cook with' in lower:
-        parts = re.split(r'with', lower, maxsplit=1)
-        if len(parts) > 1:
-            ingredients_str = parts[1]
-            ing_names = [i.strip() for i in re.split(',|and', ingredients_str) if i.strip()]
-            qs = Recipe.objects.all()
-            for ing in ing_names:
-                qs = qs.filter(ingredients__name__icontains=ing)
-            recipes = list(qs.distinct().values_list('name', flat=True)[:5])
-            if recipes:
-                return 'You can cook: ' + ', '.join(recipes)
-            return 'No recipes found with those ingredients.'
-    if 'how do i cook' in lower or 'how to cook' in lower:
-        name = re.split(r'cook', lower, maxsplit=1)[1].strip().rstrip('?')
+    """Return a reply using known recipes if the question is food related."""
+
+    text = message.lower().strip()
+
+    # What can I make with chicken and rice?
+    m = re.search(r"what can i (?:make|cook) with (.+)", text)
+    if m:
+        ingredients = m.group(1)
+        ing_names = [i.strip() for i in re.split(r",|and", ingredients) if i.strip()]
+        qs = Recipe.objects.all()
+        for ing in ing_names:
+            qs = qs.filter(ingredients__name__icontains=ing)
+        recipes = list(qs.distinct().values_list("name", flat=True)[:5])
+        if recipes:
+            return "You can cook: " + ", ".join(recipes)
+        return "No recipes found with those ingredients."
+
+    # How do I cook plov?
+    m = re.search(r"(?:how do i|how to) cook ([\w\s-]+)", text)
+    if m:
+        name = m.group(1).strip()
         recipe = Recipe.objects.filter(name__icontains=name).first()
         if recipe:
-            steps = recipe.instructions.order_by('step_number').values_list('description', flat=True)
-            text = 'Steps to cook {}: '.format(recipe.name)
-            text += ' '.join(f"{i+1}. {s}" for i, s in enumerate(steps))
-            return text
-        return 'Recipe not found.'
-    if 'kcal' in lower or 'calorie' in lower:
-        words = lower.replace('?', '').split()
-        for i, w in enumerate(words):
-            if w in {'kcal', 'calorie', 'calories'} and i >= 1:
-                name = ' '.join(words[i+1:]) or words[i-1]
-                break
+            steps = recipe.instructions.order_by("step_number").values_list("description", flat=True)
+            return "Steps to cook {}: {}".format(
+                recipe.name,
+                " ".join(f"{i+1}. {s}" for i, s in enumerate(steps)),
+            )
+        return "Recipe not found."
+
+    # Ingredients for <dish>
+    m = re.search(r"ingredients (?:for|of) ([\w\s-]+)", text)
+    if m:
+        name = m.group(1).strip()
+        recipe = Recipe.objects.filter(name__icontains=name).first()
+        if recipe:
+            ingr = recipe.ingredients.values_list("name", flat=True)
+            return f"Ingredients for {recipe.name}: " + ", ".join(ingr)
+        return "Recipe not found."
+
+    # Calorie questions
+    if any(word in text for word in {"kcal", "calories", "calorie"}):
+        # try to extract recipe name after the keyword
+        m = re.search(r"(?:kcal|calories?|calorie)(?: does)? ([\w\s-]+) have", text)
+        if not m:
+            m = re.search(r"(?:kcal|calories?|calorie) in ([\w\s-]+)", text)
+        if m:
+            name = m.group(1).strip()
         else:
-            name = lower
+            # fallback: last word(s)
+            parts = re.split(r"kcal|calories?|calorie", text, maxsplit=1)
+            name = parts[1].strip() if len(parts) > 1 else text
         recipe = Recipe.objects.filter(name__icontains=name).first()
         if recipe and recipe.calories:
             return f"{recipe.name} has approximately {recipe.calories} kcal per serving."
         if recipe:
             return f"Calorie information for {recipe.name} is not available."
-    if 'vegetarian' in lower:
-        recipes = Recipe.objects.filter(categories__name__icontains='vegetarian').values_list('name', flat=True)[:5]
+
+    # Healthy/vegetarian/protein suggestions
+    if "vegetarian" in text:
+        recipes = Recipe.objects.filter(categories__name__icontains="vegetarian").values_list("name", flat=True)[:5]
         if recipes:
-            return 'Vegetarian options: ' + ', '.join(recipes)
-    if 'high protein' in lower or 'protein' in lower:
-        recipes = Recipe.objects.filter(protein__gte=20).order_by('-protein').values_list('name', flat=True)[:5]
+            return "Vegetarian options: " + ", ".join(recipes)
+    if "healthy" in text:
+        recipes = Recipe.objects.filter(healthy=True).values_list("name", flat=True)[:5]
         if recipes:
-            return 'High protein dishes: ' + ', '.join(recipes)
-    if 'healthy' in lower:
-        recipes = Recipe.objects.filter(healthy=True).values_list('name', flat=True)[:5]
+            return "Healthy recipes: " + ", ".join(recipes)
+    if "high protein" in text or ("protein" in text and "high" in text):
+        recipes = (
+            Recipe.objects.filter(protein__gte=20)
+            .order_by("-protein")
+            .values_list("name", flat=True)[:5]
+        )
         if recipes:
-            return 'Healthy choices: ' + ', '.join(recipes)
+            return "High protein dishes: " + ", ".join(recipes)
+
+    # Description of a recipe
+    m = re.search(r"(?:describe|tell me about|what is|explain) ([\w\s-]+)", text)
+    if m:
+        name = m.group(1).strip()
+        recipe = Recipe.objects.filter(name__icontains=name).first()
+        if recipe:
+            return f"{recipe.name}: {recipe.description}"
+        return "Recipe not found."
+
     return None
 
 

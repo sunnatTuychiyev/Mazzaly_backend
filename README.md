@@ -188,3 +188,11 @@ curl -X POST -F image=@photo.jpg \
 
 The chatbot looks up recipes from the existing database before falling back to the Hugging Face conversational model. If a known recipe is mentioned, preparation steps and calorie information are pulled directly from your stored records.
 
+It understands questions like:
+
+- "How do I cook plov?" – returns the preparation steps from the database.
+- "Ingredients for lagman" – lists all ingredients of the recipe.
+- "How many calories does shashlik have?" – responds with the stored kcal value if available.
+- "What can I make with chicken and rice?" – suggests recipes that use those ingredients.
+- "Give me healthy options" – lists a few recipes marked as healthy.
+
