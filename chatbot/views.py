@@ -20,11 +20,12 @@ HF_API_URL = 'https://api-inference.huggingface.co/models/'
 
 
 def query_huggingface(model: str, payload, is_json=True):
+    """Send a request to a Hugging Face model with optional auth."""
+
     url = HF_API_URL + model
-    headers = {}
-    token = getattr(settings, 'HUGGINGFACE_API_TOKEN', '')
-    if token:
-        headers['Authorization'] = f'Bearer {token}'
+    token = getattr(settings, "HUGGINGFACE_API_TOKEN", None)
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+
     try:
         if is_json:
             resp = requests.post(url, headers=headers, json=payload, timeout=20)
@@ -33,6 +34,8 @@ def query_huggingface(model: str, payload, is_json=True):
         resp.raise_for_status()
         return resp.json()
     except Exception:
+        # If something went wrong (e.g. network issues or invalid token),
+        # return ``None`` so the caller can handle the fallback response.
         return None
 
 
