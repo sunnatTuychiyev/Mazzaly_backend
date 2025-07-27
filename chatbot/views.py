@@ -101,14 +101,16 @@ def handle_recipe_query(message: str) -> str | None:
 class ChatbotMessageView(APIView):
     """Handle text messages for the chatbot."""
 
+    parser_classes = [parsers.JSONParser, parsers.FormParser, parsers.MultiPartParser]
+
     def post(self, request):
         serializer = ChatMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        message = serializer.validated_data['message']
+        message = serializer.validated_data["message"]
         reply = handle_recipe_query(message)
         if not reply:
             reply = generate_text_response(message)
-        return Response({'response': reply}, status=status.HTTP_200_OK)
+        return Response({"response": reply}, status=status.HTTP_200_OK)
 
 
 class ChatbotImageView(APIView):
@@ -119,8 +121,9 @@ class ChatbotImageView(APIView):
     def post(self, request):
         serializer = ImageUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        image = serializer.validated_data['image']
-        files = {'file': image.read()}
+        image = serializer.validated_data["image"]
+        image.seek(0)
+        files = {"file": (image.name, image.read())}
         data = query_huggingface(HF_IMAGE_MODEL, files, is_json=False)
         food = None
         calories = None

@@ -177,10 +177,14 @@ curl -X POST -H "Content-Type: application/json" \
      https://localhost:8000/api/chatbot/message/
 ```
 
+`/api/chatbot/message/` also accepts URL encoded form data so you can submit `message=...` from an HTML form.
+
 Example request uploading an image:
 
 ```bash
 curl -X POST -F image=@photo.jpg \
      https://localhost:8000/api/chatbot/image/
 ```
+
+The chatbot looks up recipes from the existing database before falling back to the Hugging Face conversational model. If a known recipe is mentioned, preparation steps and calorie information are pulled directly from your stored records.
 
