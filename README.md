@@ -165,7 +165,10 @@ The page uses Bootstrap cards so the charts and tables have a clean, responsive 
 
 ## Chatbot API
 
-Two endpoints expose simple AI-powered features using Hugging Face models.
+Two endpoints expose simple AI-powered features using Hugging Face models. The
+chatbot first searches the local database for matching recipes and returns step
+by-step instructions when possible. If no local match is found, it falls back to
+Hugging Face text generation.
 
 - `POST /api/chatbot/message/` – send a chat message and receive a reply.
 - `POST /api/chatbot/image/` – upload a food photo to predict the dish and estimate calories.

@@ -3,7 +3,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ChatMessageSerializer, ChatImageSerializer
-from .services import hf_generate_reply, hf_analyze_image, suggest_recipes_from_message
+from .services import (
+    hf_generate_reply,
+    hf_analyze_image,
+    suggest_recipes_from_message,
+    find_recipe_in_message,
+    format_recipe_instructions,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +23,13 @@ class ChatMessageView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         message = serializer.validated_data['message']
         suggested = suggest_recipes_from_message(message)
-        reply = hf_generate_reply(message)
+
+        recipe = find_recipe_in_message(message)
+        if recipe:
+            reply_text = format_recipe_instructions(recipe)
+            reply = f"Here's how to make {recipe.name}:\n{reply_text}"
+        else:
+            reply = hf_generate_reply(message)
         return Response({
             'reply': reply,
             'suggested_recipes': suggested,

@@ -1,5 +1,6 @@
 import logging
-from typing import Tuple, List
+from typing import Tuple, List, Optional
+
 import requests
 from django.conf import settings
 from recipes.models import Recipe
@@ -65,3 +66,19 @@ def suggest_recipes_from_message(message: str, limit: int = 5) -> List[int]:
         if len(matched_ids) >= limit:
             break
     return list(matched_ids)[:limit]
+
+
+def find_recipe_in_message(message: str) -> Optional[Recipe]:
+    """Return a recipe whose name appears in the message (case-insensitive)."""
+    lower = message.lower()
+    for recipe in Recipe.objects.all():
+        if recipe.name.lower() in lower:
+            return recipe
+    return None
+
+
+def format_recipe_instructions(recipe: Recipe) -> str:
+    """Return numbered instructions for the recipe."""
+    steps = recipe.instructions.order_by('step_number')
+    lines = [f"{step.step_number}. {step.description}" for step in steps]
+    return "\n".join(lines)
