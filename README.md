@@ -186,7 +186,7 @@ curl -X POST -F image=@photo.jpg \
      https://localhost:8000/api/chatbot/image/
 ```
 
-The chatbot looks up recipes from the existing database before falling back to the Hugging Face conversational model. If a known recipe is mentioned, preparation steps and calorie information are pulled directly from your stored records.
+The chatbot looks up recipes from the existing database before falling back to the Hugging Face conversational model. Recipe names and ingredient names are matched in Uzbek, Russian or English. If a known recipe is mentioned, preparation steps and calorie information are pulled directly from your stored records.
 
 It understands questions like:
 

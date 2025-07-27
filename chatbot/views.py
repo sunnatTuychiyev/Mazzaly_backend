@@ -1,6 +1,7 @@
 import re
 import requests
 from django.conf import settings
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, parsers
@@ -59,7 +60,11 @@ def handle_recipe_query(message: str) -> str | None:
         ing_names = [i.strip() for i in re.split(r",|and", ingredients) if i.strip()]
         qs = Recipe.objects.all()
         for ing in ing_names:
-            qs = qs.filter(ingredients__name__icontains=ing)
+            qs = qs.filter(
+                Q(ingredients__name__icontains=ing)
+                | Q(ingredients__name_ru__icontains=ing)
+                | Q(ingredients__name_uz__icontains=ing)
+            )
         recipes = list(qs.distinct().values_list("name", flat=True)[:5])
         if recipes:
             return "You can cook: " + ", ".join(recipes)
@@ -69,7 +74,11 @@ def handle_recipe_query(message: str) -> str | None:
     m = re.search(r"(?:how do i|how to) cook ([\w\s-]+)", text)
     if m:
         name = m.group(1).strip()
-        recipe = Recipe.objects.filter(name__icontains=name).first()
+        recipe = Recipe.objects.filter(
+            Q(name__icontains=name)
+            | Q(name_ru__icontains=name)
+            | Q(name_uz__icontains=name)
+        ).first()
         if recipe:
             steps = recipe.instructions.order_by("step_number").values_list("description", flat=True)
             return "Steps to cook {}: {}".format(
@@ -82,7 +91,11 @@ def handle_recipe_query(message: str) -> str | None:
     m = re.search(r"ingredients (?:for|of) ([\w\s-]+)", text)
     if m:
         name = m.group(1).strip()
-        recipe = Recipe.objects.filter(name__icontains=name).first()
+        recipe = Recipe.objects.filter(
+            Q(name__icontains=name)
+            | Q(name_ru__icontains=name)
+            | Q(name_uz__icontains=name)
+        ).first()
         if recipe:
             ingr = recipe.ingredients.values_list("name", flat=True)
             return f"Ingredients for {recipe.name}: " + ", ".join(ingr)
@@ -100,7 +113,11 @@ def handle_recipe_query(message: str) -> str | None:
             # fallback: last word(s)
             parts = re.split(r"kcal|calories?|calorie", text, maxsplit=1)
             name = parts[1].strip() if len(parts) > 1 else text
-        recipe = Recipe.objects.filter(name__icontains=name).first()
+        recipe = Recipe.objects.filter(
+            Q(name__icontains=name)
+            | Q(name_ru__icontains=name)
+            | Q(name_uz__icontains=name)
+        ).first()
         if recipe and recipe.calories:
             return f"{recipe.name} has approximately {recipe.calories} kcal per serving."
         if recipe:
@@ -108,7 +125,11 @@ def handle_recipe_query(message: str) -> str | None:
 
     # Healthy/vegetarian/protein suggestions
     if "vegetarian" in text:
-        recipes = Recipe.objects.filter(categories__name__icontains="vegetarian").values_list("name", flat=True)[:5]
+        recipes = Recipe.objects.filter(
+            Q(categories__name__icontains="vegetarian")
+            | Q(categories__name_ru__icontains="vegetarian")
+            | Q(categories__name_uz__icontains="vegetarian")
+        ).values_list("name", flat=True)[:5]
         if recipes:
             return "Vegetarian options: " + ", ".join(recipes)
     if "healthy" in text:
@@ -128,7 +149,11 @@ def handle_recipe_query(message: str) -> str | None:
     m = re.search(r"(?:describe|tell me about|what is|explain) ([\w\s-]+)", text)
     if m:
         name = m.group(1).strip()
-        recipe = Recipe.objects.filter(name__icontains=name).first()
+        recipe = Recipe.objects.filter(
+            Q(name__icontains=name)
+            | Q(name_ru__icontains=name)
+            | Q(name_uz__icontains=name)
+        ).first()
         if recipe:
             return f"{recipe.name}: {recipe.description}"
         return "Recipe not found."
