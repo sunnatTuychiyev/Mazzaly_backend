@@ -26,6 +26,7 @@ urlpatterns = [
 path('admin/', admin.site.urls),
     path('api/', include('account.urls')),     # Auth, user, Google OAuth va h.k.
     path('api/', include('recipes.urls')),     # Recipes, ingredients, meal plan va h.k.
+    path('api/', include('chatbot.urls')),     # AI chatbot endpoints
     path('analytics/', include('analytics.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

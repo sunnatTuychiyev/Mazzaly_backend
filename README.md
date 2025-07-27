@@ -43,6 +43,7 @@ To send real emails instead of logging them to the console, configure the
 variables are provided, the app will use Django's SMTP backend.
 
 Environment variables can be configured using a `.env` file. See `.env.example` for the available keys.
+Set `HF_API_KEY` to enable the AI-powered chatbot features (Hugging Face access token).
 Set `CORS_ALLOWED_ORIGINS` to the URLs of any frontend applications that should
 be allowed to make authenticated requests, e.g.
 `http://localhost:8080,https://mazzaly.uz`.
@@ -161,4 +162,26 @@ Tables for user activity and total recipe views are paginated 20 rows per page.
 Clicking "Download Monthly PDF" first asks for the month you want to report on
 and then generates the PDF using WeasyPrint.
 The page uses Bootstrap cards so the charts and tables have a clean, responsive layout.
+
+## Chatbot API
+
+Two endpoints expose simple AI-powered features using Hugging Face models.
+
+- `POST /api/chatbot/message/` – send a chat message and receive a reply.
+- `POST /api/chatbot/image/` – upload a food photo to predict the dish and estimate calories.
+
+Example message request:
+
+```bash
+curl -X POST -H 'Content-Type: application/json' \
+     -d '{"message": "What can I cook with eggs and cheese?"}' \
+     https://localhost:8000/api/chatbot/message/
+```
+
+Example image request:
+
+```bash
+curl -X POST -F image=@/path/to/pizza.jpg \
+     https://localhost:8000/api/chatbot/image/
+```
 
