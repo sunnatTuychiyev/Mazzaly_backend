@@ -156,6 +156,8 @@ Charts are rendered with Chart.js and include:
 - **Subscription Distribution** – pie chart
 - **Views per Day** – line chart showing the last week
 - **Site Visits** – line chart of overall site visits (logged and anonymous)
+- Visits are counted when the `/api/recipe-cards/` endpoint is called and each
+  browser session is only recorded once per day
 - **Verification Status** – doughnut chart of verified vs unverified users
 - **New Recipes** – bar chart of recipes added in the last 30 days
 Tables for user activity and total recipe views are paginated 20 rows per page.

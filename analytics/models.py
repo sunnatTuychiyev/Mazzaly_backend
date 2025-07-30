@@ -25,7 +25,7 @@ class RecipeViewLog(models.Model):
 
 
 class SiteVisit(models.Model):
-    """Logs a single site visit per session."""
+    """Logs a single site visit per session per day."""
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -34,12 +34,14 @@ class SiteVisit(models.Model):
         blank=True,
         related_name="site_visits",
     )
-    session_key = models.CharField(max_length=40, unique=True)
+    session_key = models.CharField(max_length=40)
+    date = models.DateField()
     timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
     class Meta:
         ordering = ["-timestamp"]
+        unique_together = ("session_key", "date")
 
     def __str__(self):
         return f"{self.session_key} visited by {self.user} on {self.timestamp}"

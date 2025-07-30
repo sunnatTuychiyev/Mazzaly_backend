@@ -21,7 +21,7 @@ class RecipeViewLogAdmin(admin.ModelAdmin):
 
 @admin.register(SiteVisit)
 class SiteVisitAdmin(admin.ModelAdmin):
-    list_display = ('session_key', 'user', 'ip_address', 'timestamp')
+    list_display = ('session_key', 'date', 'user', 'ip_address', 'timestamp')
     search_fields = ('session_key', 'user__email', 'ip_address')
 
 

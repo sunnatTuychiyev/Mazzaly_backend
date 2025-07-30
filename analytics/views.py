@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.db import models
 from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.contrib.sessions.models import Session
@@ -18,6 +19,7 @@ def statistics_data(request):
     now = timezone.now()
     week_ago = now - timezone.timedelta(days=7)
     month_ago = now - timezone.timedelta(days=30)
+    week_ago_date = timezone.localdate() - timezone.timedelta(days=7)
 
     views_per_recipe = (
         Recipe.objects.annotate(total=Count('view_logs'))
@@ -51,9 +53,8 @@ def statistics_data(request):
     )
 
     visits_per_day = (
-        SiteVisit.objects.filter(timestamp__gte=week_ago)
-        .annotate(day=TruncDate('timestamp'))
-        .values('day')
+        SiteVisit.objects.filter(date__gte=week_ago_date)
+        .values(day=models.F('date'))
         .annotate(total=Count('id'))
         .order_by('day')
     )
