@@ -27,26 +27,41 @@ def statistics_data(request):
         .values('name', 'total')
     )
 
-    visits_24h = (
-        HourlyVisit.objects.filter(hour__gte=hour_start)
+    hour_counts = {
+        v['hour']: v['total']
+        for v in HourlyVisit.objects.filter(hour__gte=hour_start)
         .values('hour')
         .annotate(total=Count('id'))
-        .order_by('hour')
-    )
+    }
+    hours = [hour_start + timezone.timedelta(hours=i) for i in range(24)]
+    visits_24h = [
+        {'hour': h.strftime('%H:%M'), 'total': hour_counts.get(h, 0)}
+        for h in hours
+    ]
 
-    visits_7d = (
-        DailyVisit.objects.filter(day__gte=seven_days)
+    day_counts_7 = {
+        v['day']: v['total']
+        for v in DailyVisit.objects.filter(day__gte=seven_days)
         .values('day')
         .annotate(total=Count('id'))
-        .order_by('day')
-    )
+    }
+    days7 = [seven_days + timezone.timedelta(days=i) for i in range(7)]
+    visits_7d = [
+        {'day': d.isoformat(), 'total': day_counts_7.get(d, 0)}
+        for d in days7
+    ]
 
-    visits_30d = (
-        DailyVisit.objects.filter(day__gte=thirty_days)
+    day_counts_30 = {
+        v['day']: v['total']
+        for v in DailyVisit.objects.filter(day__gte=thirty_days)
         .values('day')
         .annotate(total=Count('id'))
-        .order_by('day')
-    )
+    }
+    days30 = [thirty_days + timezone.timedelta(days=i) for i in range(30)]
+    visits_30d = [
+        {'day': d.isoformat(), 'total': day_counts_30.get(d, 0)}
+        for d in days30
+    ]
 
     top_week = (
         Recipe.objects.filter(view_logs__timestamp__gte=week_ago)
