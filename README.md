@@ -157,6 +157,7 @@ Charts are rendered with Chart.js and include:
 - **Views per Day** – line chart showing the last week
 - **Verification Status** – doughnut chart of verified vs unverified users
 - **New Recipes** – bar chart of recipes added in the last 30 days
+- **Recipe Card Visits** – 24 h, 7 day and 30 day charts tracking unique visitors to `/api/recipe-cards/`
 Tables for user activity and total recipe views are paginated 20 rows per page.
 Clicking "Download Monthly PDF" first asks for the month you want to report on
 and then generates the PDF using WeasyPrint.

@@ -2,9 +2,14 @@
   const dataUrl = document.getElementById('statistics-data-url').value;
   fetch(dataUrl)
     .then(r => r.json())
-    .then(renderCharts);
+    .then(renderCharts)
+    .catch(err => console.error('Failed to load statistics data', err));
 
   function renderCharts(data) {
+    if (typeof Chart === 'undefined') {
+      console.error('Chart.js is not loaded');
+      return;
+    }
     const ctx1 = document.getElementById('viewsChart').getContext('2d');
     new Chart(ctx1, {
       type: 'bar',
