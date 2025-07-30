@@ -1,0 +1,28 @@
+.card-header {
+  font-weight: 500;
+}
+#viewsChart {
+  max-height: 600px;
+}
+#subsChart,
+#verifyChart,
+#verifySubsChart,
+#viewsDayChart,
+#newRecipeChart {
+  max-height: 300px;
+}
+#visits24hChart,
+#visits7dChart,
+#visits30dChart {
+  max-height: 300px;
+}
+
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  perspective: 1000px;
+}
+.card:hover {
+  transform: translateY(-3px) rotateX(2deg);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
