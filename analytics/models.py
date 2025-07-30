@@ -36,6 +36,7 @@ class SiteVisit(models.Model):
     session_key = models.CharField(max_length=40, db_index=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
 
     class Meta:
         ordering = ['-timestamp']
