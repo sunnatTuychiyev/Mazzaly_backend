@@ -108,6 +108,50 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const ctxV24 = document.getElementById('visits24Chart').getContext('2d');
+    new Chart(ctxV24, {
+      type: 'bar',
+      data: {
+        labels: data.visits_24h.map(v => v.hour),
+        datasets: [{
+          label: 'Unique visits',
+          data: data.visits_24h.map(v => v.total),
+          backgroundColor: 'rgba(255,206,86,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    const ctxV7 = document.getElementById('visits7Chart').getContext('2d');
+    new Chart(ctxV7, {
+      type: 'line',
+      data: {
+        labels: data.visits_7d.map(v => v.day),
+        datasets: [{
+          label: 'Unique visits',
+          data: data.visits_7d.map(v => v.total),
+          borderColor: 'rgba(255,206,86,0.8)',
+          fill: false
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    const ctxV30 = document.getElementById('visits30Chart').getContext('2d');
+    new Chart(ctxV30, {
+      type: 'line',
+      data: {
+        labels: data.visits_30d.map(v => v.day),
+        datasets: [{
+          label: 'Unique visits',
+          data: data.visits_30d.map(v => v.total),
+          borderColor: 'rgba(255,206,86,1)',
+          fill: false
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
   }

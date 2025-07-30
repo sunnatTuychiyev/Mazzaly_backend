@@ -87,8 +87,9 @@ remains short and readable.
 Imported recipes are stored in English and automatically translated to Uzbek and
 Russian. Ingredient and category names are translated as well. Use the `lang`
 query parameter on the `/api/recipes/`, `/api/categories/` and ingredient search
-endpoints to retrieve data in a specific language. Valid values are `en`, `uz`
-or `ru`; any other value defaults to English:
+endpoints to retrieve data in a specific language. The simplified
+`/api/recipe-cards/` endpoint accepts the same parameter. Valid values are `en`,
+`uz` or `ru`; any other value defaults to English:
 
 ```bash
 curl '/api/recipes/?lang=uz'
@@ -157,6 +158,7 @@ Charts are rendered with Chart.js and include:
 - **Views per Day** – line chart showing the last week
 - **Verification Status** – doughnut chart of verified vs unverified users
 - **New Recipes** – bar chart of recipes added in the last 30 days
+- **Recipe Card Visits** – hourly and daily charts of unique visitors
 Tables for user activity and total recipe views are paginated 20 rows per page.
 Clicking "Download Monthly PDF" first asks for the month you want to report on
 and then generates the PDF using WeasyPrint.

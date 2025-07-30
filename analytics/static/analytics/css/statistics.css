@@ -8,7 +8,10 @@
 #verifyChart,
 #verifySubsChart,
 #viewsDayChart,
-#newRecipeChart {
+#newRecipeChart,
+#visits24Chart,
+#visits7Chart,
+#visits30Chart {
   max-height: 300px;
 }
 
