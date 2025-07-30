@@ -10,7 +10,7 @@ from weasyprint import HTML
 
 from recipes.models import Recipe
 from account.models import User, Subscription
-from .models import RecipeViewLog
+from .models import RecipeViewLog, SiteVisit
 
 
 def statistics_data(request):
@@ -49,6 +49,17 @@ def statistics_data(request):
         .annotate(total=Count('id'))
         .order_by('day')
     )
+
+    visits_per_day = (
+        SiteVisit.objects.filter(timestamp__gte=week_ago)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+    total_visits = SiteVisit.objects.count()
+    anonymous_visits = SiteVisit.objects.filter(user__isnull=True).count()
+    logged_visits = total_visits - anonymous_visits
 
     active_sessions = Session.objects.filter(expire_date__gte=now).count()
     total_users = User.objects.count()
@@ -115,6 +126,10 @@ def statistics_data(request):
         'user_activity': list(user_activity),
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
+        'visits_per_day': list(visits_per_day),
+        'total_visits': total_visits,
+        'anonymous_visits': anonymous_visits,
+        'logged_visits': logged_visits,
         'new_recipes': list(new_recipes),
         'subscription_breakdown': {
             'total': total_users,

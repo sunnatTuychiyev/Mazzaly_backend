@@ -94,6 +94,26 @@
       }
     });
 
+    const ctxVisit = document.getElementById('visitChart').getContext('2d');
+    new Chart(ctxVisit, {
+      type: 'line',
+      data: {
+        labels: data.visits_per_day.map(v => v.day),
+        datasets: [{
+          label: 'Site visits',
+          data: data.visits_per_day.map(v => v.total),
+          borderColor: 'rgba(255,99,132,0.8)',
+          fill: false
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    document.getElementById('visitTotals').innerText =
+      'Total visits: ' + data.total_visits +
+      ' (Anon: ' + data.anonymous_visits +
+      ', Logged: ' + data.logged_visits + ')';
+
     const ctxNew = document.getElementById('newRecipeChart').getContext('2d');
     new Chart(ctxNew, {
       type: 'bar',
