@@ -1,8 +1,10 @@
 (function() {
-  const dataUrl = document.getElementById('statistics-data-url').value;
-  fetch(dataUrl)
-    .then(r => r.json())
-    .then(renderCharts);
+  document.addEventListener('DOMContentLoaded', function() {
+    const dataUrl = document.getElementById('statistics-data-url').value;
+    fetch(dataUrl)
+      .then(r => r.json())
+      .then(renderCharts);
+  });
 
   function renderCharts(data) {
     const ctx1 = document.getElementById('viewsChart').getContext('2d');
@@ -106,7 +108,11 @@
           fill: false
         }]
       },
-      options: {responsive: true, maintainAspectRatio: false}
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {y: {beginAtZero: true}}
+      }
     });
 
     document.getElementById('visitTotals').innerText =
