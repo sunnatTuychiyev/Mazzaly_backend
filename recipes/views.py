@@ -20,6 +20,7 @@ from .serializers import (
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
 from account.models import Subscription
+from analytics.models import record_recipe_card_visit
 
 # Shared Swagger parameter for selecting response language
 LANG_PARAM = openapi.Parameter(
@@ -222,6 +223,7 @@ class RecipeCardViewSet(RecipeViewSet):
 
     @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
+        record_recipe_card_visit(request)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(tags=['recipes'])

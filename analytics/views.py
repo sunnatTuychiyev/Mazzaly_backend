@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.db.models import Count
 from django.db.models.functions import TruncDate
+from datetime import datetime, timedelta
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
@@ -10,7 +11,7 @@ from weasyprint import HTML
 
 from recipes.models import Recipe
 from account.models import User, Subscription
-from .models import RecipeViewLog
+from .models import RecipeViewLog, RecipeCardVisit
 
 
 def statistics_data(request):
@@ -108,6 +109,33 @@ def statistics_data(request):
         .order_by('day')
     )
 
+    # --- Recipe card unique visits ---
+    hour_start = now.replace(minute=0, second=0, microsecond=0) - timedelta(hours=23)
+    card_24h = (
+        RecipeCardVisit.objects.filter(period_type=RecipeCardVisit.PERIOD_HOUR, period_start__gte=hour_start)
+        .values('period_start')
+        .annotate(total=Count('id'))
+        .order_by('period_start')
+    )
+
+    day_start_7 = now.date() - timedelta(days=6)
+    day_start_dt_7 = timezone.make_aware(datetime.combine(day_start_7, datetime.min.time()))
+    card_7d = (
+        RecipeCardVisit.objects.filter(period_type=RecipeCardVisit.PERIOD_DAY, period_start__gte=day_start_dt_7)
+        .values('period_start')
+        .annotate(total=Count('id'))
+        .order_by('period_start')
+    )
+
+    day_start_30 = now.date() - timedelta(days=29)
+    day_start_dt_30 = timezone.make_aware(datetime.combine(day_start_30, datetime.min.time()))
+    card_30d = (
+        RecipeCardVisit.objects.filter(period_type=RecipeCardVisit.PERIOD_DAY, period_start__gte=day_start_dt_30)
+        .values('period_start')
+        .annotate(total=Count('id'))
+        .order_by('period_start')
+    )
+
     return JsonResponse({
         'views_per_recipe': list(views_per_recipe),
         'top_week': list(top_week),
@@ -116,6 +144,9 @@ def statistics_data(request):
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
         'new_recipes': list(new_recipes),
+        'recipe_card_visits_24h': list(card_24h),
+        'recipe_card_visits_7d': list(card_7d),
+        'recipe_card_visits_30d': list(card_30d),
         'subscription_breakdown': {
             'total': total_users,
             'premium': premium_users,
