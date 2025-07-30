@@ -65,6 +65,21 @@ def statistics_data(request):
     for i in range(7):
         day = week_ago_date + timezone.timedelta(days=i)
         visits_per_day.append({'day': day.isoformat(), 'total': visits_dict.get(day, 0)})
+
+    # Visits per hour for the last 24 hours
+    start_hour = (now - timezone.timedelta(hours=23)).replace(minute=0, second=0, microsecond=0)
+    visits_hour_qs = (
+        SiteVisit.objects.filter(timestamp__gte=start_hour)
+        .annotate(hour=TruncHour('timestamp'))
+        .values('hour')
+        .annotate(total=Count('id'))
+        .order_by('hour')
+    )
+    visits_hour_dict = {v['hour']: v['total'] for v in visits_hour_qs}
+    visits_per_hour = []
+    for i in range(24):
+        hour = start_hour + timezone.timedelta(hours=i)
+        visits_per_hour.append({'hour': hour.isoformat(), 'total': visits_hour_dict.get(hour, 0)})
     total_visits = SiteVisit.objects.count()
     anonymous_visits = SiteVisit.objects.filter(user__isnull=True).count()
     logged_visits = total_visits - anonymous_visits
@@ -134,6 +149,7 @@ def statistics_data(request):
         'user_activity': list(user_activity),
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
+        'visits_per_hour': list(visits_per_hour),
         'visits_per_day': list(visits_per_day),
         'total_visits': total_visits,
         'anonymous_visits': anonymous_visits,

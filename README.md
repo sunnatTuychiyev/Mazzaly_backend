@@ -156,6 +156,7 @@ Charts are rendered with Chart.js and include:
 - **Subscription Distribution** – pie chart
 - **Views per Day** – line chart showing the last week
 - **Site Visits** – line chart of overall site visits (logged and anonymous)
+- **Site Visits by Hour** – bar chart showing visits for each hour of the last 24 hours
 - Visits are counted when the `/api/recipe-cards/` endpoint is called and each
   browser session is only recorded once per day. Visits are grouped by the
   timestamp date so old records still appear correctly.

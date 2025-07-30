@@ -115,6 +115,24 @@
       }
     });
 
+    const ctxVisitHour = document.getElementById('visitHourChart').getContext('2d');
+    new Chart(ctxVisitHour, {
+      type: 'bar',
+      data: {
+        labels: data.visits_per_hour.map(v => new Date(v.hour).getHours() + ':00'),
+        datasets: [{
+          label: 'Visits by hour',
+          data: data.visits_per_hour.map(v => v.total),
+          backgroundColor: 'rgba(255,205,86,0.6)'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {y: {beginAtZero: true}}
+      }
+    });
+
     document.getElementById('visitTotals').innerText =
       'Total visits: ' + data.total_visits +
       ' (Anon: ' + data.anonymous_visits +

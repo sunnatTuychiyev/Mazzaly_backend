@@ -9,11 +9,15 @@
 #verifySubsChart,
 #viewsDayChart,
 #visitChart,
+#visitHourChart,
 #newRecipeChart {
   max-height: 300px;
 }
 
 #visitChart {
+  height: 300px;
+}
+#visitHourChart {
   height: 300px;
 }
 
