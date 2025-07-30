@@ -162,3 +162,7 @@ Clicking "Download Monthly PDF" first asks for the month you want to report on
 and then generates the PDF using WeasyPrint.
 The page uses Bootstrap cards so the charts and tables have a clean, responsive layout.
 
+
+### Visitors Statistics
+
+Unique visits to the /api/recipe-cards/ endpoint are logged via `VisitorStatistics`. A middleware stores the visitor's session ID and IP address once per session. The admin statistics dashboard visualises these records with charts for the last 24 hours, 7 days and 30 days.

@@ -112,7 +112,7 @@
     new Chart(v24, {
       type: 'bar',
       data: {
-        labels: data.visitors_24h.map(v => v.hour),
+        labels: data.visitors_24h.map(v => `${v.hour}:00`),
         datasets: [{
           label: 'Visits',
           data: data.visitors_24h.map(v => v.total),

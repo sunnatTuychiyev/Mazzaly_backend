@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
-from django.db.models.functions import TruncDate, TruncHour
+from django.db.models.functions import TruncDate, TruncHour, ExtractHour
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
@@ -53,7 +53,7 @@ def statistics_data(request):
 
     visitors_24h = (
         VisitorStatistics.objects.filter(timestamp__gte=day_ago)
-        .annotate(hour=TruncHour('timestamp'))
+        .annotate(hour=ExtractHour('timestamp'))
         .values('hour')
         .annotate(total=Count('id'))
         .order_by('hour')
