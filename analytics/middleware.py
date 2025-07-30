@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 from .models import VisitorStatistics
 
@@ -17,7 +18,8 @@ class VisitorTrackingMiddleware(MiddlewareMixin):
                 or request.META.get("REMOTE_ADDR", "")
             )
 
-            if not VisitorStatistics.objects.filter(session_id=session_id).exists():
+            today = timezone.now().date()
+            if not VisitorStatistics.objects.filter(session_id=session_id, timestamp__date=today).exists():
                 VisitorStatistics.objects.create(
                     session_id=session_id,
                     ip_address=ip_addr,

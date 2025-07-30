@@ -165,4 +165,4 @@ The page uses Bootstrap cards so the charts and tables have a clean, responsive 
 
 ### Visitors Statistics
 
-Unique visits to the /api/recipe-cards/ endpoint are logged via `VisitorStatistics`. A middleware stores the visitor's session ID and IP address once per session. The admin statistics dashboard visualises these records with charts for the last 24 hours, 7 days and 30 days.
+Unique visits to the `/api/recipe-cards/` endpoint are logged via `VisitorStatistics`. The middleware records a visit the first time a session hits the endpoint each day, storing the session ID and IP address. The admin dashboard shows charts for the last 24 hours, 7 days and 30 days.

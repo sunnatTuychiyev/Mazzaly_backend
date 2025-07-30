@@ -51,29 +51,48 @@ def statistics_data(request):
         .order_by('day')
     )
 
-    visitors_24h = (
+    raw_v24 = (
         VisitorStatistics.objects.filter(timestamp__gte=day_ago)
         .annotate(hour=ExtractHour('timestamp'))
         .values('hour')
         .annotate(total=Count('id'))
-        .order_by('hour')
     )
+    hour_counts = {r['hour']: r['total'] for r in raw_v24}
+    visitors_24h = [
+        {'hour': h, 'total': hour_counts.get(h, 0)} for h in range(24)
+    ]
 
-    visitors_7d = (
+    raw_v7 = (
         VisitorStatistics.objects.filter(timestamp__gte=week_ago)
         .annotate(day=TruncDate('timestamp'))
         .values('day')
         .annotate(total=Count('id'))
-        .order_by('day')
     )
+    start_week = timezone.localdate() - timezone.timedelta(days=6)
+    day_counts_7 = {r['day']: r['total'] for r in raw_v7}
+    visitors_7d = [
+        {
+            'day': (start_week + timezone.timedelta(days=i)),
+            'total': day_counts_7.get(start_week + timezone.timedelta(days=i), 0),
+        }
+        for i in range(7)
+    ]
 
-    visitors_month = (
+    raw_v30 = (
         VisitorStatistics.objects.filter(timestamp__gte=month_ago)
         .annotate(day=TruncDate('timestamp'))
         .values('day')
         .annotate(total=Count('id'))
-        .order_by('day')
     )
+    start_month = timezone.localdate() - timezone.timedelta(days=29)
+    day_counts_30 = {r['day']: r['total'] for r in raw_v30}
+    visitors_month = [
+        {
+            'day': (start_month + timezone.timedelta(days=i)),
+            'total': day_counts_30.get(start_month + timezone.timedelta(days=i), 0),
+        }
+        for i in range(30)
+    ]
 
     active_sessions = Session.objects.filter(expire_date__gte=now).count()
     total_users = User.objects.count()
