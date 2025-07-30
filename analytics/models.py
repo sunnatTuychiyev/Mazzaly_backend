@@ -22,3 +22,23 @@ class RecipeViewLog(models.Model):
 
     def __str__(self):
         return f"{self.recipe} viewed by {self.user} on {self.timestamp}"
+
+
+class SiteVisit(models.Model):
+    """Tracks unique visits to the site."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='site_visits'
+    )
+    session_key = models.CharField(max_length=40, db_index=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.session_key} @ {self.timestamp}"

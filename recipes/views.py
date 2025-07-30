@@ -222,6 +222,8 @@ class RecipeCardViewSet(RecipeViewSet):
 
     @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
+        from analytics.utils import log_site_visit
+        log_site_visit(request)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(tags=['recipes'])

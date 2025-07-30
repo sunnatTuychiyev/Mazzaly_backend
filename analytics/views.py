@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
-from django.db.models.functions import TruncDate
+from django.db.models.functions import TruncDate, TruncHour
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
@@ -10,7 +10,7 @@ from weasyprint import HTML
 
 from recipes.models import Recipe
 from account.models import User, Subscription
-from .models import RecipeViewLog
+from .models import RecipeViewLog, SiteVisit
 
 
 def statistics_data(request):
@@ -47,6 +47,28 @@ def statistics_data(request):
         .annotate(day=TruncDate('timestamp'))
         .values('day')
         .annotate(total=Count('id'))
+        .order_by('day')
+    )
+
+    visits_24h = (
+        SiteVisit.objects.filter(timestamp__gte=now - timezone.timedelta(hours=24))
+        .annotate(hour=TruncHour('timestamp'))
+        .values('hour')
+        .annotate(total=Count('session_key', distinct=True))
+        .order_by('hour')
+    )
+    visits_7d = (
+        SiteVisit.objects.filter(timestamp__gte=week_ago)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
+        .annotate(total=Count('session_key', distinct=True))
+        .order_by('day')
+    )
+    visits_month = (
+        SiteVisit.objects.filter(timestamp__gte=month_ago)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
+        .annotate(total=Count('session_key', distinct=True))
         .order_by('day')
     )
 
@@ -116,6 +138,9 @@ def statistics_data(request):
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
         'new_recipes': list(new_recipes),
+        'visits_24h': list(visits_24h),
+        'visits_7d': list(visits_7d),
+        'visits_month': list(visits_month),
         'subscription_breakdown': {
             'total': total_users,
             'premium': premium_users,
