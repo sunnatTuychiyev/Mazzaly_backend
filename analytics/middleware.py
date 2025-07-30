@@ -16,11 +16,12 @@ class SiteVisitMiddleware:
             today = timezone.localdate()
             if request.session.get('logged_visit') != str(today):
                 ip = request.META.get('REMOTE_ADDR')
+                user = getattr(request, 'user', None)
                 SiteVisit.objects.get_or_create(
                     session_key=request.session.session_key,
                     date=today,
                     defaults={
-                        'user': request.user if request.user.is_authenticated else None,
+                        'user': user if getattr(user, 'is_authenticated', False) else None,
                         'ip_address': ip,
                     },
                 )
