@@ -151,9 +151,21 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const ctxUnique = document.getElementById('totalUniqueChart').getContext('2d');
+    new Chart(ctxUnique, {
+      type: 'bar',
+      data: {
+        labels: ['Total'],
+        datasets: [{
+          label: 'Unique visitors',
+          data: [data.total_unique_visitors],
+          backgroundColor: 'rgba(201,203,207,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+    });
+
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
-    document.getElementById('totalUnique').innerText =
-      data.total_unique_visitors;
   }
 })();

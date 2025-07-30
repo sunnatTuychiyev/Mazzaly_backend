@@ -13,7 +13,8 @@
 }
 #visits24hChart,
 #visits7dChart,
-#visits30dChart {
+#visits30dChart,
+#totalUniqueChart {
   max-height: 300px;
 }
 
