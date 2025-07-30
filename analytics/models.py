@@ -28,6 +28,7 @@ class SiteVisit(models.Model):
     """Record each time the recipe cards API is accessed."""
     timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
+    session_key = models.CharField(max_length=40)
 
     class Meta:
         ordering = ["-timestamp"]
