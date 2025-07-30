@@ -22,3 +22,24 @@ class RecipeViewLog(models.Model):
 
     def __str__(self):
         return f"{self.recipe} viewed by {self.user} on {self.timestamp}"
+
+
+class VisitorStatistics(models.Model):
+    """Unique visitor log for the recipe cards API."""
+
+    session_id = models.CharField(max_length=255)
+    ip_address = models.GenericIPAddressField()
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="visitor_stats",
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-timestamp"]
+
+    def __str__(self):
+        return f"{self.session_id} - {self.ip_address}"

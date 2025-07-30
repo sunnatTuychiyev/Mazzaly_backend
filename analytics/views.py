@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
-from django.db.models.functions import TruncDate
+from django.db.models.functions import TruncDate, TruncHour
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
@@ -10,7 +10,7 @@ from weasyprint import HTML
 
 from recipes.models import Recipe
 from account.models import User, Subscription
-from .models import RecipeViewLog
+from .models import RecipeViewLog, VisitorStatistics
 
 
 def statistics_data(request):
@@ -18,6 +18,7 @@ def statistics_data(request):
     now = timezone.now()
     week_ago = now - timezone.timedelta(days=7)
     month_ago = now - timezone.timedelta(days=30)
+    day_ago = now - timezone.timedelta(hours=24)
 
     views_per_recipe = (
         Recipe.objects.annotate(total=Count('view_logs'))
@@ -44,6 +45,30 @@ def statistics_data(request):
 
     views_per_day = (
         RecipeViewLog.objects.filter(timestamp__gte=week_ago)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+
+    visitors_24h = (
+        VisitorStatistics.objects.filter(timestamp__gte=day_ago)
+        .annotate(hour=TruncHour('timestamp'))
+        .values('hour')
+        .annotate(total=Count('id'))
+        .order_by('hour')
+    )
+
+    visitors_7d = (
+        VisitorStatistics.objects.filter(timestamp__gte=week_ago)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+
+    visitors_month = (
+        VisitorStatistics.objects.filter(timestamp__gte=month_ago)
         .annotate(day=TruncDate('timestamp'))
         .values('day')
         .annotate(total=Count('id'))
@@ -115,6 +140,9 @@ def statistics_data(request):
         'user_activity': list(user_activity),
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
+        'visitors_24h': list(visitors_24h),
+        'visitors_7d': list(visitors_7d),
+        'visitors_month': list(visitors_month),
         'new_recipes': list(new_recipes),
         'subscription_breakdown': {
             'total': total_users,

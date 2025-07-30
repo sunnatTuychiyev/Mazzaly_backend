@@ -108,6 +108,48 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const v24 = document.getElementById('visitors24Chart').getContext('2d');
+    new Chart(v24, {
+      type: 'bar',
+      data: {
+        labels: data.visitors_24h.map(v => v.hour),
+        datasets: [{
+          label: 'Visits',
+          data: data.visitors_24h.map(v => v.total),
+          backgroundColor: 'rgba(255,205,86,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    const v7 = document.getElementById('visitors7Chart').getContext('2d');
+    new Chart(v7, {
+      type: 'bar',
+      data: {
+        labels: data.visitors_7d.map(v => v.day),
+        datasets: [{
+          label: 'Visits',
+          data: data.visitors_7d.map(v => v.total),
+          backgroundColor: 'rgba(153,102,255,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    const v30 = document.getElementById('visitors30Chart').getContext('2d');
+    new Chart(v30, {
+      type: 'bar',
+      data: {
+        labels: data.visitors_month.map(v => v.day),
+        datasets: [{
+          label: 'Visits',
+          data: data.visitors_month.map(v => v.total),
+          backgroundColor: 'rgba(75,192,192,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
   }
