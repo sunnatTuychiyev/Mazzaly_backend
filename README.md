@@ -159,6 +159,8 @@ Charts are rendered with Chart.js and include:
 - Visits are counted when the `/api/recipe-cards/` endpoint is called and each
   browser session is only recorded once per day. Visits are grouped by the
   timestamp date so old records still appear correctly.
+- You can retrieve the running totals via `GET /analytics/visits/count/` which
+  returns overall and today's visit counts.
 - **Verification Status** – doughnut chart of verified vs unverified users
 - **New Recipes** – bar chart of recipes added in the last 30 days
 Tables for user activity and total recipe views are paginated 20 rows per page.

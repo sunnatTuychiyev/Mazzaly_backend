@@ -200,3 +200,11 @@ def monthly_report_pdf(request):
     filename = f"report_{year}_{month:02d}.pdf"
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
+
+
+def visit_count(request):
+    """Return total and today's site visit counts."""
+    total = SiteVisit.objects.count()
+    today = timezone.localdate()
+    today_total = SiteVisit.objects.filter(date=today).count()
+    return JsonResponse({'total_visits': total, 'today_visits': today_total})
