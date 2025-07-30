@@ -161,6 +161,8 @@ Charts are rendered with Chart.js and include:
   timestamp date so old records still appear correctly.
 - Days without traffic are still shown with zero visits so the chart always
   covers the last week.
+- The site visit chart appears on `/admin/statistics/` and summarizes the
+  previous seven days of traffic.
 - You can retrieve the running totals via `GET /analytics/visits/count/` which
   returns overall and today's visit counts.
 - **Verification Status** – doughnut chart of verified vs unverified users
