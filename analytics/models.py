@@ -22,3 +22,15 @@ class RecipeViewLog(models.Model):
 
     def __str__(self):
         return f"{self.recipe} viewed by {self.user} on {self.timestamp}"
+
+
+class SiteVisit(models.Model):
+    """Record each time the recipe cards API is accessed."""
+    timestamp = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-timestamp"]
+
+    def __str__(self):
+        return f"Visit from {self.ip_address} at {self.timestamp}"

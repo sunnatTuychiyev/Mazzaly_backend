@@ -222,6 +222,9 @@ class RecipeCardViewSet(RecipeViewSet):
 
     @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
+        from analytics.models import SiteVisit
+        ip = request.META.get('REMOTE_ADDR')
+        SiteVisit.objects.create(ip_address=ip)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(tags=['recipes'])

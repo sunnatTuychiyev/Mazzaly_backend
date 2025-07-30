@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Count
 from django.core.paginator import Paginator
 
-from .models import RecipeViewLog
+from .models import RecipeViewLog, SiteVisit
 from recipes.models import Recipe
 from account.models import User
 from django.contrib.sessions.models import Session
@@ -17,6 +17,11 @@ class RecipeViewLogAdmin(admin.ModelAdmin):
     list_display = ('recipe', 'user', 'ip_address', 'country', 'timestamp')
     list_filter = ('country', 'recipe')
     search_fields = ('user__email', 'ip_address')
+
+
+@admin.register(SiteVisit)
+class SiteVisitAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'timestamp')
 
 
 def register_statistics(admin_site):

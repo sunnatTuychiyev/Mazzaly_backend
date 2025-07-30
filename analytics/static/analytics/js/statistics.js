@@ -108,6 +108,48 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const visitDayCtx = document.getElementById('visitDayChart').getContext('2d');
+    new Chart(visitDayCtx, {
+      type: 'bar',
+      data: {
+        labels: ['24h'],
+        datasets: [{
+          label: 'Visits',
+          data: [data.site_visits.day],
+          backgroundColor: 'rgba(54,162,235,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+    });
+
+    const visitWeekCtx = document.getElementById('visitWeekChart').getContext('2d');
+    new Chart(visitWeekCtx, {
+      type: 'bar',
+      data: {
+        labels: ['7d'],
+        datasets: [{
+          label: 'Visits',
+          data: [data.site_visits.week],
+          backgroundColor: 'rgba(75,192,192,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+    });
+
+    const visitMonthCtx = document.getElementById('visitMonthChart').getContext('2d');
+    new Chart(visitMonthCtx, {
+      type: 'bar',
+      data: {
+        labels: ['30d'],
+        datasets: [{
+          label: 'Visits',
+          data: [data.site_visits.month],
+          backgroundColor: 'rgba(255,99,132,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+    });
+
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
   }
