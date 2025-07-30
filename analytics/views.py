@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
-from django.db.models.functions import TruncDate
+from django.db.models.functions import TruncDate, TruncHour
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
@@ -28,9 +28,10 @@ def statistics_data(request):
     )
 
     hour_counts = {
-        v['hour']: v['total']
+        v['h']: v['total']
         for v in HourlyVisit.objects.filter(hour__gte=hour_start)
-        .values('hour')
+        .annotate(h=TruncHour('hour'))
+        .values('h')
         .annotate(total=Count('id'))
     }
     hours = [hour_start + timezone.timedelta(hours=i) for i in range(24)]

@@ -149,6 +149,12 @@ Standard recipes only.
 The admin panel provides a `/admin/statistics/` page with charts and tables
 showing recipe views, daily traffic and subscription breakdowns. Data comes from
 the `RecipeViewLog` model and the GeoIP database configured via `GEOIP_PATH`.
+Run migrations after pulling updates to ensure the visitor tracking tables are
+created:
+
+```bash
+python manage.py migrate
+```
 
 Charts are rendered with Chart.js and include:
 
