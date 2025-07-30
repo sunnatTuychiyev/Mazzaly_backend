@@ -11,10 +11,8 @@
 #newRecipeChart {
   max-height: 300px;
 }
-#visitDayChart,
-#visitWeekChart,
-#visitMonthChart {
-  max-height: 300px;
+#visitChart {
+  height: 300px;
 }
 
 .card {

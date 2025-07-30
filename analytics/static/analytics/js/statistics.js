@@ -108,43 +108,19 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
-    const visitDayCtx = document.getElementById('visitDayChart').getContext('2d');
-    new Chart(visitDayCtx, {
+    const visitCtx = document.getElementById('visitChart').getContext('2d');
+    new Chart(visitCtx, {
       type: 'bar',
       data: {
-        labels: ['24h'],
+        labels: ['24h', '7d', '30d'],
         datasets: [{
           label: 'Visits',
-          data: [data.site_visits.day],
-          backgroundColor: 'rgba(54,162,235,0.6)'
-        }]
-      },
-      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
-    });
-
-    const visitWeekCtx = document.getElementById('visitWeekChart').getContext('2d');
-    new Chart(visitWeekCtx, {
-      type: 'bar',
-      data: {
-        labels: ['7d'],
-        datasets: [{
-          label: 'Visits',
-          data: [data.site_visits.week],
-          backgroundColor: 'rgba(75,192,192,0.6)'
-        }]
-      },
-      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
-    });
-
-    const visitMonthCtx = document.getElementById('visitMonthChart').getContext('2d');
-    new Chart(visitMonthCtx, {
-      type: 'bar',
-      data: {
-        labels: ['30d'],
-        datasets: [{
-          label: 'Visits',
-          data: [data.site_visits.month],
-          backgroundColor: 'rgba(255,99,132,0.6)'
+          data: [data.site_visits.day, data.site_visits.week, data.site_visits.month],
+          backgroundColor: [
+            'rgba(54,162,235,0.6)',
+            'rgba(75,192,192,0.6)',
+            'rgba(255,99,132,0.6)'
+          ]
         }]
       },
       options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
