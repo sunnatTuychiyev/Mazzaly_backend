@@ -17,6 +17,7 @@ from .serializers import (
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer,
     MealTypeSerializer
 )
+from analytics.utils import log_site_visit
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
 from account.models import Subscription
@@ -222,6 +223,7 @@ class RecipeCardViewSet(RecipeViewSet):
 
     @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
+        log_site_visit(request)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(tags=['recipes'])

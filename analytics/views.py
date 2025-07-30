@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
-from django.db.models.functions import TruncDate
+from django.db.models.functions import TruncDate, TruncHour
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
@@ -10,7 +10,7 @@ from weasyprint import HTML
 
 from recipes.models import Recipe
 from account.models import User, Subscription
-from .models import RecipeViewLog
+from .models import RecipeViewLog, SiteVisit
 
 
 def statistics_data(request):
@@ -108,6 +108,17 @@ def statistics_data(request):
         .order_by('day')
     )
 
+    visits_24h = SiteVisit.objects.filter(timestamp__gte=now - timezone.timedelta(hours=24)).count()
+    visits_7d = SiteVisit.objects.filter(timestamp__gte=now - timezone.timedelta(days=7)).count()
+    visits_30d = SiteVisit.objects.filter(timestamp__gte=now - timezone.timedelta(days=30)).count()
+    visits_by_hour = (
+        SiteVisit.objects.filter(timestamp__gte=now - timezone.timedelta(hours=24))
+        .annotate(hour=TruncHour('timestamp'))
+        .values('hour')
+        .annotate(total=Count('id'))
+        .order_by('hour')
+    )
+
     return JsonResponse({
         'views_per_recipe': list(views_per_recipe),
         'top_week': list(top_week),
@@ -116,6 +127,12 @@ def statistics_data(request):
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
         'new_recipes': list(new_recipes),
+        'visit_counts': {
+            'last_24h': visits_24h,
+            'last_7d': visits_7d,
+            'last_30d': visits_30d,
+        },
+        'visits_by_hour': list(visits_by_hour),
         'subscription_breakdown': {
             'total': total_users,
             'premium': premium_users,

@@ -108,6 +108,25 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const ctxVisit = document.getElementById('visitHourChart').getContext('2d');
+    new Chart(ctxVisit, {
+      type: 'line',
+      data: {
+        labels: data.visits_by_hour.map(v => v.hour),
+        datasets: [{
+          label: 'Unique visitors',
+          data: data.visits_by_hour.map(v => v.total),
+          borderColor: 'rgba(255,99,132,0.8)',
+          fill: false
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false, scales:{y:{beginAtZero:true}}}
+    });
+
+    document.getElementById('visits24h').innerText = data.visit_counts.last_24h;
+    document.getElementById('visits7d').innerText = data.visit_counts.last_7d;
+    document.getElementById('visits30d').innerText = data.visit_counts.last_30d;
+
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
   }
