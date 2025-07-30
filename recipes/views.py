@@ -223,11 +223,13 @@ class RecipeCardViewSet(RecipeViewSet):
     @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
         from analytics.models import SiteVisit
-        ip = request.META.get('REMOTE_ADDR')
+        from analytics.utils import get_client_ip
+
         if not request.session.session_key:
             request.session.save()
+
         SiteVisit.objects.create(
-            ip_address=ip,
+            ip_address=get_client_ip(request),
             session_key=request.session.session_key,
         )
         return super().list(request, *args, **kwargs)
