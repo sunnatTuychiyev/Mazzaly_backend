@@ -57,6 +57,33 @@
     </div>
   </div>
 
+  <div class="row mt-4 gy-4">
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header">Recipe Card Visits (24h)</div>
+        <div class="card-body">
+          <canvas id="card24Chart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header">Visits Last 7 Days</div>
+        <div class="card-body">
+          <canvas id="card7Chart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header">Visits Last 30 Days</div>
+        <div class="card-body">
+          <canvas id="card30Chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row mt-5 gy-4">
     <div class="col-lg-6">
       <h3>Most Viewed Recipes (7 days)</h3>
@@ -133,7 +160,6 @@
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-3d@1.0.0/dist/chartjs-chart-3d.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script src="{% static 'analytics/js/statistics.js' %}"></script>
 {% endblock %}

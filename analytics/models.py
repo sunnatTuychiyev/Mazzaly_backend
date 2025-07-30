@@ -22,3 +22,17 @@ class RecipeViewLog(models.Model):
 
     def __str__(self):
         return f"{self.recipe} viewed by {self.user} on {self.timestamp}"
+
+
+class RecipeCardVisit(models.Model):
+    """Log unique visits to the recipe card list endpoint."""
+
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-timestamp"]
+
+    def __str__(self) -> str:  # pragma: no cover - repr only
+        return f"{self.ip_address} {self.user_agent} at {self.timestamp}"

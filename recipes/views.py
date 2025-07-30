@@ -222,7 +222,13 @@ class RecipeCardViewSet(RecipeViewSet):
 
     @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        response = super().list(request, *args, **kwargs)
+        try:
+            from analytics.utils import log_recipe_card_visit
+            log_recipe_card_visit(request)
+        except Exception:
+            pass
+        return response
 
     @swagger_auto_schema(tags=['recipes'])
     def retrieve(self, request, *args, **kwargs):
