@@ -108,6 +108,49 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const v24Ctx = document.getElementById('rcVisits24h').getContext('2d');
+    new Chart(v24Ctx, {
+      type: 'line',
+      data: {
+        labels: data.recipe_card_visits_24h.map(v => v.period_start),
+        datasets: [{
+          label: 'Unique visitors',
+          data: data.recipe_card_visits_24h.map(v => v.total),
+          borderColor: 'rgba(54,162,235,0.8)',
+          fill: false
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+    });
+
+    const v7Ctx = document.getElementById('rcVisits7d').getContext('2d');
+    new Chart(v7Ctx, {
+      type: 'bar',
+      data: {
+        labels: data.recipe_card_visits_7d.map(v => v.period_start),
+        datasets: [{
+          label: 'Unique visitors',
+          data: data.recipe_card_visits_7d.map(v => v.total),
+          backgroundColor: 'rgba(75,192,192,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    const v30Ctx = document.getElementById('rcVisits30d').getContext('2d');
+    new Chart(v30Ctx, {
+      type: 'bar',
+      data: {
+        labels: data.recipe_card_visits_30d.map(v => v.period_start),
+        datasets: [{
+          label: 'Unique visitors',
+          data: data.recipe_card_visits_30d.map(v => v.total),
+          backgroundColor: 'rgba(201,203,207,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
   }
