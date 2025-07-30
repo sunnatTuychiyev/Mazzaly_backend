@@ -118,6 +118,8 @@ def statistics_data(request):
     verified_users = User.objects.filter(is_email_verified=True).count()
     unverified_users = total_users - verified_users
 
+    total_unique_visitors = DailyVisit.objects.values('ip_address', 'user_agent').distinct().count()
+
     verified_premium = (
         User.objects.filter(
             is_email_verified=True,
@@ -172,6 +174,7 @@ def statistics_data(request):
             'verified_healthy': verified_healthy,
             'verified_standard': verified_standard,
         },
+        'total_unique_visitors': total_unique_visitors,
     })
 
 

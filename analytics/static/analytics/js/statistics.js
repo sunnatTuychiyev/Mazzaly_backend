@@ -153,5 +153,7 @@
 
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
+    document.getElementById('totalUnique').innerText =
+      data.total_unique_visitors;
   }
 })();
