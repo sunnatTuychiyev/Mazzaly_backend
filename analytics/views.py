@@ -1,5 +1,4 @@
 from django.utils import timezone
-from django.db import models
 from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.contrib.sessions.models import Session
@@ -53,8 +52,9 @@ def statistics_data(request):
     )
 
     visits_per_day = (
-        SiteVisit.objects.filter(date__gte=week_ago_date)
-        .values(day=models.F('date'))
+        SiteVisit.objects.filter(timestamp__date__gte=week_ago_date)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
         .annotate(total=Count('id'))
         .order_by('day')
     )

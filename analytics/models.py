@@ -35,7 +35,7 @@ class SiteVisit(models.Model):
         related_name="site_visits",
     )
     session_key = models.CharField(max_length=40)
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
