@@ -222,10 +222,15 @@ class RecipeCardViewSet(RecipeViewSet):
 
     @swagger_auto_schema(tags=['recipes'])
     def list(self, request, *args, **kwargs):
+        # Track unique visitors to the recipe card endpoint
+        from analytics.utils import log_recipe_card_visit
+        log_recipe_card_visit(request)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(tags=['recipes'])
     def retrieve(self, request, *args, **kwargs):
+        from analytics.utils import log_recipe_card_visit
+        log_recipe_card_visit(request)
         return super().retrieve(request, *args, **kwargs)
 
 

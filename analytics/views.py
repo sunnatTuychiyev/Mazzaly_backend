@@ -10,7 +10,11 @@ from weasyprint import HTML
 
 from recipes.models import Recipe
 from account.models import User, Subscription
-from .models import RecipeViewLog
+from .models import (
+    RecipeViewLog,
+    RecipeCardHourlyVisit,
+    RecipeCardDailyVisit,
+)
 
 
 def statistics_data(request):
@@ -108,6 +112,33 @@ def statistics_data(request):
         .order_by('day')
     )
 
+    visits_24h = (
+        RecipeCardHourlyVisit.objects.filter(
+            hour__gte=now - timezone.timedelta(hours=23)
+        )
+        .values('hour')
+        .annotate(total=Count('id'))
+        .order_by('hour')
+    )
+
+    visits_7d = (
+        RecipeCardDailyVisit.objects.filter(
+            day__gte=now.date() - timezone.timedelta(days=6)
+        )
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+
+    visits_30d = (
+        RecipeCardDailyVisit.objects.filter(
+            day__gte=now.date() - timezone.timedelta(days=29)
+        )
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+
     return JsonResponse({
         'views_per_recipe': list(views_per_recipe),
         'top_week': list(top_week),
@@ -116,6 +147,9 @@ def statistics_data(request):
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
         'new_recipes': list(new_recipes),
+        'visits_24h': list(visits_24h),
+        'visits_7d': list(visits_7d),
+        'visits_30d': list(visits_30d),
         'subscription_breakdown': {
             'total': total_users,
             'premium': premium_users,
