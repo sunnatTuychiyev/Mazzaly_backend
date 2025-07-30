@@ -18,7 +18,8 @@ def statistics_data(request):
     now = timezone.now()
     week_ago = now - timezone.timedelta(days=7)
     month_ago = now - timezone.timedelta(days=30)
-    week_ago_date = timezone.localdate() - timezone.timedelta(days=7)
+    # include today when building daily visit stats
+    week_ago_date = timezone.localdate() - timezone.timedelta(days=6)
 
     views_per_recipe = (
         Recipe.objects.annotate(total=Count('view_logs'))
@@ -51,13 +52,19 @@ def statistics_data(request):
         .order_by('day')
     )
 
-    visits_per_day = (
+    visits_qs = (
         SiteVisit.objects.filter(timestamp__date__gte=week_ago_date)
         .annotate(day=TruncDate('timestamp'))
         .values('day')
         .annotate(total=Count('id'))
         .order_by('day')
     )
+    # Ensure every day in the range is represented
+    visits_dict = {v['day']: v['total'] for v in visits_qs}
+    visits_per_day = []
+    for i in range(7):
+        day = week_ago_date + timezone.timedelta(days=i)
+        visits_per_day.append({'day': day.isoformat(), 'total': visits_dict.get(day, 0)})
     total_visits = SiteVisit.objects.count()
     anonymous_visits = SiteVisit.objects.filter(user__isnull=True).count()
     logged_visits = total_visits - anonymous_visits
