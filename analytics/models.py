@@ -25,6 +25,19 @@ class RecipeViewLog(models.Model):
         return f"{self.recipe} viewed by {self.user} on {self.timestamp}"
 
 
+class SiteVisit(models.Model):
+    """Generic site visit log."""
+
+    date = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField()
+
+    class Meta:
+        ordering = ["-date"]
+
+    def __str__(self):  # pragma: no cover - simple representation
+        return f"{self.ip_address} @ {self.date}"
+
+
 class RecipeCardVisit(models.Model):
     """Unique visits to the recipe cards API."""
 
