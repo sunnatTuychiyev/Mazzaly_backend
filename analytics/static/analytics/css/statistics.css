@@ -11,6 +11,9 @@
 #newRecipeChart {
   max-height: 300px;
 }
+#visitChart {
+  height: 300px;
+}
 
 .card {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);

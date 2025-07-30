@@ -10,7 +10,7 @@ from weasyprint import HTML
 
 from recipes.models import Recipe
 from account.models import User, Subscription
-from .models import RecipeViewLog
+from .models import RecipeViewLog, SiteVisit
 
 
 def statistics_data(request):
@@ -18,6 +18,7 @@ def statistics_data(request):
     now = timezone.now()
     week_ago = now - timezone.timedelta(days=7)
     month_ago = now - timezone.timedelta(days=30)
+    day_ago = now - timezone.timedelta(days=1)
 
     views_per_recipe = (
         Recipe.objects.annotate(total=Count('view_logs'))
@@ -49,6 +50,10 @@ def statistics_data(request):
         .annotate(total=Count('id'))
         .order_by('day')
     )
+
+    visits_day = SiteVisit.objects.filter(timestamp__gte=day_ago).count()
+    visits_week = SiteVisit.objects.filter(timestamp__gte=week_ago).count()
+    visits_month = SiteVisit.objects.filter(timestamp__gte=month_ago).count()
 
     active_sessions = Session.objects.filter(expire_date__gte=now).count()
     total_users = User.objects.count()
@@ -116,6 +121,11 @@ def statistics_data(request):
         'active_sessions': active_sessions,
         'views_per_day': list(views_per_day),
         'new_recipes': list(new_recipes),
+        'site_visits': {
+            'day': visits_day,
+            'week': visits_week,
+            'month': visits_month,
+        },
         'subscription_breakdown': {
             'total': total_users,
             'premium': premium_users,
