@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
-from django.db.models.functions import TruncDate
+from django.db.models.functions import TruncDate, TruncHour
 from django.contrib.sessions.models import Session
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
