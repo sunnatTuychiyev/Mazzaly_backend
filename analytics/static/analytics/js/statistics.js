@@ -108,6 +108,49 @@
       options: {responsive: true, maintainAspectRatio: false}
     });
 
+    const card24 = document.getElementById('card24Chart').getContext('2d');
+    new Chart(card24, {
+      type: 'bar',
+      data: {
+        labels: data.card_visits_24h.map(v => v.hour),
+        datasets: [{
+          label: 'Unique visitors',
+          data: data.card_visits_24h.map(v => v.total),
+          backgroundColor: 'rgba(75,192,192,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
+    const card7 = document.getElementById('card7Chart').getContext('2d');
+    new Chart(card7, {
+      type: 'line',
+      data: {
+        labels: data.card_visits_7d.map(v => v.day),
+        datasets: [{
+          label: 'Unique visitors',
+          data: data.card_visits_7d.map(v => v.total),
+          borderColor: 'rgba(255,99,132,0.8)',
+          fill: false
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+    });
+
+    const card30 = document.getElementById('card30Chart').getContext('2d');
+    new Chart(card30, {
+      type: 'bar',
+      data: {
+        labels: data.card_visits_30d.map(v => v.month),
+        datasets: [{
+          label: 'Unique visitors',
+          data: data.card_visits_30d.map(v => v.total),
+          backgroundColor: 'rgba(153,102,255,0.6)'
+        }]
+      },
+      options: {responsive: true, maintainAspectRatio: false}
+    });
+
     document.getElementById('totalUsers').innerText =
       'Total users: ' + data.subscription_breakdown.total;
   }
