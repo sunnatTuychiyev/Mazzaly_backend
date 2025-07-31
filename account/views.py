@@ -8,6 +8,7 @@ from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializ
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .serializers import SafeTokenRefreshSerializer
 from django.contrib.auth import authenticate
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -37,6 +38,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class CustomTokenRefreshView(TokenRefreshView):
     """JWT token refresh endpoint with Swagger tag."""
+    serializer_class = SafeTokenRefreshSerializer
 
     @swagger_auto_schema(tags=['Auth'])
     def post(self, request, *args, **kwargs):
