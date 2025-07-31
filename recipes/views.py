@@ -278,7 +278,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
         return MealPlan.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save()
 
     @action(detail=False, methods=['get'], url_path='planned-dates')
     def planned_dates(self, request):

@@ -203,6 +203,7 @@ class MealPlanSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
+        validated_data.pop('user', None)
         meal_type_obj = validated_data.pop('meal_type', None)
         meal_type_name = validated_data.pop('type', None)
         if meal_type_name and not meal_type_obj:
