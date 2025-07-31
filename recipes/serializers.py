@@ -1,3 +1,4 @@
+import datetime
 from rest_framework import serializers
 from .models import (
     Category, MealType, Recipe,
@@ -175,26 +176,56 @@ class MealPlanSerializer(serializers.ModelSerializer):
     meal_type_id = serializers.PrimaryKeyRelatedField(
         queryset=MealType.objects.all(),
         source='meal_type',
-        write_only=True
+        write_only=True,
+        required=False
     )
+    type = serializers.CharField(write_only=True, required=False)
     recipe = RecipeSerializer(read_only=True)
     recipe_id = serializers.PrimaryKeyRelatedField(
         queryset=Recipe.objects.all(),
         source='recipe',
-        write_only=True
+        write_only=True,
+        required=False,
+        allow_null=True
     )
+    date = serializers.DateField(write_only=True)
+    time = serializers.TimeField(write_only=True)
+    custom_meal = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = MealPlan
         fields = [
             'id', 'user', 'recipe', 'recipe_id',
-            'meal_type', 'meal_type_id', 'scheduled_time'
+            'meal_type', 'meal_type_id', 'type',
+            'scheduled_time', 'date', 'time', 'custom_meal'
         ]
-        read_only_fields = ['user', 'recipe', 'meal_type']
+        read_only_fields = ['user', 'recipe', 'meal_type', 'scheduled_time']
 
     def create(self, validated_data):
         user = self.context['request'].user
-        return MealPlan.objects.create(user=user, **validated_data)
+        meal_type_obj = validated_data.pop('meal_type', None)
+        meal_type_name = validated_data.pop('type', None)
+        if meal_type_name and not meal_type_obj:
+            try:
+                meal_type_obj = MealType.objects.get(name__iexact=meal_type_name)
+            except MealType.DoesNotExist:
+                raise serializers.ValidationError({'type': 'Invalid meal type'})
+        date = validated_data.pop('date')
+        time = validated_data.pop('time')
+        scheduled_time = datetime.datetime.combine(date, time)
+        return MealPlan.objects.create(
+            user=user,
+            meal_type=meal_type_obj,
+            scheduled_time=scheduled_time,
+            **validated_data
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['date'] = instance.scheduled_time.date().isoformat()
+        data['time'] = instance.scheduled_time.time().strftime('%H:%M')
+        data['type'] = instance.meal_type.name if instance.meal_type else None
+        return data
 
 # SHOPPING LIST ITEM
 class ShoppingListItemSerializer(serializers.ModelSerializer):

@@ -280,6 +280,13 @@ class MealPlanViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @action(detail=False, methods=['get'], url_path='planned-dates')
+    def planned_dates(self, request):
+        dates = (self.get_queryset()
+                 .values_list('scheduled_time', flat=True))
+        unique_dates = sorted({dt.date().isoformat() for dt in dates})
+        return Response({'planned_dates': unique_dates})
+
 # --- Shopping List CRUD (user-scoped) ---
 class ShoppingListItemViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingListItemSerializer
