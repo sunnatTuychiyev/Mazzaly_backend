@@ -303,7 +303,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='date/(?P<date>[^/]+)')
     def by_date(self, request, date=None):
-        """Return the meal plan for a given date including available recipes."""
+        """Return the meal plan for a given date."""
         try:
             day = datetime.datetime.strptime(date, '%Y-%m-%d').date()
         except (TypeError, ValueError):
@@ -314,22 +314,27 @@ class MealPlanViewSet(viewsets.ModelViewSet):
                        .select_related('meal_type', 'recipe'))
         plan_map = {mp.meal_type_id: mp for mp in meal_plans}
 
-        available = [
-            {'id': r.id, 'title': r.name}
-            for r in get_recipes_for_user(request.user)[:6]
-        ]
-        available.append({'id': 'custom', 'title': 'Custom Meal'})
+        default_times = {
+            'breakfast': '07:30',
+            'lunch': '12:30',
+            'dinner': '19:00',
+        }
 
         meals = []
         for meal_type in MealType.objects.all():
             mp = plan_map.get(meal_type.id)
+            time = (
+                mp.scheduled_time.time().strftime('%H:%M')
+                if mp else default_times.get(meal_type.name.lower())
+            )
             meals.append({
                 'type': meal_type.name,
-                'time': mp.scheduled_time.time().strftime('%H:%M') if mp else None,
-                'recipe': ({'id': mp.recipe.id, 'title': mp.recipe.name}
-                           if mp and mp.recipe else None),
+                'time': time,
+                'recipe': (
+                    {'id': mp.recipe.id, 'title': mp.recipe.name}
+                    if mp and mp.recipe else None
+                ),
                 'custom_meal': mp.custom_meal if mp else None,
-                'available_recipes': available,
             })
 
         return Response({'date': day.isoformat(), 'meals': meals})
