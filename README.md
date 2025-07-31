@@ -173,8 +173,7 @@ It returns a list of dates that have any entries:
 {"planned_dates": ["2025-07-30", "2025-07-31"]}
 ```
 
-To see plans for a specific day along with some example recipe choices, request
-`/api/meal-plan/date/<YYYY-MM-DD>/`:
+To see plans for a specific day, request `/api/meal-plan/date/<YYYY-MM-DD>/`:
 
 ```json
 {
@@ -184,12 +183,19 @@ To see plans for a specific day along with some example recipe choices, request
       "type": "breakfast",
       "time": "07:30",
       "recipe": null,
-      "custom_meal": null,
-      "available_recipes": [
-        {"id": 1, "title": "Pancakes"},
-        {"id": 2, "title": "Omelette"},
-        {"id": "custom", "title": "Custom Meal"}
-      ]
+      "custom_meal": null
+    },
+    {
+      "type": "lunch",
+      "time": "12:30",
+      "recipe": null,
+      "custom_meal": null
+    },
+    {
+      "type": "dinner",
+      "time": "19:00",
+      "recipe": null,
+      "custom_meal": null
     }
   ]
 }
