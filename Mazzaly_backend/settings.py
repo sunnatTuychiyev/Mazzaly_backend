@@ -194,7 +194,7 @@ SWAGGER_SETTINGS = {
 }
 # === Internationalization ===
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
