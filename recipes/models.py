@@ -103,8 +103,9 @@ class Instruction(models.Model):
 # --- MEAL PLAN ---
 class MealPlan(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='meal_plans')
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, null=True, blank=True)
     meal_type = models.ForeignKey(MealType, on_delete=models.SET_NULL, null=True, related_name='meal_plans')
+    custom_meal = models.CharField(max_length=255, blank=True, null=True)
     scheduled_time = models.DateTimeField()
 
     def __str__(self):

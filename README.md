@@ -145,6 +145,34 @@ a user is logged in, recipes for their current subscription tier are included in
 the results. If the subscription has expired, the response again falls back to
 Standard recipes only.
 
+## Meal Plans
+
+Authenticated users can create meal plans via `/api/meal-plan/`. Provide the
+date, time and meal type by name. A recipe can be referenced with
+`recipe_id` or you may supply a short description with `custom_meal` when no
+recipe is selected:
+
+Default meal types (**breakfast**, **lunch**, **dinner**) are created by the
+database migrations. If you provide a new meal type name it will be added
+automatically.
+
+```json
+{
+  "date": "2025-07-31",
+  "time": "19:00",
+  "type": "dinner",
+  "recipe_id": null,
+  "custom_meal": "Grilled vegetables"
+}
+```
+
+To highlight days with scheduled meals, call `/api/meal-plan/planned-dates/`.
+It returns a list of dates that have any entries:
+
+```json
+{"planned_dates": ["2025-07-30", "2025-07-31"]}
+```
+
 ## Admin Statistics
 
 The admin panel provides a `/admin/statistics/` page with charts and tables
