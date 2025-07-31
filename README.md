@@ -152,6 +152,10 @@ date, time and meal type by name. A recipe can be referenced with
 `recipe_id` or you may supply a short description with `custom_meal` when no
 recipe is selected:
 
+Default meal types (**breakfast**, **lunch**, **dinner**) are created by the
+database migrations. If you provide a new meal type name it will be added
+automatically.
+
 ```json
 {
   "date": "2025-07-31",

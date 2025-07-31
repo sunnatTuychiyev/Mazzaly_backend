@@ -206,10 +206,11 @@ class MealPlanSerializer(serializers.ModelSerializer):
         meal_type_obj = validated_data.pop('meal_type', None)
         meal_type_name = validated_data.pop('type', None)
         if meal_type_name and not meal_type_obj:
-            try:
-                meal_type_obj = MealType.objects.get(name__iexact=meal_type_name)
-            except MealType.DoesNotExist:
-                raise serializers.ValidationError({'type': 'Invalid meal type'})
+            meal_type_obj = MealType.objects.filter(
+                name__iexact=meal_type_name
+            ).first()
+            if not meal_type_obj:
+                meal_type_obj = MealType.objects.create(name=meal_type_name)
         date = validated_data.pop('date')
         time = validated_data.pop('time')
         scheduled_time = datetime.datetime.combine(date, time)
