@@ -40,7 +40,12 @@ class CustomTokenRefreshView(TokenRefreshView):
 
     @swagger_auto_schema(tags=['Auth'])
     def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except User.DoesNotExist:
+            return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer

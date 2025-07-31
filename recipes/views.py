@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions, status, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+import datetime
 from django.db.models import Min, Q, F
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from drf_yasg.utils import swagger_auto_schema
@@ -20,6 +21,19 @@ from .serializers import (
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
 from account.models import Subscription
+
+
+def get_recipes_for_user(user):
+    """Return recipes visible for the user's subscription plan."""
+    qs = Recipe.objects.all()
+    if not user or not user.is_authenticated:
+        return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
+    plan = user.current_plan
+    if plan == Subscription.PLAN_PREMIUM:
+        return qs
+    if plan == Subscription.PLAN_HEALTHY:
+        return qs.exclude(subscription_plan=Subscription.PLAN_PREMIUM)
+    return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
 
 # Shared Swagger parameter for selecting response language
 LANG_PARAM = openapi.Parameter(
@@ -278,7 +292,40 @@ class MealPlanViewSet(viewsets.ModelViewSet):
         return MealPlan.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save()
+
+    @action(detail=False, methods=['get'], url_path='planned-dates')
+    def planned_dates(self, request):
+        dates = (self.get_queryset()
+                 .values_list('scheduled_time', flat=True))
+        unique_dates = sorted({dt.date().isoformat() for dt in dates})
+        return Response({'planned_dates': unique_dates})
+
+    @action(detail=False, methods=['get'], url_path='date/(?P<date>[^/]+)')
+    def by_date(self, request, date=None):
+        """Return the meal plan for a given date."""
+        try:
+            day = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        except (TypeError, ValueError):
+            return Response({'error': 'Invalid date'}, status=status.HTTP_400_BAD_REQUEST)
+
+        meal_plans = (self.get_queryset()
+                       .filter(scheduled_time__date=day)
+                       .select_related('meal_type', 'recipe'))
+        plan_map = {mp.meal_type_id: mp for mp in meal_plans}
+
+        meals = []
+        for meal_type in MealType.objects.all():
+            mp = plan_map.get(meal_type.id)
+            meals.append({
+                'type': meal_type.name,
+                'time': mp.scheduled_time.time().strftime('%H:%M') if mp else None,
+                'recipe': ({'id': mp.recipe.id, 'title': mp.recipe.name}
+                           if mp and mp.recipe else None),
+                'custom_meal': mp.custom_meal if mp else None,
+            })
+
+        return Response({'date': day.isoformat(), 'meals': meals})
 
 # --- Shopping List CRUD (user-scoped) ---
 class ShoppingListItemViewSet(viewsets.ModelViewSet):
