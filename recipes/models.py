@@ -79,12 +79,13 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=255)
     name_ru = models.CharField(max_length=255, blank=True, default="")
     name_uz = models.CharField(max_length=255, blank=True, default="")
-    amount = models.CharField(max_length=100)
+    amount = models.CharField(max_length=100, blank=True, null=True)
     unit = models.CharField(max_length=50, blank=True, null=True)
     preparation = models.CharField(max_length=100, blank=True, null=True, help_text="Optional: large, grated, cubed, etc.")
 
     def __str__(self):
-        return f"{self.amount} {self.unit} {self.name}"
+        parts = [self.amount, self.unit, self.name]
+        return " ".join(filter(None, parts))
 
 # --- INSTRUCTION ---
 class Instruction(models.Model):

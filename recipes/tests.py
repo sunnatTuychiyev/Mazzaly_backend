@@ -57,8 +57,14 @@ class RecipeSubscriptionTests(APITestCase):
         )
         Subscription.objects.create(user=self.premium_user, plan=Subscription.PLAN_PREMIUM)
 
+    def _get_data(self, response):
+        data = response.data
+        if isinstance(data, dict) and "results" in data:
+            return data["results"]
+        return data
+
     def _get_ids(self, response):
-        return {item["id"] for item in response.data}
+        return {item["id"] for item in self._get_data(response)}
 
     def test_anonymous_only_gets_standard(self):
         url = reverse("recipe-list")
@@ -181,14 +187,20 @@ class RecipeCardAPITests(APITestCase):
         )
         Subscription.objects.create(user=self.premium_user, plan=Subscription.PLAN_PREMIUM)
 
+    def _get_data(self, response):
+        data = response.data
+        if isinstance(data, dict) and "results" in data:
+            return data["results"]
+        return data
+
     def _get_ids(self, response):
-        return {item["id"] for item in response.data}
+        return {item["id"] for item in self._get_data(response)}
 
     def test_card_fields(self):
         url = reverse("recipecard-list")
         res = self.client.get(url)
         assert res.status_code == 200
-        item = res.data[0]
+        item = self._get_data(res)[0]
         expected_keys = {
             "id",
             "name",
@@ -235,6 +247,7 @@ class RecipeCardAPITests(APITestCase):
 
         cards_url = reverse("recipecard-list")
         res = self.client.get(cards_url)
-        card = next(item for item in res.data if item["id"] == self.standard_recipe.id)
+        data = self._get_data(res)
+        card = next(item for item in data if item["id"] == self.standard_recipe.id)
         assert card["views"] == self.standard_recipe.views
 
