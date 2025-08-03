@@ -171,7 +171,8 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """
     if not text:
         return ''
-    if len(text.split()) <= 3:
+    words = len(text.split())
+    if words <= 3:
         manual = _manual_translate(text, dest)
         if manual.lower() != text.lower():
             return manual
@@ -191,7 +192,10 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     if result and result.lower() != text.lower():
         return result
 
-    return _manual_translate(text, dest)
+    if words <= 3:
+        return _manual_translate(text, dest)
+
+    return text
 
 
 def apply_translations(recipe):
@@ -216,8 +220,15 @@ def apply_translations(recipe):
             setattr(ingredient, f'name_{lang}', trans or ingredient.name)
         ingredient.save()
 
-    for step in recipe.instructions.all():
-        for lang in languages:
-            trans = translate_text(step.description, lang)
-            setattr(step, f'description_{lang}', trans or step.description)
+    steps = list(recipe.instructions.order_by('step_number'))
+    for lang in languages:
+        joined = "\n".join(step.description for step in steps)
+        translated_block = translate_text(joined, lang)
+        if translated_block and translated_block.count("\n") == len(steps) - 1:
+            lines = translated_block.split("\n")
+        else:
+            lines = [translate_text(step.description, lang) for step in steps]
+        for step, line in zip(steps, lines):
+            setattr(step, f'description_{lang}', line or step.description)
+    for step in steps:
         step.save()

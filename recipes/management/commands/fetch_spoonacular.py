@@ -125,7 +125,7 @@ class Command(BaseCommand):
                 subscription_plan=(
                     Recipe.PLAN_HEALTHY if r.get('veryHealthy', False) else Recipe.PLAN_STANDARD
                 ),
-                calories=_get_nutrient(r, 'Calories', 'Energy', 'Energy (kcal)'),
+                calories=_get_nutrient(r, 'Calories', 'Energy', 'Energy (kcal)') or 0,
                 protein=_get_nutrient(r, 'Protein', 'Proteins'),
                 fats=_get_nutrient(r, 'Fat', 'Fats', 'Total Fat'),
                 carbs=_get_nutrient(r, 'Carbohydrates', 'Carbs', 'Carbohydrate'),

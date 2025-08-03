@@ -192,7 +192,7 @@ def _parse_amount_unit(text: str):
 
 
 def _clean_description(title, ingredients, raw_desc):
-    """Return a non-empty description summarising the recipe."""
+    """Return a short description focused on the dish itself."""
     raw_desc = (raw_desc or "").strip()
     lower_title = title.lower()
     if "pumpkin" in lower_title and "pie" in lower_title:
@@ -205,11 +205,11 @@ def _clean_description(title, ingredients, raw_desc):
         raw_desc
         and not raw_desc.lower().startswith("http")
         and raw_desc.lower() != title.lower()
-        and len(raw_desc.split()) > 3
+        and len(raw_desc.split()) > 5
     ):
         return raw_desc
     main_ings = ", ".join(i.split(",")[0] for i in ingredients[:3])
-    return f"{title} made with {main_ings}."
+    return f"{title} featuring {main_ings}. A simple and tasty dish."
 
 
 def _estimate_times(title):
@@ -406,7 +406,13 @@ class Command(BaseCommand):
                     continue
 
                 title = recipe_data.get("label", "No title")
-                description = _clean_description(title, ingredient_lines, recipe_data.get("source", ""))
+                raw_desc = (
+                    recipe_data.get("summary")
+                    or recipe_data.get("description")
+                    or recipe_data.get("notes")
+                    or ""
+                )
+                description = _clean_description(title, ingredient_lines, raw_desc)
                 prep = _parse_int(recipe_data.get("totalTime"))
                 cook = 0
                 if not prep or prep == 0:
@@ -438,7 +444,7 @@ class Command(BaseCommand):
                         Recipe.PLAN_HEALTHY
                         if "Low-Fat" in recipe_data.get("healthLabels", [])
                         else Recipe.PLAN_STANDARD,
-                    calories=_get_nutrient(recipe_data, "ENERC_KCAL", servings),
+                    calories=_get_nutrient(recipe_data, "ENERC_KCAL", servings) or 0,
                     protein=_get_nutrient(recipe_data, "PROCNT", servings),
                     fats=_get_nutrient(recipe_data, "FAT", servings),
                     carbs=_get_nutrient(recipe_data, "CHOCDF", servings),
