@@ -51,15 +51,63 @@ def _format_amount(value):
         return str(value)
 
 
+NAV_TERMS = {
+    "home",
+    "about",
+    "contact",
+    "privacy",
+    "legal",
+    "subscribe",
+    "recipes",
+    "travel",
+    "house & garden",
+    "house and garden",
+    "cookbooks",
+    "back to top",
+}
+
+COMMON_VERBS = [
+    "add",
+    "mix",
+    "stir",
+    "cook",
+    "bake",
+    "heat",
+    "serve",
+    "pour",
+    "combine",
+    "preheat",
+    "whisk",
+    "fold",
+    "beat",
+    "arrange",
+    "transfer",
+    "place",
+    "bring",
+    "simmer",
+    "boil",
+]
+
+
 def _clean_instruction(text: str) -> str:
-    """Remove placeholder or URL-only steps."""
+    """Remove placeholder, navigation or ingredient-only steps."""
     if not text:
         return ""
-    t = text.strip()
+    t = re.sub(r"^\d+[\).\-\s]*", "", text).strip()
     if not t or t.lower().startswith("http"):
         return ""
-    if t.lower().startswith("step") and t.count(" ") <= 1:
+    lower = t.lower()
+    if lower.startswith("step") and t.count(" ") <= 1:
         return ""
+    if lower in NAV_TERMS or any(lower.startswith(term) for term in NAV_TERMS):
+        return ""
+    if "back to top" in lower:
+        return ""
+    if len(t.split()) < 3:
+        return ""
+    if re.match(r"^[\d/]+", t):
+        if not any(verb in lower for verb in COMMON_VERBS):
+            return ""
     return t
 
 
@@ -174,6 +222,30 @@ def _fetch_instructions(url):
             break
 
     # Fallback: look for ordered/unordered lists while ignoring comment sections
+    if not steps:
+        targeted = [
+            '[class*="instruction"] ol',
+            '[class*="instruction"] ul',
+            '[id*="instruction"] ol',
+            '[id*="instruction"] ul',
+            '[class*="direction"] ol',
+            '[class*="direction"] ul',
+            '[id*="direction"] ol',
+            '[id*="direction"] ul',
+            '[class*="recipe"] ol',
+            '[class*="recipe"] ul',
+            '[id*="recipe"] ol',
+            '[id*="recipe"] ul',
+        ]
+        for selector in targeted:
+            for lst in soup.select(selector):
+                if lst.find_parent(class_=re.compile("comment", re.I)):
+                    continue
+                items = [li.get_text(strip=True) for li in lst.find_all("li")]
+                if len(items) > 1:
+                    steps.extend(items)
+            if steps:
+                break
     if not steps:
         for selector in ["ol", "ul"]:
             for lst in soup.select(selector):
