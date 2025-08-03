@@ -141,15 +141,18 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """
     if not text:
         return ''
-    global _translator
     result = _openai_translate(text, dest, src)
     if result:
         return result
+
     if _translator:
-        try:
+        try:  # pragma: no cover - network
             return _translator.translate(text, src=src, dest=dest).text
         except Exception:
-            _translator = None  # Disable translator after first failure
+            # Fall back to the small dictionary but keep the translator for
+            # subsequent calls so later translations can still succeed.
+            pass
+
     return _manual_translate(text, dest)
 
 
@@ -157,21 +160,28 @@ def apply_translations(recipe):
     """Populate translation fields for a recipe, its ingredients and instructions."""
     languages = ['uz', 'ru']
     for lang in languages:
-        setattr(recipe, f'name_{lang}', translate_text(recipe.name, lang))
-        setattr(recipe, f'description_{lang}', translate_text(recipe.description, lang))
+        name_trans = translate_text(recipe.name, lang)
+        desc_trans = translate_text(recipe.description, lang)
+        setattr(recipe, f'name_{lang}', name_trans or recipe.name)
+        setattr(recipe, f'description_{lang}', desc_trans or recipe.description)
     recipe.save()
 
     for category in recipe.categories.all():
         for lang in languages:
-            setattr(category, f'name_{lang}', translate_text(category.name, lang))
+            trans = translate_text(category.name, lang)
+            setattr(category, f'name_{lang}', trans or category.name)
         category.save()
 
     for ingredient in recipe.ingredients.all():
         for lang in languages:
-            setattr(ingredient, f'name_{lang}', translate_text(ingredient.name, lang))
+            trans = translate_text(ingredient.name, lang)
+            setattr(ingredient, f'name_{lang}', trans or ingredient.name)
         ingredient.save()
 
     for step in recipe.instructions.all():
         for lang in languages:
-            setattr(step, f'description_{lang}', translate_text(step.description, lang))
+            trans = translate_text(step.description, lang)
+            # Prefix step number to mirror the enumerated style expected by users
+            numbered = f"{step.step_number}. {trans or step.description}"
+            setattr(step, f'description_{lang}', numbered)
         step.save()
