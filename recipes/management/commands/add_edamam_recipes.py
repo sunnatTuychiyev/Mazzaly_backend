@@ -78,7 +78,15 @@ class Command(BaseCommand):
                     "https://api.edamam.com/api/recipes/v2", params=params, timeout=10
                 )
                 resp.raise_for_status()
-            except Exception as exc:
+            except requests.exceptions.HTTPError as exc:
+                status = exc.response.status_code if exc.response else None
+                if status in (401, 403):
+                    raise CommandError(
+                        "Edamam API request unauthorized. Check EDAMAM_APP_ID and EDAMAM_APP_KEY"
+                    ) from exc
+                self.stderr.write(f"API request failed: {exc}")
+                return
+            except requests.exceptions.RequestException as exc:
                 self.stderr.write(f"API request failed: {exc}")
                 return
 

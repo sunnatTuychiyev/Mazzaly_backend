@@ -107,6 +107,10 @@ The command skips any recipes containing pork or alcohol and translates the
 names, categories, ingredients and instructions to Uzbek and Russian
 automatically.
 
+If you see an "Edamam API request unauthorized" error, double‑check that the
+`EDAMAM_APP_ID` and `EDAMAM_APP_KEY` values are valid and linked to an active
+Edamam account.
+
 ### Recipe Translations
 
 Imported recipes are stored in English and automatically translated to Uzbek and
