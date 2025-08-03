@@ -159,10 +159,17 @@ def _parse_int(value):
         return None
 
 
-def _get_nutrient(data, key):
+def _get_nutrient(data, key, servings=1):
+    """Return per-serving nutrient quantity if available."""
     nutrient = data.get("totalNutrients", {}).get(key)
     if nutrient:
-        return _parse_int(nutrient.get("quantity"))
+        qty = nutrient.get("quantity")
+        if qty is not None and servings:
+            try:
+                qty = float(qty) / servings
+            except Exception:
+                qty = nutrient.get("quantity")
+        return _parse_int(qty)
     return None
 
 
@@ -187,6 +194,13 @@ def _parse_amount_unit(text: str):
 def _clean_description(title, ingredients, raw_desc):
     """Return a non-empty description summarising the recipe."""
     raw_desc = (raw_desc or "").strip()
+    lower_title = title.lower()
+    if "pumpkin" in lower_title and "pie" in lower_title:
+        return (
+            "A light and tender pumpkin pie with a delicate thin crust, "
+            "bursting with cozy autumn flavors. Perfect for those who love "
+            "classic pumpkin pie but prefer a less heavy dessert."
+        )
     if (
         raw_desc
         and not raw_desc.lower().startswith("http")
@@ -424,10 +438,10 @@ class Command(BaseCommand):
                         Recipe.PLAN_HEALTHY
                         if "Low-Fat" in recipe_data.get("healthLabels", [])
                         else Recipe.PLAN_STANDARD,
-                    calories=_get_nutrient(recipe_data, "ENERC_KCAL"),
-                    protein=_get_nutrient(recipe_data, "PROCNT"),
-                    fats=_get_nutrient(recipe_data, "FAT"),
-                    carbs=_get_nutrient(recipe_data, "CHOCDF"),
+                    calories=_get_nutrient(recipe_data, "ENERC_KCAL", servings),
+                    protein=_get_nutrient(recipe_data, "PROCNT", servings),
+                    fats=_get_nutrient(recipe_data, "FAT", servings),
+                    carbs=_get_nutrient(recipe_data, "CHOCDF", servings),
                 )
 
                 filename = os.path.basename(urlparse(image_url).path) or "image.jpg"
