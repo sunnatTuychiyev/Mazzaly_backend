@@ -101,8 +101,11 @@ def _manual_translate(text: str, dest: str) -> str:
     translated: List[str] = [mapping.get(word.lower(), word) for word in words]
     return ' '.join(translated)
 
-
-_translator = Translator() if Translator else None
+# Instantiate translator with a short timeout so network issues fail fast
+try:  # pragma: no cover - network usage not exercised in tests
+    _translator = Translator(timeout=5) if Translator else None
+except Exception:  # If initialization fails, fall back to manual dictionary
+    _translator = None
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
@@ -113,11 +116,12 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """
     if not text:
         return ''
+    global _translator
     if _translator:
         try:
             return _translator.translate(text, src=src, dest=dest).text
         except Exception:
-            pass
+            _translator = None  # Disable translator after first failure
     return _manual_translate(text, dest)
 
 

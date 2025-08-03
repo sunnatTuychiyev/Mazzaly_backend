@@ -132,7 +132,8 @@ curl '/api/recipes/?lang=uz'
 ```
 
 Translations are generated during import using the optional `googletrans`
-library. If the library is not available, a small built-in dictionary is used.
+library. If the library is not available or translation requests fail, a small
+built-in dictionary is used instead.
 
 ### Pagination
 
