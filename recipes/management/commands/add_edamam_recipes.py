@@ -57,10 +57,19 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        app_id = os.getenv("EDAMAM_APP_ID") or getattr(settings, "EDAMAM_APP_ID", None)
-        app_key = os.getenv("EDAMAM_APP_KEY") or getattr(settings, "EDAMAM_APP_KEY", None)
-        if not app_id or not app_key:
-            raise CommandError("EDAMAM_APP_ID and EDAMAM_APP_KEY must be set")
+        app_id = os.getenv("EDAMAM_APP_ID") or getattr(
+            settings, "EDAMAM_APP_ID", None
+        )
+        app_key = os.getenv("EDAMAM_APP_KEY") or getattr(
+            settings, "EDAMAM_APP_KEY", None
+        )
+        account_user = os.getenv("EDAMAM_ACCOUNT_USER") or getattr(
+            settings, "EDAMAM_ACCOUNT_USER", None
+        )
+        if not app_id or not app_key or not account_user:
+            raise CommandError(
+                "EDAMAM_APP_ID, EDAMAM_APP_KEY and EDAMAM_ACCOUNT_USER must be set"
+            )
 
         to_fetch = options["count"]
         fetched = 0
@@ -75,14 +84,17 @@ class Command(BaseCommand):
             }
             try:
                 resp = requests.get(
-                    "https://api.edamam.com/api/recipes/v2", params=params, timeout=10
+                    "https://api.edamam.com/api/recipes/v2",
+                    params=params,
+                    headers={"Edamam-Account-User": account_user},
+                    timeout=10,
                 )
                 resp.raise_for_status()
             except requests.exceptions.HTTPError as exc:
                 status = exc.response.status_code if exc.response else None
                 if status in (401, 403):
                     raise CommandError(
-                        "Edamam API request unauthorized. Check EDAMAM_APP_ID and EDAMAM_APP_KEY"
+                        "Edamam API request unauthorized. Check EDAMAM_APP_ID, EDAMAM_APP_KEY and EDAMAM_ACCOUNT_USER"
                     ) from exc
                 self.stderr.write(f"API request failed: {exc}")
                 return
