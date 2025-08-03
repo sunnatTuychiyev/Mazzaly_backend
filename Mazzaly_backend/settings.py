@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',          # Sites (kerak bo‘lsa)
     'rest_framework',
     'rest_framework_simplejwt',
-    'drf_yasg',
     'social_django',
     'account',
     'recipes',
@@ -36,6 +35,13 @@ INSTALLED_APPS = [
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
+
+try:  # pragma: no cover - drf_yasg optional
+    import drf_yasg  # type: ignore
+except Exception:
+    pass
+else:
+    INSTALLED_APPS.append('drf_yasg')
 
 AUTH_USER_MODEL = 'account.User'
 SITE_ID = 1
@@ -229,6 +235,10 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
+EDAMAM_APP_ID = config('EDAMAM_APP_ID', default='')
+EDAMAM_APP_KEY = config('EDAMAM_APP_KEY', default='')
+EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
+EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
 # CORS settings
 # Do not use wildcard when credentials are included. Instead specify

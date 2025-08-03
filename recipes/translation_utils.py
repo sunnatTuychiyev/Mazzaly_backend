@@ -1,7 +1,25 @@
+import os
 from typing import Dict, List
+
+try:
+    from googletrans import Translator
+except Exception:  # pragma: no cover - library may be missing
+    Translator = None
+import requests
+
+try:  # pragma: no cover - optional dependency
+    import openai
+except Exception:  # pragma: no cover
+    openai = None
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
+
+LANG_NAMES = {
+    'en': 'English',
+    'uz': 'Uzbek',
+    'ru': 'Russian',
+}
 
 def get_requested_lang(request) -> str:
     """Return a supported language code from the request query params."""
@@ -85,6 +103,27 @@ PHRASE_DICT: Dict[str, Dict[str, str]] = {
 }
 
 
+def _openai_translate(text: str, dest: str, src: str) -> str:
+    """Translate using OpenAI if available and configured."""
+    if not openai or not os.getenv("OPENAI_API_KEY"):
+        return ""
+    try:  # pragma: no cover - network
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        src_lang = LANG_NAMES.get(src, src)
+        dest_lang = LANG_NAMES.get(dest, dest)
+        resp = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": f"Translate the user's text from {src_lang} to {dest_lang}."},
+                {"role": "user", "content": text},
+            ],
+            max_tokens=60,
+        )
+        return resp.choices[0].message["content"].strip()
+    except Exception:
+        return ""
+
+
 def _manual_translate(text: str, dest: str) -> str:
     """Simple phrase and word based translation."""
     mapping = FALLBACK_DICT.get(dest, {})
@@ -97,32 +136,99 @@ def _manual_translate(text: str, dest: str) -> str:
     return ' '.join(translated)
 
 
+def _direct_google_translate(text: str, dest: str, src: str) -> str:
+    """Fallback to Google Translate's unofficial API via HTTP request."""
+    try:  # pragma: no cover - network
+        resp = requests.get(
+            "https://translate.googleapis.com/translate_a/single",
+            params={
+                "client": "gtx",
+                "sl": src,
+                "tl": dest,
+                "dt": "t",
+                "q": text,
+            },
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()[0]
+        return "".join(part[0] for part in data if part and part[0])
+    except Exception:
+        return ""
+
+# Instantiate translator with a short timeout so network issues fail fast
+try:  # pragma: no cover - network usage not exercised in tests
+    _translator = Translator(timeout=5) if Translator else None
+except Exception:  # If initialization fails, fall back to manual dictionary
+    _translator = None
+
+
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
-    """Translate text using a small built-in dictionary."""
+    """Translate text to the destination language.
+
+    Tries OpenAI's API first when configured, then googletrans, and finally
+    a small built-in dictionary as a last resort.
+    """
     if not text:
         return ''
-    return _manual_translate(text, dest)
+    words = len(text.split())
+    if words <= 3:
+        manual = _manual_translate(text, dest)
+        if manual.lower() != text.lower():
+            return manual
+    result = _openai_translate(text, dest, src)
+    if result:
+        return result
+
+    if _translator:
+        try:  # pragma: no cover - network
+            result = _translator.translate(text, src=src, dest=dest).text
+            if result and result.lower() != text.lower():
+                return result
+        except Exception:
+            pass
+
+    result = _direct_google_translate(text, dest, src)
+    if result and result.lower() != text.lower():
+        return result
+
+    if words <= 3:
+        return _manual_translate(text, dest)
+
+    return text
 
 
 def apply_translations(recipe):
     """Populate translation fields for a recipe, its ingredients and instructions."""
     languages = ['uz', 'ru']
     for lang in languages:
-        setattr(recipe, f'name_{lang}', translate_text(recipe.name, lang))
-        setattr(recipe, f'description_{lang}', translate_text(recipe.description, lang))
+        name_trans = translate_text(recipe.name, lang)
+        desc_trans = translate_text(recipe.description, lang)
+        setattr(recipe, f'name_{lang}', name_trans or recipe.name)
+        setattr(recipe, f'description_{lang}', desc_trans or recipe.description)
     recipe.save()
 
     for category in recipe.categories.all():
         for lang in languages:
-            setattr(category, f'name_{lang}', translate_text(category.name, lang))
+            trans = translate_text(category.name, lang)
+            setattr(category, f'name_{lang}', trans or category.name)
         category.save()
 
     for ingredient in recipe.ingredients.all():
         for lang in languages:
-            setattr(ingredient, f'name_{lang}', translate_text(ingredient.name, lang))
+            trans = translate_text(ingredient.name, lang)
+            setattr(ingredient, f'name_{lang}', trans or ingredient.name)
         ingredient.save()
 
-    for step in recipe.instructions.all():
-        for lang in languages:
-            setattr(step, f'description_{lang}', translate_text(step.description, lang))
+    steps = list(recipe.instructions.order_by('step_number'))
+    for lang in languages:
+        joined = "\n".join(step.description for step in steps)
+        translated_block = translate_text(joined, lang)
+        if translated_block and translated_block.count("\n") == len(steps) - 1:
+            lines = translated_block.split("\n")
+        else:
+            lines = [translate_text(step.description, lang) for step in steps]
+        for step, line in zip(steps, lines):
+            setattr(step, f'description_{lang}', line or step.description)
+    for step in steps:
         step.save()
