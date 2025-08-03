@@ -17,3 +17,4 @@ googletrans==4.0.0rc1
 django-admin-charts==1.5.0
 django-geoip==0.5.2.1
 weasyprint==66.0
+beautifulsoup4==4.12.3

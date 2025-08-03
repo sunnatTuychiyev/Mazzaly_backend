@@ -110,6 +110,11 @@ names, categories, ingredients and instructions to Uzbek and Russian
 automatically. `.env` values are loaded with `python-dotenv`, and API requests
 include the required `Edamam-Account-User` header.
 
+Each recipe is validated before saving: missing ingredient amounts or units are
+guessed from the ingredient text, basic descriptions and categories are
+generated when absent, rough prep/cook times and servings are estimated, and
+recipes without clear instructions or a downloadable image are skipped.
+
 If you see an "Edamam API request unauthorized" error, the command prints the
 HTTP status code and response body to help debug invalid credentials.
 
