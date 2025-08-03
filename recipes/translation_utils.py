@@ -1,5 +1,10 @@
 from typing import Dict, List
 
+try:
+    from googletrans import Translator
+except Exception:  # pragma: no cover - library may be missing
+    Translator = None
+
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
 
@@ -97,10 +102,22 @@ def _manual_translate(text: str, dest: str) -> str:
     return ' '.join(translated)
 
 
+_translator = Translator() if Translator else None
+
+
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
-    """Translate text using a small built-in dictionary."""
+    """Translate text to the destination language.
+
+    Uses googletrans when available, falling back to a small built-in
+    dictionary if the API call fails or the library isn't installed.
+    """
     if not text:
         return ''
+    if _translator:
+        try:
+            return _translator.translate(text, src=src, dest=dest).text
+        except Exception:
+            pass
     return _manual_translate(text, dest)
 
 
