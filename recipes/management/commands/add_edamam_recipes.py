@@ -2,6 +2,7 @@ import os
 import re
 import json
 from urllib.parse import urlparse
+from fractions import Fraction
 
 import requests
 try:  # pragma: no cover - optional dependency
@@ -39,11 +40,23 @@ BANNED_INGREDIENTS = [
 
 
 def _format_amount(value):
-    """Return a stringified amount rounded to two decimals."""
-    if value in (None, ""):
+    """Return a human readable amount.
+
+    Attempts to convert common decimals into simple fractions (e.g. 0.5 ->
+    ``1/2`` or ``1 1/2``) and otherwise rounds to two decimals. Returns
+    ``None`` for empty values.
+    """
+    if value in (None, "", 0, "0"):
         return None
     try:
         num = float(value)
+        frac = Fraction(num).limit_denominator(8)
+        if abs(float(frac) - num) < 0.01:
+            whole, remainder = divmod(frac.numerator, frac.denominator)
+            if remainder:
+                frac_str = f"{remainder}/{frac.denominator}"
+                return f"{whole} {frac_str}".strip()
+            return str(whole)
         if num.is_integer():
             return str(int(num))
         return f"{num:.2f}".rstrip("0").rstrip(".")
@@ -65,6 +78,16 @@ NAV_TERMS = {
     "cookbooks",
     "back to top",
 }
+
+SECTION_PATTERNS = [
+    re.compile(r"^for the ", re.I),
+    re.compile(r"^for ", re.I),
+    re.compile(r"^ingredients:?$", re.I),
+    re.compile(r"^directions:?$", re.I),
+    re.compile(r"^instructions:?$", re.I),
+    re.compile(r"leave a comment", re.I),
+    re.compile(r"special dietary", re.I),
+]
 
 COMMON_VERBS = [
     "add",
@@ -103,6 +126,13 @@ def _clean_instruction(text: str) -> str:
         return ""
     if "back to top" in lower:
         return ""
+    if t.endswith(":"):
+        return ""
+    if t.isupper() and len(t.split()) <= 5:
+        return ""
+    for pattern in SECTION_PATTERNS:
+        if pattern.search(t):
+            return ""
     if len(t.split()) < 3:
         return ""
     if re.match(r"^[\d/]+", t):
@@ -422,10 +452,19 @@ class Command(BaseCommand):
                         amount = amount or guessed_amt
                         unit = unit or guessed_unit
                         prep_text = rest or prep_text
+                    original_amount = amount
                     amount = _format_amount(amount)
-                    if not unit and amount:
-                        unit = "piece(s)"
-                    if not prep_text:
+                    if amount != original_amount:
+                        self.stdout.write(f"Amount rounded: {original_amount} -> {amount}")
+                    if unit in (None, "", "<unit>"):
+                        unit = "piece(s)" if amount else None
+                        self.stdout.write("Unit '<unit>' replaced with 'piece(s)'")
+                    if prep_text:
+                        pt_lower = prep_text.lower()
+                        if pt_lower == name.lower():
+                            prep_text = ""
+                            self.stdout.write("Preparation removed: duplicated ingredient name")
+                    else:
                         prep_text = "As needed"
                     Ingredient.objects.create(
                         recipe=recipe,
@@ -448,8 +487,16 @@ class Command(BaseCommand):
                         instructions = [p.strip() for p in parts if p.strip()]
                 if not instructions:
                     instructions = _fetch_instructions(recipe_data.get("url"))
-                instructions = [_clean_instruction(t) for t in instructions]
-                instructions = [t for t in instructions if t]
+                cleaned = []
+                for raw in instructions:
+                    t = _clean_instruction(raw)
+                    if t:
+                        cleaned.append(t)
+                    else:
+                        self.stdout.write(
+                            f"Step removed: {raw[:40]}... - not a real instruction"
+                        )
+                instructions = cleaned
                 if not instructions:
                     self.stderr.write(f"Skipping {title}: missing instructions")
                     recipe.delete()
