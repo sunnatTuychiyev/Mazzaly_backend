@@ -1,6 +1,13 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
   <h1>Imported Recipes</h1>
+  {% if output %}
+  <pre>
+  {% for line in output %}
+{{ line }}
+  {% endfor %}
+  </pre>
+  {% endif %}
   {% if recipes %}
   <form method="post">
     {% csrf_token %}

@@ -106,17 +106,25 @@ class RecipeAdmin(admin.ModelAdmin):
                 count = form.cleaned_data["count"]
                 out = io.StringIO()
                 try:
-                    call_command("add_edamam_recipes", count, stdout=out)
+                    call_command(
+                        "add_edamam_recipes",
+                        count,
+                        stdout=out,
+                        no_color=True,
+                    )
                 except Exception as exc:
                     messages.error(request, str(exc))
                     return redirect("..")
+                output = out.getvalue().splitlines()
                 added = [
-                    line.replace("Added ", "")
-                    for line in out.getvalue().splitlines()
-                    if line.startswith("Added ")
+                    line.replace("Added ", "") for line in output if line.startswith("Added ")
                 ]
                 recipes = Recipe.objects.filter(name__in=added)
-                context = {"recipes": recipes, "opts": self.model._meta}
+                context = {
+                    "recipes": recipes,
+                    "output": output,
+                    "opts": self.model._meta,
+                }
                 return render(
                     request, "admin/recipes/import_result.html", context
                 )
