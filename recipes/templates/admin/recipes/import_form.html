@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% block content %}
+  <h1>Add Edamam Recipes</h1>
+  <form method="post" id="import-form" onsubmit="document.getElementById('loading').style.display='block';">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="default">Add</button>
+  </form>
+  <div id="loading" style="display:none;">Loading...</div>
+{% endblock %}

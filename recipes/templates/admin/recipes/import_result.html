@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <h1>Imported Recipes</h1>
+  {% if recipes %}
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="confirm" value="1">
+    <p>Select recipes to delete or edit them individually.</p>
+    <ul>
+      {% for recipe in recipes %}
+      <li>
+        <label><input type="checkbox" name="delete" value="{{ recipe.id }}"> {{ recipe.name }}</label>
+        (<a href="{% url 'admin:recipes_recipe_change' recipe.id %}">Edit</a>)
+      </li>
+      {% endfor %}
+    </ul>
+    <button type="submit" class="deletelink">Delete selected</button>
+    <a href="{% url 'admin:recipes_recipe_changelist' %}" class="button">Keep all</a>
+  </form>
+  {% else %}
+  <p>No recipes were added.</p>
+  <a href="{% url 'admin:recipes_recipe_import_edamam' %}">Back</a>
+  {% endif %}
+{% endblock %}
