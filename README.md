@@ -82,11 +82,25 @@ disk relative to that JSON file.
 The recipe description is derived from the summary text with HTML stripped so it
 remains short and readable.
 
-Halal recipes can also be imported from the Edamam Recipe API. Set
-`EDAMAM_APP_ID` and `EDAMAM_APP_KEY` in your `.env` file and run:
+Halal recipes can also be imported from the Edamam Recipe API. Add your
+credentials to `.env`:
+
+```
+EDAMAM_APP_ID=your_app_id
+EDAMAM_APP_KEY=your_app_key
+```
+
+Then run:
 
 ```bash
 python manage.py add_edamam_recipes 10
+```
+
+Or supply the credentials inline:
+
+```bash
+EDAMAM_APP_ID=your_app_id EDAMAM_APP_KEY=your_app_key \
+    python manage.py add_edamam_recipes 10
 ```
 
 The command skips any recipes containing pork or alcohol and translates the
