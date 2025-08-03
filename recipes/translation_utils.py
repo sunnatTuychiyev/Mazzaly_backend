@@ -5,6 +5,7 @@ try:
     from googletrans import Translator
 except Exception:  # pragma: no cover - library may be missing
     Translator = None
+import requests
 
 try:  # pragma: no cover - optional dependency
     import openai
@@ -126,6 +127,27 @@ def _manual_translate(text: str, dest: str) -> str:
     translated: List[str] = [mapping.get(word.lower(), word) for word in words]
     return ' '.join(translated)
 
+
+def _direct_google_translate(text: str, dest: str, src: str) -> str:
+    """Fallback to Google Translate's unofficial API via HTTP request."""
+    try:  # pragma: no cover - network
+        resp = requests.get(
+            "https://translate.googleapis.com/translate_a/single",
+            params={
+                "client": "gtx",
+                "sl": src,
+                "tl": dest,
+                "dt": "t",
+                "q": text,
+            },
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()[0]
+        return "".join(part[0] for part in data if part and part[0])
+    except Exception:
+        return ""
+
 # Instantiate translator with a short timeout so network issues fail fast
 try:  # pragma: no cover - network usage not exercised in tests
     _translator = Translator(timeout=5) if Translator else None
@@ -147,11 +169,15 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
 
     if _translator:
         try:  # pragma: no cover - network
-            return _translator.translate(text, src=src, dest=dest).text
+            result = _translator.translate(text, src=src, dest=dest).text
+            if result and result.lower() != text.lower():
+                return result
         except Exception:
-            # Fall back to the small dictionary but keep the translator for
-            # subsequent calls so later translations can still succeed.
             pass
+
+    result = _direct_google_translate(text, dest, src)
+    if result:
+        return result
 
     return _manual_translate(text, dest)
 
