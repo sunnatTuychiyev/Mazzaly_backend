@@ -88,13 +88,13 @@ credentials to `.env`:
 ```
 EDAMAM_APP_ID=your_app_id
 EDAMAM_APP_KEY=your_app_key
-EDAMAM_ACCOUNT_USER=your_user_id
+EDAMAM_ACCOUNT_USER=your_user_id  # or set EDAMAM_USER_ID
 ```
 
 Then run:
 
 ```bash
-python manage.py add_edamam_recipes 10
+python manage.py add_edamam_recipes 10 --query egg
 ```
 
 Or supply the credentials inline:
@@ -102,16 +102,16 @@ Or supply the credentials inline:
 ```bash
 EDAMAM_APP_ID=your_app_id EDAMAM_APP_KEY=your_app_key \
     EDAMAM_ACCOUNT_USER=your_user_id \
-    python manage.py add_edamam_recipes 10
+    python manage.py add_edamam_recipes 10 --query egg
 ```
 
 The command skips any recipes containing pork or alcohol and translates the
 names, categories, ingredients and instructions to Uzbek and Russian
-automatically.
+automatically. `.env` values are loaded with `python-dotenv`, and API requests
+include the required `Edamam-Account-User` header.
 
-If you see an "Edamam API request unauthorized" error, double‑check that the
-`EDAMAM_APP_ID`, `EDAMAM_APP_KEY` and `EDAMAM_ACCOUNT_USER` values are valid and
-linked to an active Edamam account.
+If you see an "Edamam API request unauthorized" error, the command prints the
+HTTP status code and response body to help debug invalid credentials.
 
 ### Recipe Translations
 

@@ -2,6 +2,11 @@ import os
 from urllib.parse import urlparse
 
 import requests
+try:  # pragma: no cover - optional dependency
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover
+    def load_dotenv():
+        pass
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError
@@ -55,16 +60,26 @@ class Command(BaseCommand):
             type=int,
             help="Number of recipes to fetch from the API",
         )
+        parser.add_argument(
+            "--query",
+            default="egg",
+            help="Ingredient or dish to search for (default: egg)",
+        )
 
     def handle(self, *args, **options):
+        load_dotenv()
+
         app_id = os.getenv("EDAMAM_APP_ID") or getattr(
             settings, "EDAMAM_APP_ID", None
         )
         app_key = os.getenv("EDAMAM_APP_KEY") or getattr(
             settings, "EDAMAM_APP_KEY", None
         )
-        account_user = os.getenv("EDAMAM_ACCOUNT_USER") or getattr(
-            settings, "EDAMAM_ACCOUNT_USER", None
+        account_user = (
+            os.getenv("EDAMAM_ACCOUNT_USER")
+            or os.getenv("EDAMAM_USER_ID")
+            or getattr(settings, "EDAMAM_ACCOUNT_USER", None)
+            or getattr(settings, "EDAMAM_USER_ID", None)
         )
         if not app_id or not app_key or not account_user:
             raise CommandError(
@@ -72,11 +87,12 @@ class Command(BaseCommand):
             )
 
         to_fetch = options["count"]
+        query = options["query"]
         fetched = 0
         while fetched < to_fetch:
             params = {
                 "type": "public",
-                "q": "recipe",
+                "q": query,
                 "app_id": app_id,
                 "app_key": app_key,
                 "random": "true",
@@ -89,18 +105,21 @@ class Command(BaseCommand):
                     headers={"Edamam-Account-User": account_user},
                     timeout=10,
                 )
-                resp.raise_for_status()
-            except requests.exceptions.HTTPError as exc:
-                status = exc.response.status_code if exc.response else None
-                if status in (401, 403):
-                    raise CommandError(
-                        "Edamam API request unauthorized. Check EDAMAM_APP_ID, EDAMAM_APP_KEY and EDAMAM_ACCOUNT_USER"
-                    ) from exc
-                self.stderr.write(f"API request failed: {exc}")
-                return
             except requests.exceptions.RequestException as exc:
                 self.stderr.write(f"API request failed: {exc}")
                 return
+
+            if resp.status_code != 200:
+                self.stderr.write(f"HTTP Status: {resp.status_code}")
+                self.stderr.write(f"Response: {resp.text}")
+                if resp.status_code in (401, 403):
+                    raise CommandError(
+                        f"Edamam API request unauthorized: {resp.status_code} {resp.text}. "
+                        "Check EDAMAM_APP_ID, EDAMAM_APP_KEY and EDAMAM_ACCOUNT_USER"
+                    )
+                raise CommandError(
+                    f"Edamam API request failed: {resp.status_code} {resp.text}"
+                )
 
             hits = resp.json().get("hits", [])
             if not hits:

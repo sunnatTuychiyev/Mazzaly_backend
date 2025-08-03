@@ -237,7 +237,8 @@ SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
 EDAMAM_APP_ID = config('EDAMAM_APP_ID', default='')
 EDAMAM_APP_KEY = config('EDAMAM_APP_KEY', default='')
-EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default='')
+EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
+EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
 # CORS settings
 # Do not use wildcard when credentials are included. Instead specify
