@@ -37,6 +37,31 @@ BANNED_INGREDIENTS = [
 ]
 
 
+def _format_amount(value):
+    """Return a stringified amount rounded to two decimals."""
+    if value in (None, ""):
+        return None
+    try:
+        num = float(value)
+        if num.is_integer():
+            return str(int(num))
+        return f"{num:.2f}".rstrip("0").rstrip(".")
+    except Exception:
+        return str(value)
+
+
+def _clean_instruction(text: str) -> str:
+    """Remove placeholder or URL-only steps."""
+    if not text:
+        return ""
+    t = text.strip()
+    if not t or t.lower().startswith("http"):
+        return ""
+    if t.lower().startswith("step") and t.count(" ") <= 1:
+        return ""
+    return t
+
+
 def _parse_int(value):
     try:
         return int(round(float(value)))
@@ -261,12 +286,21 @@ class Command(BaseCommand):
                 )
                 if not categories:
                     categories = _guess_categories(title, ingredient_lines)
+                categories = list(dict.fromkeys(categories))
                 for cat in categories:
                     category, _ = Category.objects.get_or_create(name=cat)
                     recipe.categories.add(category)
 
                 ingredients_ok = True
+                seen_names = set()
                 for ing in recipe_data.get("ingredients", []):
+                    name = ing.get("food")
+                    if not name:
+                        ingredients_ok = False
+                        break
+                    if name.lower() in seen_names:
+                        continue
+                    seen_names.add(name.lower())
                     amount = ing.get("quantity")
                     unit = ing.get("measure")
                     prep_text = ing.get("text", "")
@@ -275,15 +309,15 @@ class Command(BaseCommand):
                         amount = amount or guessed_amt
                         unit = unit or guessed_unit
                         prep_text = rest or prep_text
+                    amount = _format_amount(amount)
+                    if not unit and amount:
+                        unit = "piece(s)"
                     if not prep_text:
                         prep_text = "As needed"
-                    if not ing.get("food"):
-                        ingredients_ok = False
-                        break
                     Ingredient.objects.create(
                         recipe=recipe,
-                        name=ing.get("food"),
-                        amount=str(amount) if amount else None,
+                        name=name,
+                        amount=amount,
                         unit=unit,
                         preparation=prep_text,
                     )
@@ -301,15 +335,15 @@ class Command(BaseCommand):
                         instructions = [p.strip() for p in parts if p.strip()]
                 if not instructions:
                     instructions = _fetch_instructions(recipe_data.get("url"))
+                instructions = [_clean_instruction(t) for t in instructions]
+                instructions = [t for t in instructions if t]
                 if not instructions:
                     self.stderr.write(f"Skipping {title}: missing instructions")
                     recipe.delete()
                     continue
                 for idx, text in enumerate(instructions, 1):
-                    if not text.strip():
-                        continue
                     Instruction.objects.create(
-                        recipe=recipe, step_number=idx, description=text.strip()
+                        recipe=recipe, step_number=idx, description=text
                     )
 
                 apply_translations(recipe)
