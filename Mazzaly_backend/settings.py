@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',          # Sites (kerak bo‘lsa)
     'rest_framework',
     'rest_framework_simplejwt',
-    'drf_yasg',
     'social_django',
     'account',
     'recipes',
@@ -36,6 +35,13 @@ INSTALLED_APPS = [
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
+
+try:  # pragma: no cover - drf_yasg optional
+    import drf_yasg  # type: ignore
+except Exception:
+    pass
+else:
+    INSTALLED_APPS.append('drf_yasg')
 
 AUTH_USER_MODEL = 'account.User'
 SITE_ID = 1

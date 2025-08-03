@@ -10,8 +10,25 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .serializers import SafeTokenRefreshSerializer
 from django.contrib.auth import authenticate
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+try:  # pragma: no cover - drf_yasg optional
+    from drf_yasg.utils import swagger_auto_schema
+    from drf_yasg import openapi
+except Exception:  # pragma: no cover - drf_yasg optional
+    def swagger_auto_schema(*args, **kwargs):  # type: ignore
+        def decorator(func):
+            return func
+        return decorator
+
+    class openapi:  # type: ignore
+        class Schema:
+            def __init__(self, *args, **kwargs):
+                pass
+
+        class Response:
+            def __init__(self, *args, **kwargs):
+                pass
+
+        TYPE_OBJECT = TYPE_STRING = None
 from social_django.utils import psa
 from urllib.parse import parse_qsl
 import json

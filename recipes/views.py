@@ -5,8 +5,29 @@ from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 import datetime
 from django.db.models import Min, Q, F
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+try:  # pragma: no cover - drf_yasg optional
+    from drf_yasg.utils import swagger_auto_schema
+    from drf_yasg import openapi
+except Exception:  # pragma: no cover - drf_yasg optional
+    def swagger_auto_schema(*args, **kwargs):  # type: ignore
+        def decorator(func):
+            return func
+        return decorator
+
+    class openapi:  # type: ignore
+        class Parameter:
+            def __init__(self, *args, **kwargs):
+                pass
+
+        class Schema:
+            def __init__(self, *args, **kwargs):
+                pass
+
+        class Response:
+            def __init__(self, *args, **kwargs):
+                pass
+
+        IN_QUERY = TYPE_STRING = TYPE_OBJECT = TYPE_INTEGER = None
 
 
 from .models import (
