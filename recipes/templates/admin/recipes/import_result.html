@@ -16,7 +16,7 @@
     <ul>
       {% for recipe in recipes %}
       <li>
-        <label><input type="checkbox" name="delete" value="{{ recipe.id }}"> {{ recipe.name }}</label>
+        <label><input type="checkbox" name="delete" value="{{ recipe.id }}"> {{ recipe.name }} ({{ recipe.calories }} kcal)</label>
         (<a href="{% url 'admin:recipes_recipe_change' recipe.id %}">Edit</a>)
       </li>
       {% endfor %}
@@ -26,6 +26,6 @@
   </form>
   {% else %}
   <p>No recipes were added.</p>
-  <a href="{% url 'admin:recipes_recipe_import_edamam' %}">Back</a>
+  <a href="{% url 'admin:recipes_recipe_changelist' %}">Back</a>
   {% endif %}
 {% endblock %}

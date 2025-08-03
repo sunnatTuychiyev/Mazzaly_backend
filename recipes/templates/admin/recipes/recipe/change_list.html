@@ -2,4 +2,5 @@
 {% block object-tools %}
   {{ block.super }}
   <li><a href="{% url 'admin:recipes_recipe_import_edamam' %}">Import Edamam recipes</a></li>
+  <li><a href="{% url 'admin:recipes_recipe_import_spoonacular' %}">Import Spoonacular recipes</a></li>
 {% endblock %}
