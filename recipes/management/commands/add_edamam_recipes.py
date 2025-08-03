@@ -1,5 +1,6 @@
 import os
 import re
+import json
 from urllib.parse import urlparse
 
 import requests
@@ -142,16 +143,56 @@ def _fetch_instructions(url):
     except Exception:
         return []
     soup = BeautifulSoup(resp.text, "html.parser")
+
+    # Prefer structured data when available to avoid picking up comments
     steps = []
-    # Look for ordered/unordered lists
-    for selector in ["ol", "ul"]:
-        for lst in soup.select(selector):
-            items = [li.get_text(strip=True) for li in lst.find_all("li")]
-            if len(items) > 1:
-                steps.extend(items)
+    for script in soup.find_all("script", type="application/ld+json"):
+        try:
+            data = json.loads(script.string or "")
+        except Exception:
+            continue
+        if isinstance(data, list):
+            candidates = data
+        else:
+            candidates = [data]
+        for obj in candidates:
+            if not isinstance(obj, dict):
+                continue
+            if obj.get("@type") == "Recipe" or "recipeInstructions" in obj:
+                instr = obj.get("recipeInstructions") or []
+                if isinstance(instr, list):
+                    for item in instr:
+                        if isinstance(item, dict):
+                            text = item.get("text")
+                        else:
+                            text = item
+                        if text:
+                            steps.append(text.strip())
+                elif isinstance(instr, str):
+                    steps.extend([t.strip() for t in re.split(r"\.(?:\s|$)", instr) if t.strip()])
         if steps:
             break
-    return steps
+
+    # Fallback: look for ordered/unordered lists while ignoring comment sections
+    if not steps:
+        for selector in ["ol", "ul"]:
+            for lst in soup.select(selector):
+                if lst.find_parent(class_=re.compile("comment", re.I)):
+                    continue
+                items = [li.get_text(strip=True) for li in lst.find_all("li")]
+                if len(items) > 1:
+                    steps.extend(items)
+            if steps:
+                break
+
+    # Filter out common blog artefacts
+    cleaned = []
+    for step in steps:
+        s = step.strip()
+        if not s or "says:" in s.lower() or s.lower().startswith("reply"):
+            continue
+        cleaned.append(s)
+    return cleaned
 
 
 class Command(BaseCommand):
