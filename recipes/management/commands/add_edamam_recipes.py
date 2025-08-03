@@ -55,7 +55,9 @@ def _format_amount(value):
             whole, remainder = divmod(frac.numerator, frac.denominator)
             if remainder:
                 frac_str = f"{remainder}/{frac.denominator}"
-                return f"{whole} {frac_str}".strip()
+                if whole:
+                    return f"{whole} {frac_str}"
+                return frac_str
             return str(whole)
         if num.is_integer():
             return str(int(num))
@@ -135,7 +137,16 @@ def _clean_instruction(text: str) -> str:
             return ""
     if len(t.split()) < 3:
         return ""
-    if re.match(r"^[\d/]+", t):
+    if re.match(r"^[\d¼½¾⅓⅔⅛⅜⅝⅞/]+", t):
+        if not any(verb in lower for verb in COMMON_VERBS):
+            return ""
+    UNITS = [
+        "cup", "cups", "teaspoon", "teaspoons", "tbsp", "tablespoon",
+        "tablespoons", "tsp", "ounce", "ounces", "oz", "pound",
+        "pounds", "lb", "lbs", "gram", "grams", "g", "kg", "ml",
+        "l", "pinch", "piece", "pieces"
+    ]
+    if any(u in lower for u in UNITS):
         if not any(verb in lower for verb in COMMON_VERBS):
             return ""
     return t

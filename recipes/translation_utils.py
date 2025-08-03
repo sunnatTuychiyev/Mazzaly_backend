@@ -171,6 +171,10 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """
     if not text:
         return ''
+    if len(text.split()) <= 3:
+        manual = _manual_translate(text, dest)
+        if manual.lower() != text.lower():
+            return manual
     result = _openai_translate(text, dest, src)
     if result:
         return result
