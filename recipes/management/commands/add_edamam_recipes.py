@@ -71,7 +71,13 @@ def _parse_amount_unit(text: str):
 
 def _clean_description(title, ingredients, raw_desc):
     """Return a non-empty description summarising the recipe."""
-    if raw_desc and not raw_desc.startswith("http") and raw_desc.lower() != title.lower():
+    raw_desc = (raw_desc or "").strip()
+    if (
+        raw_desc
+        and not raw_desc.lower().startswith("http")
+        and raw_desc.lower() != title.lower()
+        and len(raw_desc.split()) > 3
+    ):
         return raw_desc
     main_ings = ", ".join(i.split(",")[0] for i in ingredients[:3])
     return f"{title} made with {main_ings}."
@@ -287,7 +293,13 @@ class Command(BaseCommand):
                     continue
 
                 instructions = recipe_data.get("instructionLines") or []
-                if not instructions or (len(instructions) == 1 and "See the original recipe" in instructions[0]):
+                if instructions and len(instructions) == 1:
+                    if "See the original recipe" in instructions[0]:
+                        instructions = []
+                    else:
+                        parts = re.split(r"\.(?:\s|$)", instructions[0].strip())
+                        instructions = [p.strip() for p in parts if p.strip()]
+                if not instructions:
                     instructions = _fetch_instructions(recipe_data.get("url"))
                 if not instructions:
                     self.stderr.write(f"Skipping {title}: missing instructions")

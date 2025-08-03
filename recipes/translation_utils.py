@@ -1,9 +1,15 @@
+import os
 from typing import Dict, List
 
 try:
     from googletrans import Translator
 except Exception:  # pragma: no cover - library may be missing
     Translator = None
+
+try:  # pragma: no cover - optional dependency
+    import openai
+except Exception:  # pragma: no cover
+    openai = None
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
@@ -90,6 +96,25 @@ PHRASE_DICT: Dict[str, Dict[str, str]] = {
 }
 
 
+def _openai_translate(text: str, dest: str, src: str) -> str:
+    """Translate using OpenAI if available and configured."""
+    if not openai or not os.getenv("OPENAI_API_KEY"):
+        return ""
+    try:  # pragma: no cover - network
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        resp = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": f"Translate from {src} to {dest}."},
+                {"role": "user", "content": text},
+            ],
+            max_tokens=60,
+        )
+        return resp.choices[0].message["content"].strip()
+    except Exception:
+        return ""
+
+
 def _manual_translate(text: str, dest: str) -> str:
     """Simple phrase and word based translation."""
     mapping = FALLBACK_DICT.get(dest, {})
@@ -111,12 +136,15 @@ except Exception:  # If initialization fails, fall back to manual dictionary
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language.
 
-    Uses googletrans when available, falling back to a small built-in
-    dictionary if the API call fails or the library isn't installed.
+    Tries OpenAI's API first when configured, then googletrans, and finally
+    a small built-in dictionary as a last resort.
     """
     if not text:
         return ''
     global _translator
+    result = _openai_translate(text, dest, src)
+    if result:
+        return result
     if _translator:
         try:
             return _translator.translate(text, src=src, dest=dest).text
