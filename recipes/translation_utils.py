@@ -15,6 +15,12 @@ except Exception:  # pragma: no cover
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
 
+LANG_NAMES = {
+    'en': 'English',
+    'uz': 'Uzbek',
+    'ru': 'Russian',
+}
+
 def get_requested_lang(request) -> str:
     """Return a supported language code from the request query params."""
     if not request:
@@ -103,10 +109,12 @@ def _openai_translate(text: str, dest: str, src: str) -> str:
         return ""
     try:  # pragma: no cover - network
         openai.api_key = os.getenv("OPENAI_API_KEY")
+        src_lang = LANG_NAMES.get(src, src)
+        dest_lang = LANG_NAMES.get(dest, dest)
         resp = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": f"Translate from {src} to {dest}."},
+                {"role": "system", "content": f"Translate the user's text from {src_lang} to {dest_lang}."},
                 {"role": "user", "content": text},
             ],
             max_tokens=60,
@@ -176,7 +184,7 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
             pass
 
     result = _direct_google_translate(text, dest, src)
-    if result:
+    if result and result.lower() != text.lower():
         return result
 
     return _manual_translate(text, dest)
@@ -207,7 +215,5 @@ def apply_translations(recipe):
     for step in recipe.instructions.all():
         for lang in languages:
             trans = translate_text(step.description, lang)
-            # Prefix step number to mirror the enumerated style expected by users
-            numbered = f"{step.step_number}. {trans or step.description}"
-            setattr(step, f'description_{lang}', numbered)
+            setattr(step, f'description_{lang}', trans or step.description)
         step.save()
