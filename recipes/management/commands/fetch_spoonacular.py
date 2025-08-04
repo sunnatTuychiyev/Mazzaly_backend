@@ -87,6 +87,18 @@ class Command(BaseCommand):
         parser.add_argument('--number', type=int, default=5,
                             help='Number of recipes to fetch from the API')
         parser.add_argument('--file', type=str, help='Path to a local JSON file with Spoonacular format data')
+        parser.add_argument(
+            '--tags',
+            type=str,
+            default=None,
+            help="Comma-separated tags to filter recipe types",
+        )
+        parser.add_argument(
+            '--meal-type',
+            choices=['breakfast', 'lunch', 'dinner', 'random'],
+            dest='meal_type',
+            help='Meal type to filter recipes',
+        )
 
     def handle(self, *args, **options):
         base_dir = None
@@ -106,6 +118,16 @@ class Command(BaseCommand):
                 'addRecipeInformation': True,
                 'addRecipeNutrition': True,
             }
+            tags = options.get('tags')
+            meal_type = options.get('meal_type')
+            if meal_type == 'random':
+                meal_type = None
+            if meal_type and tags:
+                params['tags'] = f"{tags},{meal_type}"
+            elif meal_type:
+                params['tags'] = meal_type
+            elif tags:
+                params['tags'] = tags
             self.stdout.write('Fetching recipes from Spoonacular...')
             response = requests.get(url, params=params)
             response.raise_for_status()
@@ -115,9 +137,16 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('No recipes found in provided data'))
             return
         for r in recipes:
+            calories = _get_nutrient(r, 'Calories', 'Energy', 'Energy (kcal)')
+            if not calories:
+                self.stderr.write(
+                    f"Skipping {r.get('title', 'No title')}: missing calorie info"
+                )
+                continue
+
             recipe = Recipe.objects.create(
                 name=r.get('title', 'No title'),
-                description=_short_description(r.get('summary')), 
+                description=_short_description(r.get('summary')),
                 prep_time=r.get('readyInMinutes') or 0,
                 cook_time=r.get('readyInMinutes') or 0,
                 servings=r.get('servings', 1),
@@ -125,7 +154,7 @@ class Command(BaseCommand):
                 subscription_plan=(
                     Recipe.PLAN_HEALTHY if r.get('veryHealthy', False) else Recipe.PLAN_STANDARD
                 ),
-                calories=_get_nutrient(r, 'Calories', 'Energy', 'Energy (kcal)') or 0,
+                calories=calories,
                 protein=_get_nutrient(r, 'Protein', 'Proteins'),
                 fats=_get_nutrient(r, 'Fat', 'Fats', 'Total Fat'),
                 carbs=_get_nutrient(r, 'Carbohydrates', 'Carbs', 'Carbohydrate'),

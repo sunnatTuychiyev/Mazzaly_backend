@@ -333,8 +333,14 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "--query",
-            default="egg",
-            help="Ingredient or dish to search for (default: egg)",
+            default=None,
+            help="Ingredient or dish to search for (leave blank for random)",
+        )
+        parser.add_argument(
+            "--meal-type",
+            choices=["breakfast", "lunch", "dinner", "random"],
+            dest="meal_type",
+            help="Meal type to search for",
         )
 
     def handle(self, *args, **options):
@@ -358,17 +364,21 @@ class Command(BaseCommand):
             )
 
         to_fetch = options["count"]
-        query = options["query"]
+        query = options.get("query")
+        meal_type = options.get("meal_type")
         fetched = 0
         while fetched < to_fetch:
             params = {
                 "type": "public",
-                "q": query,
                 "app_id": app_id,
                 "app_key": app_key,
                 "random": "true",
                 "health": ["pork-free", "alcohol-free"],
             }
+            if query:
+                params["q"] = query
+            if meal_type and meal_type != "random":
+                params["mealType"] = meal_type.title()
             try:
                 resp = requests.get(
                     "https://api.edamam.com/api/recipes/v2",
@@ -434,6 +444,11 @@ class Command(BaseCommand):
                     self.stderr.write(f"Skipping {title}: unable to download image")
                     continue
 
+                calories = _get_nutrient(recipe_data, "ENERC_KCAL", servings)
+                if not calories:
+                    self.stderr.write(f"Skipping {title}: missing calorie info")
+                    continue
+
                 recipe = Recipe.objects.create(
                     name=title,
                     description=description,
@@ -444,7 +459,7 @@ class Command(BaseCommand):
                         Recipe.PLAN_HEALTHY
                         if "Low-Fat" in recipe_data.get("healthLabels", [])
                         else Recipe.PLAN_STANDARD,
-                    calories=_get_nutrient(recipe_data, "ENERC_KCAL", servings) or 0,
+                    calories=calories,
                     protein=_get_nutrient(recipe_data, "PROCNT", servings),
                     fats=_get_nutrient(recipe_data, "FAT", servings),
                     carbs=_get_nutrient(recipe_data, "CHOCDF", servings),
