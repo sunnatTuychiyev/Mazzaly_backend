@@ -333,12 +333,12 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "--query",
-            default="egg",
-            help="Ingredient or dish to search for (default: egg)",
+            default=None,
+            help="Ingredient or dish to search for (leave blank for random)",
         )
         parser.add_argument(
             "--meal-type",
-            choices=["breakfast", "lunch", "dinner"],
+            choices=["breakfast", "lunch", "dinner", "random"],
             dest="meal_type",
             help="Meal type to search for",
         )
@@ -364,19 +364,20 @@ class Command(BaseCommand):
             )
 
         to_fetch = options["count"]
-        query = options["query"]
+        query = options.get("query")
         meal_type = options.get("meal_type")
         fetched = 0
         while fetched < to_fetch:
             params = {
                 "type": "public",
-                "q": query,
                 "app_id": app_id,
                 "app_key": app_key,
                 "random": "true",
                 "health": ["pork-free", "alcohol-free"],
             }
-            if meal_type:
+            if query:
+                params["q"] = query
+            if meal_type and meal_type != "random":
                 params["mealType"] = meal_type.title()
             try:
                 resp = requests.get(

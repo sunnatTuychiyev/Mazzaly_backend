@@ -5,6 +5,7 @@ MEAL_CHOICES = [
     ("breakfast", "Breakfast"),
     ("lunch", "Lunch"),
     ("dinner", "Dinner"),
+    ("random", "Random"),
 ]
 
 
@@ -12,9 +13,8 @@ class EdamamImportForm(forms.Form):
     count = forms.IntegerField(min_value=1, label="Number of recipes")
     query = forms.CharField(
         label="Ingredient or dish",
-        initial="egg",
         required=False,
-        help_text="Search term used when fetching recipes",
+        help_text="Search term used when fetching recipes. Leave blank for random",
     )
     meal_type = forms.ChoiceField(
         choices=MEAL_CHOICES,

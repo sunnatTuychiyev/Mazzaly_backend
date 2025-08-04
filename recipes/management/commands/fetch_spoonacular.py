@@ -95,7 +95,7 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             '--meal-type',
-            choices=['breakfast', 'lunch', 'dinner'],
+            choices=['breakfast', 'lunch', 'dinner', 'random'],
             dest='meal_type',
             help='Meal type to filter recipes',
         )
@@ -120,6 +120,8 @@ class Command(BaseCommand):
             }
             tags = options.get('tags')
             meal_type = options.get('meal_type')
+            if meal_type == 'random':
+                meal_type = None
             if meal_type and tags:
                 params['tags'] = f"{tags},{meal_type}"
             elif meal_type:
