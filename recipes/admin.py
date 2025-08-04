@@ -109,11 +109,13 @@ class RecipeAdmin(admin.ModelAdmin):
             form = EdamamImportForm(request.POST)
             if form.is_valid():
                 count = form.cleaned_data["count"]
+                query = form.cleaned_data.get("query")
                 out = io.StringIO()
                 try:
                     call_command(
                         "add_edamam_recipes",
                         count,
+                        query=query,
                         stdout=out,
                         no_color=True,
                     )
@@ -155,11 +157,13 @@ class RecipeAdmin(admin.ModelAdmin):
             form = SpoonacularImportForm(request.POST)
             if form.is_valid():
                 count = form.cleaned_data["count"]
+                tags = form.cleaned_data.get("tags")
                 out = io.StringIO()
                 try:
                     call_command(
                         "fetch_spoonacular",
                         number=count,
+                        tags=tags,
                         stdout=out,
                         no_color=True,
                     )

@@ -87,6 +87,12 @@ class Command(BaseCommand):
         parser.add_argument('--number', type=int, default=5,
                             help='Number of recipes to fetch from the API')
         parser.add_argument('--file', type=str, help='Path to a local JSON file with Spoonacular format data')
+        parser.add_argument(
+            '--tags',
+            type=str,
+            default=None,
+            help="Comma-separated tags to filter recipe types",
+        )
 
     def handle(self, *args, **options):
         base_dir = None
@@ -106,6 +112,8 @@ class Command(BaseCommand):
                 'addRecipeInformation': True,
                 'addRecipeNutrition': True,
             }
+            if options.get('tags'):
+                params['tags'] = options['tags']
             self.stdout.write('Fetching recipes from Spoonacular...')
             response = requests.get(url, params=params)
             response.raise_for_status()
