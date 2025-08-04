@@ -93,6 +93,12 @@ class Command(BaseCommand):
             default=None,
             help="Comma-separated tags to filter recipe types",
         )
+        parser.add_argument(
+            '--meal-type',
+            choices=['breakfast', 'lunch', 'dinner'],
+            dest='meal_type',
+            help='Meal type to filter recipes',
+        )
 
     def handle(self, *args, **options):
         base_dir = None
@@ -112,8 +118,14 @@ class Command(BaseCommand):
                 'addRecipeInformation': True,
                 'addRecipeNutrition': True,
             }
-            if options.get('tags'):
-                params['tags'] = options['tags']
+            tags = options.get('tags')
+            meal_type = options.get('meal_type')
+            if meal_type and tags:
+                params['tags'] = f"{tags},{meal_type}"
+            elif meal_type:
+                params['tags'] = meal_type
+            elif tags:
+                params['tags'] = tags
             self.stdout.write('Fetching recipes from Spoonacular...')
             response = requests.get(url, params=params)
             response.raise_for_status()

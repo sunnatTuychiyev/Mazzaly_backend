@@ -1,6 +1,13 @@
 from django import forms
 
 
+MEAL_CHOICES = [
+    ("breakfast", "Breakfast"),
+    ("lunch", "Lunch"),
+    ("dinner", "Dinner"),
+]
+
+
 class EdamamImportForm(forms.Form):
     count = forms.IntegerField(min_value=1, label="Number of recipes")
     query = forms.CharField(
@@ -8,6 +15,11 @@ class EdamamImportForm(forms.Form):
         initial="egg",
         required=False,
         help_text="Search term used when fetching recipes",
+    )
+    meal_type = forms.ChoiceField(
+        choices=MEAL_CHOICES,
+        label="Meal type",
+        initial="breakfast",
     )
 
 
@@ -17,4 +29,9 @@ class SpoonacularImportForm(forms.Form):
         label="Recipe tags",
         required=False,
         help_text="Comma separated tags like 'vegetarian,dessert'",
+    )
+    meal_type = forms.ChoiceField(
+        choices=MEAL_CHOICES,
+        label="Meal type",
+        initial="breakfast",
     )

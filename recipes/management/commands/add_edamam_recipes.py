@@ -336,6 +336,12 @@ class Command(BaseCommand):
             default="egg",
             help="Ingredient or dish to search for (default: egg)",
         )
+        parser.add_argument(
+            "--meal-type",
+            choices=["breakfast", "lunch", "dinner"],
+            dest="meal_type",
+            help="Meal type to search for",
+        )
 
     def handle(self, *args, **options):
         load_dotenv()
@@ -359,6 +365,7 @@ class Command(BaseCommand):
 
         to_fetch = options["count"]
         query = options["query"]
+        meal_type = options.get("meal_type")
         fetched = 0
         while fetched < to_fetch:
             params = {
@@ -369,6 +376,8 @@ class Command(BaseCommand):
                 "random": "true",
                 "health": ["pork-free", "alcohol-free"],
             }
+            if meal_type:
+                params["mealType"] = meal_type.title()
             try:
                 resp = requests.get(
                     "https://api.edamam.com/api/recipes/v2",
