@@ -137,9 +137,16 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('No recipes found in provided data'))
             return
         for r in recipes:
+            calories = _get_nutrient(r, 'Calories', 'Energy', 'Energy (kcal)')
+            if not calories:
+                self.stderr.write(
+                    f"Skipping {r.get('title', 'No title')}: missing calorie info"
+                )
+                continue
+
             recipe = Recipe.objects.create(
                 name=r.get('title', 'No title'),
-                description=_short_description(r.get('summary')), 
+                description=_short_description(r.get('summary')),
                 prep_time=r.get('readyInMinutes') or 0,
                 cook_time=r.get('readyInMinutes') or 0,
                 servings=r.get('servings', 1),
@@ -147,7 +154,7 @@ class Command(BaseCommand):
                 subscription_plan=(
                     Recipe.PLAN_HEALTHY if r.get('veryHealthy', False) else Recipe.PLAN_STANDARD
                 ),
-                calories=_get_nutrient(r, 'Calories', 'Energy', 'Energy (kcal)') or 0,
+                calories=calories,
                 protein=_get_nutrient(r, 'Protein', 'Proteins'),
                 fats=_get_nutrient(r, 'Fat', 'Fats', 'Total Fat'),
                 carbs=_get_nutrient(r, 'Carbohydrates', 'Carbs', 'Carbohydrate'),

@@ -444,6 +444,11 @@ class Command(BaseCommand):
                     self.stderr.write(f"Skipping {title}: unable to download image")
                     continue
 
+                calories = _get_nutrient(recipe_data, "ENERC_KCAL", servings)
+                if not calories:
+                    self.stderr.write(f"Skipping {title}: missing calorie info")
+                    continue
+
                 recipe = Recipe.objects.create(
                     name=title,
                     description=description,
@@ -454,7 +459,7 @@ class Command(BaseCommand):
                         Recipe.PLAN_HEALTHY
                         if "Low-Fat" in recipe_data.get("healthLabels", [])
                         else Recipe.PLAN_STANDARD,
-                    calories=_get_nutrient(recipe_data, "ENERC_KCAL", servings) or 0,
+                    calories=calories,
                     protein=_get_nutrient(recipe_data, "PROCNT", servings),
                     fats=_get_nutrient(recipe_data, "FAT", servings),
                     carbs=_get_nutrient(recipe_data, "CHOCDF", servings),
