@@ -90,7 +90,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
-"""
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -100,8 +100,8 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-"""
 
+"""
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=3),    # 5 daqiqa
     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=7),  # 10 daqiqa
@@ -111,7 +111,7 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-
+"""
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
