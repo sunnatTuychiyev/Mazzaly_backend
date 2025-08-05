@@ -84,7 +84,16 @@ class Command(BaseCommand):
             area = meal.get("strArea")
             if area:
                 desc_parts.append(f"It originates from {area}.")
-            desc_parts.append("All ingredients are halal.")
+
+            # TheMealDB does not provide a dedicated description field.
+            # Use the first sentence from the instructions as a brief summary
+            # of the meal so that the description contains short information
+            # about the dish.
+            instructions_text = meal.get("strInstructions", "")
+            if instructions_text:
+                first_sentence = instructions_text.strip().split(".")[0].strip()
+                if first_sentence:
+                    desc_parts.append(f"{first_sentence}.")
 
             ingredients = []
             for i in range(1, 21):
@@ -96,6 +105,10 @@ class Command(BaseCommand):
                     )
 
             calories = max(len(ingredients) * 50, 50)
+            # Estimate macronutrients using simple proportions of calories.
+            protein = round(calories * 0.3 / 4)  # 30% of calories from protein
+            fats = round(calories * 0.3 / 9)     # 30% of calories from fats
+            carbs = round(calories * 0.4 / 4)    # 40% of calories from carbs
 
             recipe = Recipe.objects.create(
                 name=name,
@@ -105,6 +118,9 @@ class Command(BaseCommand):
                 servings=1,
                 subscription_plan=Recipe.PLAN_STANDARD,
                 calories=calories,
+                protein=protein,
+                fats=fats,
+                carbs=carbs,
             )
 
             image_url = meal.get("strMealThumb")
