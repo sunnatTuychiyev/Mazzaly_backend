@@ -1,16 +1,9 @@
-import os
 from typing import Dict, List
 
-try:
-    from googletrans import Translator
-except Exception:  # pragma: no cover - library may be missing
-    Translator = None
 import requests
 
-try:  # pragma: no cover - optional dependency
-    import openai
-except Exception:  # pragma: no cover
-    openai = None
+# Translators from third party packages are intentionally not used so that
+# LibreTranslate becomes the single external service for translations.
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
@@ -103,23 +96,16 @@ PHRASE_DICT: Dict[str, Dict[str, str]] = {
 }
 
 
-def _openai_translate(text: str, dest: str, src: str) -> str:
-    """Translate using OpenAI if available and configured."""
-    if not openai or not os.getenv("OPENAI_API_KEY"):
-        return ""
+def _libre_translate(text: str, dest: str, src: str) -> str:
+    """Translate text using the public LibreTranslate API."""
     try:  # pragma: no cover - network
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        src_lang = LANG_NAMES.get(src, src)
-        dest_lang = LANG_NAMES.get(dest, dest)
-        resp = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": f"Translate the user's text from {src_lang} to {dest_lang}."},
-                {"role": "user", "content": text},
-            ],
-            max_tokens=60,
+        resp = requests.post(
+            "https://libretranslate.com/translate",
+            data={"q": text, "source": src, "target": dest, "format": "text"},
+            timeout=10,
         )
-        return resp.choices[0].message["content"].strip()
+        resp.raise_for_status()
+        return resp.json().get("translatedText", "")
     except Exception:
         return ""
 
@@ -136,38 +122,13 @@ def _manual_translate(text: str, dest: str) -> str:
     return ' '.join(translated)
 
 
-def _direct_google_translate(text: str, dest: str, src: str) -> str:
-    """Fallback to Google Translate's unofficial API via HTTP request."""
-    try:  # pragma: no cover - network
-        resp = requests.get(
-            "https://translate.googleapis.com/translate_a/single",
-            params={
-                "client": "gtx",
-                "sl": src,
-                "tl": dest,
-                "dt": "t",
-                "q": text,
-            },
-            timeout=10,
-        )
-        resp.raise_for_status()
-        data = resp.json()[0]
-        return "".join(part[0] for part in data if part and part[0])
-    except Exception:
-        return ""
-
-# Instantiate translator with a short timeout so network issues fail fast
-try:  # pragma: no cover - network usage not exercised in tests
-    _translator = Translator(timeout=5) if Translator else None
-except Exception:  # If initialization fails, fall back to manual dictionary
-    _translator = None
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language.
 
-    Tries OpenAI's API first when configured, then googletrans, and finally
-    a small built-in dictionary as a last resort.
+    Uses the LibreTranslate API first and falls back to a small built-in
+    dictionary for very short phrases.
     """
     if not text:
         return ''
@@ -176,19 +137,8 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
         manual = _manual_translate(text, dest)
         if manual.lower() != text.lower():
             return manual
-    result = _openai_translate(text, dest, src)
-    if result:
-        return result
 
-    if _translator:
-        try:  # pragma: no cover - network
-            result = _translator.translate(text, src=src, dest=dest).text
-            if result and result.lower() != text.lower():
-                return result
-        except Exception:
-            pass
-
-    result = _direct_google_translate(text, dest, src)
+    result = _libre_translate(text, dest, src)
     if result and result.lower() != text.lower():
         return result
 
