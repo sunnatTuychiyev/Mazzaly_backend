@@ -35,3 +35,10 @@ class SpoonacularImportForm(forms.Form):
         label="Meal type",
         initial="breakfast",
     )
+
+
+class TheMealDBImportForm(forms.Form):
+    search_term = forms.CharField(
+        label="Search term",
+        help_text="Search term used to query TheMealDB",
+    )
