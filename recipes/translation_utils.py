@@ -128,22 +128,20 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language.
 
     Uses the LibreTranslate API first and falls back to a small built-in
-    dictionary for very short phrases.
+    dictionary only if the API doesn't return a translation.
     """
     if not text:
         return ''
-    words = len(text.split())
-    if words <= 3:
-        manual = _manual_translate(text, dest)
-        if manual.lower() != text.lower():
-            return manual
 
     result = _libre_translate(text, dest, src)
     if result and result.lower() != text.lower():
         return result
 
-    if words <= 3:
-        return _manual_translate(text, dest)
+    # Fallback to manual dictionary only for short phrases
+    if len(text.split()) <= 3:
+        manual = _manual_translate(text, dest)
+        if manual.lower() != text.lower():
+            return manual
 
     return text
 
