@@ -15,7 +15,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "search_term",
-            type=str,
+            nargs="?",
+            default="",
             help="Search term used to query TheMealDB API",
         )
         parser.add_argument(
@@ -38,7 +39,7 @@ class Command(BaseCommand):
             help="Meal type to filter recipes",
         )
 
-    def handle(self, search_term, *args, **options):
+    def handle(self, search_term="", *args, **options):
         count = options.get("count")
         tags = options.get("tags")
         meal_type = options.get("meal_type")
@@ -84,6 +85,18 @@ class Command(BaseCommand):
             if area:
                 desc_parts.append(f"It originates from {area}.")
             desc_parts.append("All ingredients are halal.")
+
+            ingredients = []
+            for i in range(1, 21):
+                ing_name = meal.get(f"strIngredient{i}")
+                if ing_name and ing_name.strip():
+                    measure = meal.get(f"strMeasure{i}")
+                    ingredients.append(
+                        (ing_name.strip(), measure.strip() if measure and measure.strip() else None)
+                    )
+
+            calories = max(len(ingredients) * 50, 50)
+
             recipe = Recipe.objects.create(
                 name=name,
                 description=" ".join(desc_parts),
@@ -91,6 +104,7 @@ class Command(BaseCommand):
                 cook_time=10,
                 servings=1,
                 subscription_plan=Recipe.PLAN_STANDARD,
+                calories=calories,
             )
 
             image_url = meal.get("strMealThumb")
@@ -118,15 +132,12 @@ class Command(BaseCommand):
                 category, _ = Category.objects.get_or_create(name=cat)
                 recipe.categories.add(category)
 
-            for i in range(1, 21):
-                ing_name = meal.get(f"strIngredient{i}")
-                if ing_name and ing_name.strip():
-                    measure = meal.get(f"strMeasure{i}")
-                    Ingredient.objects.create(
-                        recipe=recipe,
-                        name=ing_name.strip(),
-                        amount=measure.strip() if measure and measure.strip() else None,
-                    )
+            for ing_name, measure in ingredients:
+                Ingredient.objects.create(
+                    recipe=recipe,
+                    name=ing_name,
+                    amount=measure,
+                )
 
             instructions = meal.get("strInstructions")
             if instructions:

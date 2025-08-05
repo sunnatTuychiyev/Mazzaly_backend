@@ -213,7 +213,7 @@ class RecipeAdmin(admin.ModelAdmin):
                 return redirect("..")
             form = TheMealDBImportForm(request.POST)
             if form.is_valid():
-                search_term = form.cleaned_data["search_term"]
+                search_term = form.cleaned_data.get("search_term", "")
                 count = form.cleaned_data["count"]
                 tags = form.cleaned_data.get("tags")
                 meal_type = form.cleaned_data.get("meal_type")

@@ -40,7 +40,8 @@ class SpoonacularImportForm(forms.Form):
 class TheMealDBImportForm(forms.Form):
     search_term = forms.CharField(
         label="Search term",
-        help_text="Search term used to query TheMealDB",
+        required=False,
+        help_text="Search term used to query TheMealDB. Leave blank for random",
     )
     count = forms.IntegerField(min_value=1, label="Number of recipes")
     tags = forms.CharField(
