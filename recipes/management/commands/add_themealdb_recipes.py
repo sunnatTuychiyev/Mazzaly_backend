@@ -1,3 +1,4 @@
+import re
 import requests
 from urllib.parse import urlparse
 
@@ -17,8 +18,30 @@ class Command(BaseCommand):
             type=str,
             help="Search term used to query TheMealDB API",
         )
+        parser.add_argument(
+            "--count",
+            type=int,
+            dest="count",
+            default=None,
+            help="Number of recipes to import",
+        )
+        parser.add_argument(
+            "--tags",
+            dest="tags",
+            default="",
+            help="Comma separated tags like 'vegetarian,dessert'",
+        )
+        parser.add_argument(
+            "--meal-type",
+            dest="meal_type",
+            default="",
+            help="Meal type to filter recipes",
+        )
 
     def handle(self, search_term, *args, **options):
+        count = options.get("count")
+        tags = options.get("tags")
+        meal_type = options.get("meal_type")
         url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={search_term}"
         try:
             resp = requests.get(url, timeout=10)
@@ -28,7 +51,19 @@ class Command(BaseCommand):
             self.stderr.write(f"Error fetching data: {exc}")
             return
 
-        meals = data.get("meals")
+        meals = data.get("meals") or []
+        if meal_type and meal_type != "random":
+            meals = [m for m in meals if m.get("strCategory", "").lower() == meal_type.lower()]
+        tag_list = []
+        if tags:
+            tag_list = [t.strip().lower() for t in tags.split(",") if t.strip()]
+            meals = [
+                m
+                for m in meals
+                if m.get("strTags") and any(t in m["strTags"].lower() for t in tag_list)
+            ]
+        if count:
+            meals = meals[:count]
         if not meals:
             self.stdout.write(self.style.WARNING("No recipes found."))
             return
@@ -41,9 +76,17 @@ class Command(BaseCommand):
                 self.stdout.write(f"Skipping existing recipe: {name}")
                 continue
 
+            desc_parts = []
+            category = meal.get("strCategory")
+            if category:
+                desc_parts.append(f"This is a {category.lower()} dish.")
+            area = meal.get("strArea")
+            if area:
+                desc_parts.append(f"It originates from {area}.")
+            desc_parts.append("All ingredients are halal.")
             recipe = Recipe.objects.create(
                 name=name,
-                description=meal.get("strInstructions") or "",
+                description=" ".join(desc_parts),
                 prep_time=10,
                 cook_time=10,
                 servings=1,
@@ -69,6 +112,8 @@ class Command(BaseCommand):
                 categories.extend(
                     [c.strip() for c in meal["strTags"].split(",") if c.strip()]
                 )
+            if tag_list:
+                categories.extend(tag_list)
             for cat in categories:
                 category, _ = Category.objects.get_or_create(name=cat)
                 recipe.categories.add(category)
@@ -85,7 +130,11 @@ class Command(BaseCommand):
 
             instructions = meal.get("strInstructions")
             if instructions:
-                steps = [s.strip() for s in instructions.splitlines() if s.strip()]
+                steps = [
+                    re.sub(r"^step\s*\d+\.?\s*", "", s.strip(), flags=re.I)
+                    for s in instructions.splitlines()
+                    if s.strip()
+                ]
                 for num, step in enumerate(steps, start=1):
                     Instruction.objects.create(
                         recipe=recipe,

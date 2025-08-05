@@ -214,11 +214,17 @@ class RecipeAdmin(admin.ModelAdmin):
             form = TheMealDBImportForm(request.POST)
             if form.is_valid():
                 search_term = form.cleaned_data["search_term"]
+                count = form.cleaned_data["count"]
+                tags = form.cleaned_data.get("tags")
+                meal_type = form.cleaned_data.get("meal_type")
                 out = io.StringIO()
                 try:
                     call_command(
                         "add_themealdb_recipes",
                         search_term,
+                        count=count,
+                        tags=tags,
+                        meal_type=meal_type,
                         stdout=out,
                         no_color=True,
                     )
