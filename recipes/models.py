@@ -116,12 +116,15 @@ class MealPlan(models.Model):
 class ShoppingListItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='shopping_list')
     name = models.CharField(max_length=255)
-    amount = models.CharField(max_length=100)
-    unit = models.CharField(max_length=50)
+    amount = models.CharField(max_length=100, blank=True, default="")
+    unit = models.CharField(max_length=50, blank=True, default="")
     checked = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.amount} {self.unit} {self.name} ({'done' if self.checked else 'pending'})"
+        parts = [self.amount, self.unit, self.name]
+        item = " ".join(filter(None, parts))
+        status = 'done' if self.checked else 'pending'
+        return f"{item} ({status})"
 
 # --- RECIPE RATING (kelajak uchun) ---
 class RecipeRating(models.Model):
