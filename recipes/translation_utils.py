@@ -1,4 +1,5 @@
 import os
+import re
 from typing import Dict, List
 
 try:
@@ -121,6 +122,7 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
         'main': 'asosiy',
         'course': 'taom',
         'antipasti': 'antipasti',
+        'oats': "jo'xori yormasi",
     },
     'ru': {
         'chicken': 'курица',
@@ -212,6 +214,7 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
         'main': 'основной',
         'course': 'блюдо',
         'antipasti': 'антипасти',
+        'oats': 'овсянка',
     },
 }
 
@@ -255,6 +258,27 @@ PHRASE_DICT: Dict[str, Dict[str, str]] = {
         "brown sugar": 'коричневый сахар',
         "raw pumpkin seeds": 'сырые тыквенные семена',
         "olive oil": 'оливковое масло',
+        "white flour": 'белая мука',
+        "baking powder": 'разрыхлитель',
+        "baking soda": 'пищевая сода',
+        "pure pumpkin": 'тыквенное пюре',
+        "white chocolate mocha cookies": 'печенье с белым шоколадом и мокко',
+        "white chocolate chips": 'капли белого шоколада',
+        "semi-sweet chocolate chips": 'капли полусладкого шоколада',
+        "instant coffee or espresso powder": 'растворимый кофе или порошок эспрессо',
+        "bbq & american": 'барбекю и американская кухня',
+        "chinese & asian": 'китайская и азиатская кухня',
+        "italian & european": 'итальянская и европейская кухня',
+        "mexican & latin": 'мексиканская и латиноамериканская кухня',
+        "desserts & baking": 'десерты и выпечка',
+        "as seen in...": 'Как показано в...',
+        "food blog of the day": 'Блог о еде дня',
+        "wine blog of the day": 'Винный блог дня',
+        "follow on instagram": 'Подписывайтесь в Instagram',
+        "like on facebook": 'Поставьте лайк на Facebook',
+        "follow on twitter": 'Подписывайтесь в Twitter',
+        "follow on pinterest": 'Подписывайтесь в Pinterest',
+        "honey strawberry skillet cornbread recipes": 'Рецепты кукурузного хлеба на сковороде с мёдом и клубникой',
     },
     'uz': {
         "gluten free": 'glyutensiz',
@@ -291,6 +315,29 @@ PHRASE_DICT: Dict[str, Dict[str, str]] = {
         "video & podcasts": 'video va podkastlar',
         "quick & easy": 'tez va oson',
         "food newscelebrityfunny & weirdeseasonal & sustaintablecompanies & brandspolitics & safetycoupons": "Oziq-ovqat yangiliklari, kulgili va g'aroyib, mavsumiy va barqaror, kompaniyalar va brendlar, siyosat va xavfsizlik, kuponlar",
+        "pumpkin breakfast cake": 'qovoqli nonushta keki',
+        "white flour": 'oq un',
+        "baking powder": 'pishirish kukuni',
+        "baking soda": 'pishirish sodasi',
+        "pure pumpkin": 'qovoq pyuresi',
+        "white chocolate mocha cookies": 'oq shokoladli moka kukilar',
+        "white chocolate chips": "oq shokoladli bo'lakchalar",
+        "semi-sweet chocolate chips": "yarim shirin shokolad bo'lakchalar",
+        "instant coffee or espresso powder": "instant qahva yoki espresso kukuni",
+        "bbq & american": 'barbekyu va amerika',
+        "chinese & asian": 'xitoy va osiyo',
+        "italian & european": 'italyan va yevropa',
+        "mexican & latin": 'meksika va lotin',
+        "desserts & baking": 'shirinliklar va pishiriqlar',
+        "as seen in...": 'Ko\'rsatilgan joylar...',
+        "food blog of the day": 'Kun taom blogi',
+        "wine blog of the day": 'Kun vino blogi',
+        "follow on instagram": 'Instagramda kuzatib boring',
+        "like on facebook": 'Facebookda yoqtiring',
+        "follow on twitter": 'Twitterda kuzatib boring',
+        "follow on pinterest": 'Pinterestda kuzatib boring',
+        "honey strawberry skillet cornbread recipes": "Asalli qulupnayli skovorodkada makkajo'xori noni retseptlari",
+        "gluten free & food allergies": 'glyutensiz va oziq-ovqat allergiyalari',
     },
 }
 
@@ -323,7 +370,10 @@ def _manual_translate(text: str, dest: str) -> str:
     lowered = text.lower()
     if lowered in phrases:
         return phrases[lowered]
-    words = text.split()
+    result = text
+    for eng, trans in phrases.items():
+        result = re.sub(re.escape(eng), trans, result, flags=re.IGNORECASE)
+    words = result.split()
     translated: List[str] = [mapping.get(word.lower(), word) for word in words]
     return ' '.join(translated)
 
