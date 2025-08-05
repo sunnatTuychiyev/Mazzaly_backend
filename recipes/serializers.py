@@ -231,6 +231,9 @@ class MealPlanSerializer(serializers.ModelSerializer):
 
 # SHOPPING LIST ITEM
 class ShoppingListItemSerializer(serializers.ModelSerializer):
+    amount = serializers.CharField(required=False, allow_blank=True, default="")
+    unit = serializers.CharField(required=False, allow_blank=True, default="")
+
     class Meta:
         model = ShoppingListItem
         fields = ['id', 'name', 'amount', 'unit', 'checked']
