@@ -133,10 +133,13 @@ endpoints to retrieve data in a specific language. The simplified
 curl '/api/recipes/?lang=uz'
 ```
 
-Translations are generated during import. If an `OPENAI_API_KEY` is provided,
-the OpenAI API is used for higher quality results. Otherwise the optional
-`googletrans` library is attempted, and if that fails a small built-in
-dictionary provides basic word-level translations.
+Translations are generated during import. When a `TAHRIRCHI_API_KEY` is set,
+requests are sent to [Tahrirchi](https://developer.tahrirchi.uz/) using its
+`translate-v2` API (the model can be chosen with `TAHRIRCHI_MODEL`, defaulting
+to `tilmoch`). If that service is not configured or the request fails, the
+system falls back to the OpenAI API when an `OPENAI_API_KEY` is supplied, then
+to the optional `googletrans` library, and finally to a small built-in
+dictionary for basic word-level translations.
 
 ### Pagination
 
