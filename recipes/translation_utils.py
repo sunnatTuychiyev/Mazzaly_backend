@@ -8,6 +8,38 @@ except Exception:  # pragma: no cover - library may be missing
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
 
+# Manual overrides for problematic machine translations
+FALLBACK_DICT = {
+    'uz': {
+        "american": "amerikancha",
+        "desserts": "shirinliklar",
+        "biscuits and cookies": "pechene va kukilar",
+        "british": "britancha",
+        "main dish": "asosiy taom",
+        "cereals": "yormalar",
+        "pescatarian": "pesketarian",
+        "lacto ovo vegetarian": "lakto-ovo vegetarian",
+        "dairy free": "sut mahsulotlarisiz",
+        "side dish": "yon taom",
+        "paleolithic": "paleolitik",
+        "primal": "ibtidoiy",
+        "mediterranean": "O'rta yer dengizi",
+        "ground cinnamon": "maydalangan dolchin",
+        "ground nutmeg": "maydalangan muskat yong'og'i",
+        "ground allspice": "maydalangan allspice",
+        "ground cloves": "maydalangan chinnigullar",
+        "instant coffee": "tez eriydigan qahva",
+        "unsalted butter": "tuzlanmagan sariyog'",
+        "buttermilk": "ayron",
+        "cornmeal": "makkajo'xori uni",
+        "cornstarch": "makkajo'xori kraxmali",
+        "confectioners sugar": "pudra shakari",
+        "peppermint": "yalpiz",
+        "food coloring": "ovqat bo'yog'i",
+    },
+    'ru': {},
+}
+
 
 def get_requested_lang(request) -> str:
     """Return a supported language code from the request query params."""
@@ -15,6 +47,11 @@ def get_requested_lang(request) -> str:
         return 'en'
     lang = request.query_params.get('lang', 'en')
     return lang if lang in SUPPORTED_LANGUAGES else 'en'
+
+
+def _manual_translate(text: str, dest: str) -> str:
+    """Return a manual translation override if one exists."""
+    return FALLBACK_DICT.get(dest, {}).get(text.lower(), "")
 
 
 def _direct_google_translate(text: str, dest: str, src: str) -> str:
@@ -49,12 +86,18 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language using Google Translate."""
     if not text:
         return ''
+    manual = _manual_translate(text, dest)
+    if manual:
+        return manual
     if _translator:
         try:  # pragma: no cover - network
-            return _translator.translate(text, src=src, dest=dest).text
+            result = _translator.translate(text, src=src, dest=dest).text
+            if result:
+                return result
         except Exception:
             pass
-    return _direct_google_translate(text, dest, src) or text
+    result = _direct_google_translate(text, dest, src)
+    return result or manual or text
 
 
 def apply_translations(recipe):
