@@ -48,7 +48,6 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
         'spread': 'surtma',
         'soup': "sho'rva",
         'gluten': 'glyuten',
-        'free': 'bepul',
         'ketogenic': 'ketogenik',
         'starter': 'aperitiv',
         'appetizer': 'gazak',
@@ -162,7 +161,6 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
         'spread': 'паста',
         'soup': 'суп',
         'gluten': 'глютен',
-        'free': 'бесплатный',
         'ketogenic': 'кетогенный',
         'starter': 'закуска',
         'appetizer': 'закуска',
@@ -237,6 +235,29 @@ FALLBACK_DICT: Dict[str, Dict[str, str]] = {
         'main': 'основной',
         'course': 'блюдо',
         'antipasti': 'антипасти',
+        'biscuits and cookies': 'печенье и бисквиты',
+        'british': 'британская кухня',
+        'main dish': 'основное блюдо',
+        'cereals': 'крупы',
+        'pescatarian': 'пескетарианский',
+        'lacto ovo vegetarian': 'лакто-ово-вегетарианский',
+        'dairy free': 'без молочных продуктов',
+        'side dish': 'гарнир',
+        'paleolithic': 'палеолитический',
+        'primal': 'первобытный',
+        'mediterranean': 'средиземноморская кухня',
+        'ground cinnamon': 'молотая корица',
+        'ground nutmeg': 'молотый мускатный орех',
+        'ground allspice': 'молотый душистый перец',
+        'ground cloves': 'молотая гвоздика',
+        'instant coffee': 'растворимый кофе',
+        'unsalted butter': 'несоленое сливочное масло',
+        'buttermilk': 'пахта',
+        'cornmeal': 'кукурузная мука',
+        'cornstarch': 'кукурузный крахмал',
+        'confectioners sugar': 'сахарная пудра',
+        'peppermint': 'мята перечная',
+        'food coloring': 'пищевой краситель',
         'oats': 'овсянка',
     },
 }
@@ -440,31 +461,27 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     phrases = PHRASE_DICT.get(dest, {})
     if lowered in phrases:
         return phrases[lowered]
-    words = len(text.split())
-    if words <= 3:
-        manual = _manual_translate(text, dest)
-        if manual.lower() != text.lower():
-            return manual
+    manual = _manual_translate(text, dest)
+    if manual.lower() != text.lower():
+        return manual
+
     result = _openai_translate(text, dest, src)
     if result:
-        return result
+        return _manual_translate(result, dest)
 
     if _translator:
         try:  # pragma: no cover - network
             result = _translator.translate(text, src=src, dest=dest).text
             if result and result.lower() != text.lower():
-                return result
+                return _manual_translate(result, dest)
         except Exception:
             pass
 
     result = _direct_google_translate(text, dest, src)
     if result and result.lower() != text.lower():
-        return result
+        return _manual_translate(result, dest)
 
-    if words <= 3:
-        return _manual_translate(text, dest)
-
-    return text
+    return _manual_translate(text, dest)
 
 
 def apply_translations(recipe):
