@@ -1,4 +1,4 @@
-from typing import Dict, List
+import os
 
 import requests
 
@@ -24,126 +24,30 @@ def get_requested_lang(request) -> str:
     return lang
 
 
-FALLBACK_DICT: Dict[str, Dict[str, str]] = {
-    'uz': {
-        'chicken': 'tovuq',
-        'onion': 'piyoz',
-        'salt': 'tuz',
-        'pepper': 'qalampir',
-        'water': 'suv',
-        'dinner': 'kechki ovqat',
-        'breakfast': 'nonushta',
-        'lunch': 'tushlik',
-        'italian': 'italyan',
-        'condiment': "qo'shimcha",
-        'dip': 'dip',
-        'spread': 'surma',
-        'soup': "sho'rva",
-        'gluten': 'glyuten',
-        'free': 'siz',
-        'ketogenic': 'ketogen',
-        'starter': 'aperitif',
-        'appetizer': 'ishtaha ochuvchi',
-        'dessert': 'shirinlik',
-        'snack': 'tamaddi',
-        'main': 'asosiy',
-        'course': 'taom',
-        'antipasti': 'antipasti',
-        'hor': 'hor',
-        "d'oeuvre": 'doeuvre',
-    },
-    'ru': {
-        'chicken': 'курица',
-        'onion': 'лук',
-        'salt': 'соль',
-        'pepper': 'перец',
-        'water': 'вода',
-        'dinner': 'ужин',
-        'breakfast': 'завтрак',
-        'lunch': 'обед',
-        'italian': 'итальянский',
-        'condiment': 'приправа',
-        'dip': 'соус',
-        'spread': 'намазка',
-        'soup': 'суп',
-        'gluten': 'глютен',
-        'free': 'свободный',
-        'ketogenic': 'кетогенный',
-        'starter': 'закуска',
-        'appetizer': 'закуска',
-        'dessert': 'десерт',
-        'snack': 'перекус',
-        'main': 'основное',
-        'course': 'блюдо',
-        'antipasti': 'антипасти',
-        'hor': 'гор',
-        "d'oeuvre": 'девр',
-    },
-}
-
-# Additional phrase-level translations for better accuracy
-PHRASE_DICT: Dict[str, Dict[str, str]] = {
-    'ru': {
-        "gluten free": 'без глютена',
-        "main course": 'основное блюдо',
-        "hor d'oeuvre": 'закуска',
-    },
-    'uz': {
-        "gluten free": 'glyutensiz',
-        "main course": 'asosiy taom',
-        "hor d'oeuvre": 'aperitif',
-    },
-}
-
 
 def _libre_translate(text: str, dest: str, src: str) -> str:
     """Translate text using the public LibreTranslate API."""
     try:  # pragma: no cover - network
-        resp = requests.post(
-            "https://libretranslate.com/translate",
-            data={"q": text, "source": src, "target": dest, "format": "text"},
-            timeout=10,
-        )
+        data = {"q": text, "source": src, "target": dest, "format": "text"}
+        api_key = os.getenv("LIBRETRANSLATE_API_KEY")
+        if api_key:
+            data["api_key"] = api_key
+        resp = requests.post("https://libretranslate.com/translate", data=data, timeout=10)
         resp.raise_for_status()
         return resp.json().get("translatedText", "")
     except Exception:
         return ""
 
 
-def _manual_translate(text: str, dest: str) -> str:
-    """Simple phrase and word based translation."""
-    mapping = FALLBACK_DICT.get(dest, {})
-    phrases = PHRASE_DICT.get(dest, {})
-    lowered = text.lower()
-    if lowered in phrases:
-        return phrases[lowered]
-    words = text.split()
-    translated: List[str] = [mapping.get(word.lower(), word) for word in words]
-    return ' '.join(translated)
-
-
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
-    """Translate text to the destination language.
-
-    Uses the LibreTranslate API first and falls back to a small built-in
-    dictionary only if the API doesn't return a translation.
-    """
-    if not text:
-        return ''
+    """Translate text to the destination language using LibreTranslate."""
+    if not text or dest == src:
+        return text
 
     result = _libre_translate(text, dest, src)
-    if result and result.lower() != text.lower():
-        return result
-
-    # Fallback to manual dictionary only for short phrases
-    if len(text.split()) <= 3:
-        manual = _manual_translate(text, dest)
-        if manual.lower() != text.lower():
-            return manual
-
-    return text
+    return result or text
 
 
 def apply_translations(recipe):
