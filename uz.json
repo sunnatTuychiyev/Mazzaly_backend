@@ -1,0 +1,3364 @@
+{
+  "count": 57,
+  "next": "https://127.0.0.1:8000/api/recipes/?lang=uz&page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 76,
+      "name": "Qovoqli nonushta keki",
+      "categories": [
+        {
+          "id": 33,
+          "name": "nonushta"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 39,
+          "name": "pishiriqlar"
+        }
+      ],
+      "description": "1 stakanli oq un bilan qovoqli nonushta pirojnomasi, 1 stakan yaltiroq bug'doy un, 1 stakan suli.",
+      "image": "https://127.0.0.1:8000/media/recipes/f093834747dfbb1ce0a5a395fe98110f.jpg",
+      "prep_time": 75,
+      "cook_time": 0,
+      "servings": 12,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 5800,
+      "protein": 108,
+      "fats": 318,
+      "carbs": 666,
+      "ingredients": [
+        {
+          "id": 773,
+          "name": "Un",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup White Flour"
+        },
+        {
+          "id": 774,
+          "name": "Butun bug'doy uni",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Whole Wheat Flour"
+        },
+        {
+          "id": 775,
+          "name": "Suli",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Oats"
+        },
+        {
+          "id": 776,
+          "name": "Pishiriq kukuni",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Baking Powder"
+        },
+        {
+          "id": 777,
+          "name": "Pishiriq sodasi",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Baking Soda"
+        },
+        {
+          "id": 778,
+          "name": "Zamin doljin",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon Ground Cinnamon"
+        },
+        {
+          "id": 779,
+          "name": "Zaminli dumog",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Ground Nutmeg"
+        },
+        {
+          "id": 780,
+          "name": "Yupqa almospice",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Ground Allspice"
+        },
+        {
+          "id": 781,
+          "name": "Zaminli chinnigullar",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Ground Cloves"
+        },
+        {
+          "id": 782,
+          "name": "Tuz",
+          "amount": "1",
+          "unit": "pinch",
+          "preparation": "1 pinch Salt"
+        },
+        {
+          "id": 783,
+          "name": "Zaytun moyi",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Olive Oil"
+        },
+        {
+          "id": 784,
+          "name": "Oq shakar",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup White Sugar"
+        },
+        {
+          "id": 785,
+          "name": "Jigarrang shakar",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Brown Sugar"
+        },
+        {
+          "id": 786,
+          "name": "Tuxum",
+          "amount": "4",
+          "unit": "piece(s)",
+          "preparation": "4 whole Eggs"
+        },
+        {
+          "id": 787,
+          "name": "Vanil",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Vanilla"
+        },
+        {
+          "id": 788,
+          "name": "Qovoq",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups Pure Pumpkin"
+        },
+        {
+          "id": 789,
+          "name": "Xom qovoq urug'lari",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "½ cups Raw Pumpkin Seeds"
+        },
+        {
+          "id": 790,
+          "name": "Yong'oq",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "½ cups Walnuts, Chopped"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1045,
+          "step_number": 1,
+          "description": "Kubog 'bug'doy uni"
+        },
+        {
+          "id": 1046,
+          "step_number": 2,
+          "description": "½ Teaspoonsg muveym"
+        },
+        {
+          "id": 1047,
+          "step_number": 3,
+          "description": "½ TeePoonsg by Actionce"
+        },
+        {
+          "id": 1048,
+          "step_number": 4,
+          "description": "½ Teeaspoons bazasi chinnigullar"
+        },
+        {
+          "id": 1049,
+          "step_number": 5,
+          "description": "½ Custalov qovoq urug'lari"
+        },
+        {
+          "id": 1050,
+          "step_number": 6,
+          "description": "½ showswalts, tug'ralgan"
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "name": "Oq shokolad mocha cookie fayllari",
+      "categories": [
+        {
+          "id": 17,
+          "name": "tamaddi"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 42,
+          "name": "pechene va cookie fayllari"
+        }
+      ],
+      "description": "1 stakan (2 ta tayog'li sariyog 'bilan qilingan oq shokoladli mocha cookie, 1 1/2 chashka shakar, 2 tuxum.",
+      "image": "https://127.0.0.1:8000/media/recipes/46d9885a1a9d783f7e87bc9ade37b575.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 48,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 4877,
+      "protein": 56,
+      "fats": 254,
+      "carbs": 640,
+      "ingredients": [
+        {
+          "id": 791,
+          "name": "sariyog '",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup (2 sticks) butter, at room temperature"
+        },
+        {
+          "id": 792,
+          "name": "shakar",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups sugar"
+        },
+        {
+          "id": 793,
+          "name": "tuxum",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 eggs, room temperature"
+        },
+        {
+          "id": 794,
+          "name": "vanil ekstrakti",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla extract"
+        },
+        {
+          "id": 795,
+          "name": "un",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups AP flour"
+        },
+        {
+          "id": 796,
+          "name": "kakao",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup cocoa powder"
+        },
+        {
+          "id": 797,
+          "name": "Tinchlangan qahva",
+          "amount": "2",
+          "unit": "tablespoon",
+          "preparation": "2 tablespoons instant coffee or espresso powder"
+        },
+        {
+          "id": 798,
+          "name": "Pishiriq sodasi",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking soda"
+        },
+        {
+          "id": 799,
+          "name": "tuz",
+          "amount": "0 1/4",
+          "unit": "teaspoon",
+          "preparation": "1/4 teaspoon salt"
+        },
+        {
+          "id": 800,
+          "name": "oq shokoladli chiplar",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup white chocolate chips"
+        },
+        {
+          "id": 801,
+          "name": "Yarim shirin shokolad",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup semi-sweet chocolate chips"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1051,
+          "step_number": 1,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1052,
+          "step_number": 2,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1053,
+          "step_number": 3,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1054,
+          "step_number": 4,
+          "description": "Italiya va Evropa"
+        },
+        {
+          "id": 1055,
+          "step_number": 5,
+          "description": "Meksikalik va lotin"
+        },
+        {
+          "id": 1056,
+          "step_number": 6,
+          "description": "Shirinlar va pishirish"
+        },
+        {
+          "id": 1057,
+          "step_number": 7,
+          "description": "Oziq-ovqat mahsulotlariFormentFunny & G'alati va Barabelleompaniya va brendspolitikika va Safetikitoblar"
+        },
+        {
+          "id": 1058,
+          "step_number": 8,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1059,
+          "step_number": 9,
+          "description": "Mavsumiy va barqaror"
+        },
+        {
+          "id": 1060,
+          "step_number": 10,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1061,
+          "step_number": 11,
+          "description": "Siyosat va xavfsizlik"
+        },
+        {
+          "id": 1062,
+          "step_number": 12,
+          "description": "Bayram bayramlari & Hodisalar va Passivhawamunden va shukrlovchilashtirishRistmas va yangi yillar"
+        },
+        {
+          "id": 1063,
+          "step_number": 13,
+          "description": "Hozirgi bayramlar va voqealar"
+        },
+        {
+          "id": 1064,
+          "step_number": 14,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1065,
+          "step_number": 15,
+          "description": "Xellouin va minnatdorchilik"
+        },
+        {
+          "id": 1066,
+          "step_number": 16,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1067,
+          "step_number": 17,
+          "description": "Sog'liqni saqlash va ovqatlanish"
+        },
+        {
+          "id": 1068,
+          "step_number": 18,
+          "description": "Gluten bepul va oziq-ovqat allergiyasi"
+        },
+        {
+          "id": 1069,
+          "step_number": 19,
+          "description": "Vegetarian va vegetarian"
+        },
+        {
+          "id": 1070,
+          "step_number": 20,
+          "description": "Parhezlar va vazn yo'qotish"
+        },
+        {
+          "id": 1071,
+          "step_number": 21,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1072,
+          "step_number": 22,
+          "description": "Video va podkastlar"
+        },
+        {
+          "id": 1073,
+          "step_number": 23,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1074,
+          "step_number": 24,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1075,
+          "step_number": 25,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1076,
+          "step_number": 26,
+          "description": "Italiya va Evropa"
+        },
+        {
+          "id": 1077,
+          "step_number": 27,
+          "description": "Meksikalik va lotin"
+        },
+        {
+          "id": 1078,
+          "step_number": 28,
+          "description": "Shirinlar va pishirish"
+        },
+        {
+          "id": 1079,
+          "step_number": 29,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1080,
+          "step_number": 30,
+          "description": "Mavsumiy va barqaror"
+        },
+        {
+          "id": 1081,
+          "step_number": 31,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1082,
+          "step_number": 32,
+          "description": "Siyosat va xavfsizlik"
+        },
+        {
+          "id": 1083,
+          "step_number": 33,
+          "description": "Hozirgi bayramlar va voqealar"
+        },
+        {
+          "id": 1084,
+          "step_number": 34,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1085,
+          "step_number": 35,
+          "description": "Xellouin va minnatdorchilik"
+        },
+        {
+          "id": 1086,
+          "step_number": 36,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1087,
+          "step_number": 37,
+          "description": "Gluten bepul va oziq-ovqat allergiyasi"
+        },
+        {
+          "id": 1088,
+          "step_number": 38,
+          "description": "Vegetarian va vegetarian"
+        },
+        {
+          "id": 1089,
+          "step_number": 39,
+          "description": "Parhezlar va vazn yo'qotish"
+        },
+        {
+          "id": 1090,
+          "step_number": 40,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1091,
+          "step_number": 41,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1092,
+          "step_number": 42,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1093,
+          "step_number": 43,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1094,
+          "step_number": 44,
+          "description": "Italiya va Evropa"
+        },
+        {
+          "id": 1095,
+          "step_number": 45,
+          "description": "Meksikalik va lotin"
+        },
+        {
+          "id": 1096,
+          "step_number": 46,
+          "description": "Shirinlar va pishirish"
+        },
+        {
+          "id": 1097,
+          "step_number": 47,
+          "description": "Oziq-ovqat mahsulotlariFormentFunny & G'alati va Barabelleompaniya va brendspolitikika va Safetikitoblar"
+        },
+        {
+          "id": 1098,
+          "step_number": 48,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1099,
+          "step_number": 49,
+          "description": "Mavsumiy va barqaror"
+        },
+        {
+          "id": 1100,
+          "step_number": 50,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1101,
+          "step_number": 51,
+          "description": "Siyosat va xavfsizlik"
+        },
+        {
+          "id": 1102,
+          "step_number": 52,
+          "description": "Bayram bayramlari & Hodisalar va Passivhawamunden va shukrlovchilashtirishRistmas va yangi yillar"
+        },
+        {
+          "id": 1103,
+          "step_number": 53,
+          "description": "Hozirgi bayramlar va voqealar"
+        },
+        {
+          "id": 1104,
+          "step_number": 54,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1105,
+          "step_number": 55,
+          "description": "Xellouin va minnatdorchilik"
+        },
+        {
+          "id": 1106,
+          "step_number": 56,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1107,
+          "step_number": 57,
+          "description": "Sog'liqni saqlash va ovqatlanish"
+        },
+        {
+          "id": 1108,
+          "step_number": 58,
+          "description": "Gluten bepul va oziq-ovqat allergiyasi"
+        },
+        {
+          "id": 1109,
+          "step_number": 59,
+          "description": "Vegetarian va vegetarian"
+        },
+        {
+          "id": 1110,
+          "step_number": 60,
+          "description": "Parhezlar va vazn yo'qotish"
+        },
+        {
+          "id": 1111,
+          "step_number": 61,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1112,
+          "step_number": 62,
+          "description": "Video va podkastlar"
+        },
+        {
+          "id": 1113,
+          "step_number": 63,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1114,
+          "step_number": 64,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1115,
+          "step_number": 65,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1116,
+          "step_number": 66,
+          "description": "Italiya va Evropa"
+        },
+        {
+          "id": 1117,
+          "step_number": 67,
+          "description": "Meksikalik va lotin"
+        },
+        {
+          "id": 1118,
+          "step_number": 68,
+          "description": "Shirinlar va pishirish"
+        },
+        {
+          "id": 1119,
+          "step_number": 69,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1120,
+          "step_number": 70,
+          "description": "Mavsumiy va barqaror"
+        },
+        {
+          "id": 1121,
+          "step_number": 71,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1122,
+          "step_number": 72,
+          "description": "Siyosat va xavfsizlik"
+        },
+        {
+          "id": 1123,
+          "step_number": 73,
+          "description": "Hozirgi bayramlar va voqealar"
+        },
+        {
+          "id": 1124,
+          "step_number": 74,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1125,
+          "step_number": 75,
+          "description": "Xellouin va minnatdorchilik"
+        },
+        {
+          "id": 1126,
+          "step_number": 76,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1127,
+          "step_number": 77,
+          "description": "Gluten bepul va oziq-ovqat allergiyasi"
+        },
+        {
+          "id": 1128,
+          "step_number": 78,
+          "description": "Vegetarian va vegetarian"
+        },
+        {
+          "id": 1129,
+          "step_number": 79,
+          "description": "Parhezlar va vazn yo'qotish"
+        },
+        {
+          "id": 1130,
+          "step_number": 80,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1131,
+          "step_number": 81,
+          "description": "Ko'rilganidek ..."
+        },
+        {
+          "id": 1132,
+          "step_number": 82,
+          "description": "Kunning oziq-ovqat bloglari"
+        },
+        {
+          "id": 1133,
+          "step_number": 83,
+          "description": "Kunning sharob blogi"
+        },
+        {
+          "id": 1134,
+          "step_number": 84,
+          "description": "Instagramda kuzatib boring"
+        },
+        {
+          "id": 1135,
+          "step_number": 85,
+          "description": "Facebookda"
+        },
+        {
+          "id": 1136,
+          "step_number": 86,
+          "description": "Twitter-da kuzatib boring"
+        },
+        {
+          "id": 1137,
+          "step_number": 87,
+          "description": "Pinterest-da kuzatib boring"
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "name": "Asal qulupnay maishiy siket retseptlari",
+      "categories": [
+        {
+          "id": 33,
+          "name": "nonushta"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 45,
+          "name": "non"
+        }
+      ],
+      "description": "Asal qulupnay maishiy maishiy siket retsepti, ⅓ kubok asal, 2 osh qoshiq jigarrang shakar bilan qoplangan.",
+      "image": "https://127.0.0.1:8000/media/recipes/c54b7210aec9f92379a8a1ecd0784bf0",
+      "prep_time": 30,
+      "cook_time": 0,
+      "servings": 11,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 2802,
+      "protein": 47,
+      "fats": 118,
+      "carbs": 403,
+      "ingredients": [
+        {
+          "id": 816,
+          "name": "To'lanmagan sariyog '",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "½ cup unsalted butter, melted"
+        },
+        {
+          "id": 817,
+          "name": "asal",
+          "amount": "0 1/3",
+          "unit": "cup",
+          "preparation": "⅓ cup honey"
+        },
+        {
+          "id": 818,
+          "name": "jigarrang shakar",
+          "amount": "2",
+          "unit": "tablespoon",
+          "preparation": "2 tablespoons brown sugar"
+        },
+        {
+          "id": 819,
+          "name": "tuxum",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 large egg, beaten"
+        },
+        {
+          "id": 820,
+          "name": "sariyog '",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup buttermilk"
+        },
+        {
+          "id": 821,
+          "name": "makkajo'xori",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup + 1 tablespoon cornmeal"
+        },
+        {
+          "id": 822,
+          "name": "barcha maqsadli un",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup + 1 tablespoon all purpose flour"
+        },
+        {
+          "id": 823,
+          "name": "Pishiriq kukuni",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking powder"
+        },
+        {
+          "id": 824,
+          "name": "Pishiriq sodasi",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoon baking soda"
+        },
+        {
+          "id": 825,
+          "name": "tuz",
+          "amount": "1",
+          "unit": "pinch",
+          "preparation": "Pinch of salt"
+        },
+        {
+          "id": 826,
+          "name": "makkajo'xori yadroni",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup corn kernels, fresh/frozen and drained/canned and drained"
+        },
+        {
+          "id": 827,
+          "name": "qulupnay",
+          "amount": "0 3/4",
+          "unit": "cup",
+          "preparation": "¾ cup chopped strawberries"
+        },
+        {
+          "id": 828,
+          "name": "sariyog '",
+          "amount": null,
+          "unit": "butter",
+          "preparation": ""
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1138,
+          "step_number": 1,
+          "description": "Pechni 425fga qizdiring."
+        },
+        {
+          "id": 1139,
+          "step_number": 2,
+          "description": "Pechni oldindan qizartirish, 10 dyuymli quyma temirda yoki pechning xavfsizligi, identifikatorida eritma. Eritilgan sariyog 'siketning barcha yuzalarini paldatiga ega ekanligiga ishonch hosil qiling. Keyin eritilgan sariyani o'rta yoki katta o'lchamdagi o'lchamdagi idishga quying."
+        },
+        {
+          "id": 1140,
+          "step_number": 3,
+          "description": "Asal, jigarrang shakar, tuxum va sariyog 'ichiga idishga qo'shing. Barcha ingredientlar yaxshi birlashtirilgan bo'lguncha mo'ylov. Hozir bir chetga surib qo'ying."
+        },
+        {
+          "id": 1141,
+          "step_number": 4,
+          "description": "Turli xil katta idishda jo'xori, un, pishiriladigan kukun, pishirish soda va tuzni birlashtirish uchun birga yig'lang. Nam ingredientlarni quruq ingredientlarga quying va aralashmaguncha aralashtiring. G'aroyib bo'lmaslik uchun ehtiyot bo'ling, maydalangan qulupnay va tug'ralgan qulupnayda."
+        },
+        {
+          "id": 1142,
+          "step_number": 5,
+          "description": "Urishqoqni issiq kalamatga quying. Agar mohir issiq bo'lmasa, pechkadagi idishni bir necha daqiqa qizdiring."
+        },
+        {
+          "id": 1143,
+          "step_number": 6,
+          "description": "Tamas jigarrang va markazda pishirilganiga qadar, 20-25 daqiqa davomida makkajo'xori pishiring. Tish pichog'ini korrerning o'rtasiga joylashtiring. Agar tish ppi toza bo'lsa, korkame qilingan."
+        },
+        {
+          "id": 1144,
+          "step_number": 7,
+          "description": "Farr echkisiga kesilishidan bir necha daqiqa oldin salqinlashing uchun."
+        },
+        {
+          "id": 1145,
+          "step_number": 8,
+          "description": "Qolgan omborxonalarni muzlatgichda saqlang yoki uzoqroq turing, ularni muzlatgichda muzlatgich xavfsiz idishda saqlang."
+        },
+        {
+          "id": 1146,
+          "step_number": 9,
+          "description": "Korbmradni isitish uchun, qariyb 10-15 daqiqa davomida makkajo'xori 350F ni 10-15 daqiqa davomida pishiring va tepasi qizarib, karamelizatsiya qilinadi."
+        },
+        {
+          "id": 1147,
+          "step_number": 10,
+          "description": "Asalli sariyog 'bilan qulupnay makinlari iliqligiga xizmat qiling."
+        }
+      ]
+    },
+    {
+      "id": 83,
+      "name": "Candy Coade Cookie fayllari",
+      "categories": [
+        {
+          "id": 17,
+          "name": "tamaddi"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 42,
+          "name": "pechene va cookie fayllari"
+        }
+      ],
+      "description": "1 stakan yog ', 3/4 kubok zarracha shakar, 1/2 kubokli qandolatchi shakar.",
+      "image": "https://127.0.0.1:8000/media/recipes/84ac67c458aac71976c600f9740af6a2.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 4339,
+      "protein": 35,
+      "fats": 194,
+      "carbs": 626,
+      "ingredients": [
+        {
+          "id": 867,
+          "name": "sariyog '",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup butter"
+        },
+        {
+          "id": 868,
+          "name": "donador shakar",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup granulated sugar"
+        },
+        {
+          "id": 869,
+          "name": "Qandolatchilar shakar",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup confectioners sugar"
+        },
+        {
+          "id": 870,
+          "name": "tuxum sarig'i",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 egg yolks"
+        },
+        {
+          "id": 871,
+          "name": "qalampir",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons peppermint extract"
+        },
+        {
+          "id": 872,
+          "name": "vanil",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla"
+        },
+        {
+          "id": 873,
+          "name": "un",
+          "amount": "2 1/4",
+          "unit": "cup",
+          "preparation": "2 1/4 cups flour"
+        },
+        {
+          "id": 874,
+          "name": "tuz",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon salt"
+        },
+        {
+          "id": 875,
+          "name": "Ovqatni bo'yash",
+          "amount": "12",
+          "unit": "drop",
+          "preparation": "12 drops red food coloring"
+        },
+        {
+          "id": 876,
+          "name": "shakar",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup sanding sugar (for rolling in) about"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1148,
+          "step_number": 1,
+          "description": "Chang'i mikseringizni panjara bilan jihozlangan, sariyog 'va to'rlarni engilroq va bekamu ko'st, taxminan 4-5 daqiqagacha. Tuxum sarig'i, lazzatlarni qo'shing va birlashtirilgangacha urish."
+        },
+        {
+          "id": 1149,
+          "step_number": 2,
+          "description": "Un va tuz qo'shing va qo'shmaguncha aralashtiring."
+        },
+        {
+          "id": 1150,
+          "step_number": 3,
+          "description": "Xamirni yarmiga bo'ling va xamirning yarmiga qizil ovqatni qo'shing."
+        },
+        {
+          "id": 1151,
+          "step_number": 4,
+          "description": "Har bir kvadratni 9 dyuymli maydonga o'rang. Bir xamir maydonini ikkinchisining ustiga aylantiring. Uni bir-biriga yopishtirish uchun muloyimlik bilan yoping. Sovutgich 15 daqiqa. Xamirni yarmida kesib oling. 1/4 dyuymli chiziqlarga kesilib, qumli shakarga botiring. Xamirni va shakarni shakarlama shakliga aylantiring. Moylangan pishirish varag'iga joylashtiring. (Mening panam to'lganimda, ularni 15 daqiqa davomida muzlatgichga qaytarib beraman)"
+        },
+        {
+          "id": 1152,
+          "step_number": 5,
+          "description": "Pechni 350 ° dan oldin. 10 - 13 daqiqa yoki qirralar qizarib ketguncha pishiring. Sovutgichli taglikni olib tashlashdan oldin 5 daqiqa davomida cookie varag'ida salqin."
+        }
+      ]
+    },
+    {
+      "id": 84,
+      "name": "Yupqa idish qovoqli pirog",
+      "categories": [
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 39,
+          "name": "pishiriqlar"
+        }
+      ],
+      "description": "* 1 stakan qovoq pyuresi, * 2 katta tuxum, * 1/2 chashka shakar shakarli yupqa idishga solingan yupqa pirog.",
+      "image": "https://127.0.0.1:8000/media/recipes/dbcbafb5b8b253ba5838ba7113e13b76.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 8,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 2001,
+      "protein": 28,
+      "fats": 114,
+      "carbs": 224,
+      "ingredients": [
+        {
+          "id": 877,
+          "name": "qovoq pyuresi",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup pumpkin puree"
+        },
+        {
+          "id": 878,
+          "name": "tuxum",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "* 2 large egg"
+        },
+        {
+          "id": 879,
+          "name": "jigarrang shakar",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "* 1/2 cup brown sugar"
+        },
+        {
+          "id": 880,
+          "name": "zamin doljin",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1/2 tsp ground cinnamon"
+        },
+        {
+          "id": 881,
+          "name": "tuz",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "* 1/4 tsp salt"
+        },
+        {
+          "id": 882,
+          "name": "makkajo'xori",
+          "amount": "1",
+          "unit": "tablespoon",
+          "preparation": "* 1 tbsp cornstarch"
+        },
+        {
+          "id": 883,
+          "name": "zaminli dumog",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "* 1/4 tsp ground nutmeg"
+        },
+        {
+          "id": 884,
+          "name": "zamin silkisi",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "* 1/8 teaspoon ground clove"
+        },
+        {
+          "id": 885,
+          "name": "black qalampir",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "* 1/8 teaspoon ground black pepper"
+        },
+        {
+          "id": 886,
+          "name": "og'ir qaymoq",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "* 1/2 cup heavy cream"
+        },
+        {
+          "id": 887,
+          "name": "sut",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "* 1/4 cup milk"
+        },
+        {
+          "id": 888,
+          "name": "pirog qobig'i",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "* 1 pie crust"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1153,
+          "step_number": 1,
+          "description": "Pechni 350F dan 350f."
+        },
+        {
+          "id": 1154,
+          "step_number": 2,
+          "description": "Qovoq pyuresi, tuxum va jigarrang shakar ichiga bir piyola va biriskni birlashtiring."
+        },
+        {
+          "id": 1155,
+          "step_number": 3,
+          "description": "Barcha ziravorlar va makkajo'xori qo'shing."
+        },
+        {
+          "id": 1156,
+          "step_number": 4,
+          "description": "Qaymoq va sutni quying."
+        },
+        {
+          "id": 1157,
+          "step_number": 5,
+          "description": "Aralashtirib, aralash va barcha ingredientlarni yaxshi birlashtirmaguncha mo'ylovni saqlang."
+        },
+        {
+          "id": 1158,
+          "step_number": 6,
+          "description": "To'ldirishni erkagida qoldiring."
+        },
+        {
+          "id": 1159,
+          "step_number": 7,
+          "description": "45 daqiqadan bir soatgacha pishiring."
+        },
+        {
+          "id": 1160,
+          "step_number": 8,
+          "description": "Xizmat qiling va zavqlaning."
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "name": "Ispaniya tilimlari: Ispaniya tortilla",
+      "categories": [
+        {
+          "id": 5,
+          "name": "asosiy taom"
+        },
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 47,
+          "name": "O'rta er dengizi"
+        }
+      ],
+      "description": "Ispaniyaning bir tilini 1 stakan zaytun moyi, 3 ta o'rta ruslar kartoshka, 1/2 oq piyoz bilan yasadi.",
+      "image": "https://127.0.0.1:8000/media/recipes/8c629ad96b4c3476020f320edbee6d50.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 1177,
+      "protein": 11,
+      "fats": 114,
+      "carbs": 31,
+      "ingredients": [
+        {
+          "id": 922,
+          "name": "Zaytun moyi",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups Olive Oil"
+        },
+        {
+          "id": 923,
+          "name": "Qisqichbaqasimon kartoshka",
+          "amount": "3",
+          "unit": "piece(s)",
+          "preparation": "3 Medium Russet Potatoes"
+        },
+        {
+          "id": 924,
+          "name": "White piyoz",
+          "amount": "1/2",
+          "unit": "piece(s)",
+          "preparation": "1/2 White Onion"
+        },
+        {
+          "id": 925,
+          "name": "Tuxum",
+          "amount": "5",
+          "unit": "piece(s)",
+          "preparation": "4-6 Large Eggs"
+        },
+        {
+          "id": 926,
+          "name": "tuz",
+          "amount": null,
+          "unit": "Salt",
+          "preparation": ""
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1161,
+          "step_number": 1,
+          "description": "1-2 stakanni 1-2 stakan zaytun moyi turg'un bo'lmagan idishda o'rta olovda."
+        },
+        {
+          "id": 1162,
+          "step_number": 2,
+          "description": "Zaytun moyiga piyoz qo'shing, 5 daqiqa yoki piyoz aromatik bo'lsa va yumshatishni boshlang."
+        },
+        {
+          "id": 1163,
+          "step_number": 3,
+          "description": "Piyoz va yog 'aralashmasi uchun tuzlangan, dilimlenli kartoshkani qo'shing."
+        },
+        {
+          "id": 1164,
+          "step_number": 4,
+          "description": "Kartoshka oltindan so'ng, yog 'va kartoshkani yog'dan tortib, aralashtirilgan idishga soling."
+        },
+        {
+          "id": 1165,
+          "step_number": 5,
+          "description": "Kelgusi tortillalar uchun muzlatgichda kuchli, zaxirada salqin, qo'riqxonada saqlanadigan joyda saqlang."
+        },
+        {
+          "id": 1166,
+          "step_number": 6,
+          "description": "4-6 tuxumni urib, kartoshka va piyoz aralashtirish tarkibiga yaxshilab qo'shing."
+        },
+        {
+          "id": 1167,
+          "step_number": 7,
+          "description": "8 '' '' '' Soxlamang, o'rta yuqori issiqlikka torting. Aralashmani panga to'kib tashlang."
+        },
+        {
+          "id": 1168,
+          "step_number": 8,
+          "description": "Panning tepasida invertiv plitani o'rnating va flip! Panni orqasiga pechkaga qo'ying va tortillani plastinkadan panjaga suring."
+        },
+        {
+          "id": 1169,
+          "step_number": 9,
+          "description": "10-20 soniya pishiring. 1-bosqichni takrorlang yoki undan kamroq yugurish markazi afzal ko'riladi."
+        },
+        {
+          "id": 1170,
+          "step_number": 10,
+          "description": "Xizmat qiling va zavqlaning!"
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "name": "Shokoladli chip zukkini banan noni :: Re",
+      "categories": [
+        {
+          "id": 33,
+          "name": "nonushta"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 45,
+          "name": "non"
+        }
+      ],
+      "description": "Shokoladli chip zokki bananining noni: * 4 tuxum, * 1 3/4 kubokli shakar, * 1 stakan kokos ekin yog'i.",
+      "image": "https://127.0.0.1:8000/media/recipes/65bf0410986e87b389d4d023ae8914a3.jpg",
+      "prep_time": 15,
+      "cook_time": 45,
+      "servings": 24,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 329,
+      "protein": 5,
+      "fats": 16,
+      "carbs": 44,
+      "ingredients": [
+        {
+          "id": 969,
+          "name": "tuxum",
+          "amount": "4",
+          "unit": "piece(s)",
+          "preparation": "* 4 egg"
+        },
+        {
+          "id": 970,
+          "name": "shakar",
+          "amount": "1 3/4",
+          "unit": "cup",
+          "preparation": "* 1 3/4 cup sugar, plus a little more for dusting the top of the dough"
+        },
+        {
+          "id": 971,
+          "name": "xamir",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "* 1 3/4 cup sugar, plus a little more for dusting the top of the dough"
+        },
+        {
+          "id": 972,
+          "name": "Hindiston yong'og'i yog'i",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup coconut oil"
+        },
+        {
+          "id": 973,
+          "name": "banan",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 2 medium ripe banana, mashed (about 1 cup)"
+        },
+        {
+          "id": 974,
+          "name": "bug'doy",
+          "amount": "3",
+          "unit": "cup",
+          "preparation": "* 3 cup all purpose flour {i used freshly ground soft white wheat}"
+        },
+        {
+          "id": 975,
+          "name": "Pishiriq kukuni",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1-1/2 teaspoon baking powder"
+        },
+        {
+          "id": 976,
+          "name": "Pishiriq sodasi",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1-1/2 teaspoon baking soda"
+        },
+        {
+          "id": 977,
+          "name": "zamin doljin",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1-1/2 teaspoon ground cinnamon"
+        },
+        {
+          "id": 978,
+          "name": "tuz",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "* 1 teaspoon salt"
+        },
+        {
+          "id": 979,
+          "name": "zukkini",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "* 1-1/2 cup shredded unpeeled zucchini"
+        },
+        {
+          "id": 980,
+          "name": "shokoladli chip",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup chocolate chip"
+        },
+        {
+          "id": 981,
+          "name": "yong'oq",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* optional: 1 cup chopped nut {pecan or walnut}"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1171,
+          "step_number": 1,
+          "description": "Aralashtirilgan idishda tuxumni urish."
+        },
+        {
+          "id": 1172,
+          "step_number": 2,
+          "description": "Yorug'lik va yog 'qo'shing va nur va bekamlmaguncha uring."
+        },
+        {
+          "id": 1173,
+          "step_number": 3,
+          "description": "Banan qo'shing va yaxshilab aralashtiring. Unni, pishirish kukunini, pishirish soda, doljin va tuzni birlashtiring; Tuxum aralashmasiga aralashtiring."
+        },
+        {
+          "id": 1174,
+          "step_number": 4,
+          "description": "Qovoqda aralashtiring, agar kerakli bo'lmaguncha, shokolad chiplari va yong'oqni aralashtiring."
+        },
+        {
+          "id": 1175,
+          "step_number": 5,
+          "description": "9-chi moylangan 9 taga quying. x 5-in. non idishlari."
+        },
+        {
+          "id": 1176,
+          "step_number": 6,
+          "description": "50 daqiqa davomida 350 daraja pishiring yoki tish pptick tozalanmaguncha. 10 daqiqa soviydi. To'liq sovutish uchun idishlardan sim tokchalariga olib tashlang."
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "name": "Sevimli go'sht loaf gyros retsepti",
+      "categories": [
+        {
+          "id": 5,
+          "name": "asosiy taom"
+        },
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 47,
+          "name": "O'rta er dengizi"
+        }
+      ],
+      "description": "1 ta tuxum, 6 ta sarimsoq chinnigullar bilan qilingan sevimli go'shtli retsepti, 3 osh qoshiq apegdano.",
+      "image": "https://127.0.0.1:8000/media/recipes/40204823040c4eae84f6ff8d69146ef1.jpg",
+      "prep_time": 30,
+      "cook_time": 0,
+      "servings": 8,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 564,
+      "protein": 30,
+      "fats": 25,
+      "carbs": 58,
+      "ingredients": [
+        {
+          "id": 982,
+          "name": "tuxum",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 egg, lightly beaten"
+        },
+        {
+          "id": 983,
+          "name": "sarimsoq",
+          "amount": "6",
+          "unit": "clove",
+          "preparation": "6 garlic cloves, minced"
+        },
+        {
+          "id": 984,
+          "name": "Quritilgan Organo",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 tbsp dried oregano"
+        },
+        {
+          "id": 985,
+          "name": "kosher tuz",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "1-1/2 tsp kosher salt"
+        },
+        {
+          "id": 986,
+          "name": "qalampir",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 tsp pepper"
+        },
+        {
+          "id": 987,
+          "name": "yer ostidagi qo'zichoq",
+          "amount": "1",
+          "unit": "pound",
+          "preparation": "1 lb ground lamb"
+        },
+        {
+          "id": 988,
+          "name": "zamin Turkiya",
+          "amount": "1",
+          "unit": "pound",
+          "preparation": "1 lb ground turkey or beef"
+        },
+        {
+          "id": 989,
+          "name": "Oddiy yogurt",
+          "amount": "8",
+          "unit": "ounce",
+          "preparation": "1 cup (8 oz) plain yogurt"
+        },
+        {
+          "id": 990,
+          "name": "bodring",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 medium cucumber, peeled, seeded and chopped"
+        },
+        {
+          "id": 991,
+          "name": "limon sharbati",
+          "amount": "2",
+          "unit": "tablespoon",
+          "preparation": "2 tbsp lemon juice"
+        },
+        {
+          "id": 992,
+          "name": "tuz",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 tsp salt"
+        },
+        {
+          "id": 993,
+          "name": "pita nonlari",
+          "amount": "8",
+          "unit": "piece(s)",
+          "preparation": "8 whole pita breads"
+        },
+        {
+          "id": 994,
+          "name": "zaytun moyi",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 tbsp olive oil, divided"
+        },
+        {
+          "id": 995,
+          "name": "pomidor",
+          "amount": "16",
+          "unit": "slice",
+          "preparation": "16 slices tomato"
+        },
+        {
+          "id": 996,
+          "name": "sweet piyoz",
+          "amount": "8",
+          "unit": "piece(s)",
+          "preparation": "8 slices sweet onion, halved"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1177,
+          "step_number": 1,
+          "description": "Katta idishga, tuxum, sarimsoq, oregano, kosher tuz va qalampirni birlashtiring. Aralash qo'zini va mol go'shti; Yaxshilab aralashtiring."
+        },
+        {
+          "id": 1178,
+          "step_number": 2,
+          "description": "Patnadan 9 tagacha. x 5-in. loaf pan. 850o dan 60-70 daqiqa davomida pishiring, ochilmagan yoki pushti qolmaguncha yoki go'sht tererometr 160 ta o'q ayiqchini o'qiy olmaguncha. Simli panjara ustiga butunlay soviydi. 1-2 soat davomida muzlatgich."
+        },
+        {
+          "id": 1179,
+          "step_number": 3,
+          "description": "1 osh qoshiq moyi bilan novdalarni non yuvish; Har ikki tomondan 1 daqiqa davomida engil yog'langan munchoqqa qizdiring. Issiqlikni saqlang. Go'sht nonini juda ingichka bo'laklarga bo'ling. Katta idishda, qovurilgan yog'da qovurilgan yog 'bo'shlig'ida qovuring."
+        },
+        {
+          "id": 1180,
+          "step_number": 4,
+          "description": "Har bir pita nonida pomidor, piyoz va go'sht non bo'laklarini qatlamlang; Tizsatziki sousi bilan yuqori. Ehtiyotkorlik bilan pitasni yarmiga joylashtiring. Qolgan sous bilan xizmat qiling. Hosildorlik: 8 ta porsiya."
+        }
+      ]
+    },
+    {
+      "id": 95,
+      "name": "Apple Suus Spice Bord Pirm Retseptlari",
+      "categories": [
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 38,
+          "name": "Markaziy Evropa"
+        },
+        {
+          "id": 39,
+          "name": "pishiriqlar"
+        }
+      ],
+      "description": "Apple Suus Spice Spice Pordti pirojnomasi 2 1/4 stakanning og'rig'i, 1 choy qoshiq pishirish soda, 1/2 choy qoshiq tuzi, 1/2 choy qoshiq tuzi.",
+      "image": "https://127.0.0.1:8000/media/recipes/9a880d7ba547dfaf1c057d88390ea1f3",
+      "prep_time": 80,
+      "cook_time": 0,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 1277,
+      "protein": 13,
+      "fats": 62,
+      "carbs": 173,
+      "ingredients": [
+        {
+          "id": 997,
+          "name": "barcha maqsadli un",
+          "amount": "2 1/4",
+          "unit": "cup",
+          "preparation": "2 1/4 cups sifted unbleached all-purpose flour"
+        },
+        {
+          "id": 998,
+          "name": "Pishiriq sodasi",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking soda"
+        },
+        {
+          "id": 999,
+          "name": "tuz",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon salt"
+        },
+        {
+          "id": 1000,
+          "name": "zamin doljin",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "1 1/2 teaspoon ground cinnamon"
+        },
+        {
+          "id": 1001,
+          "name": "Yupqa almospice",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon ground allspice"
+        },
+        {
+          "id": 1002,
+          "name": "zaminli dumog",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon ground nutmeg"
+        },
+        {
+          "id": 1003,
+          "name": "pecans",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup pecans, lightly toasted finely chopped (optional)"
+        },
+        {
+          "id": 1004,
+          "name": "sariyog '",
+          "amount": "1/3",
+          "unit": "cup",
+          "preparation": "1/3 cup butter, room temperature"
+        },
+        {
+          "id": 1005,
+          "name": "limon",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon grated lemon zest"
+        },
+        {
+          "id": 1006,
+          "name": "qisqartirish",
+          "amount": "1/3",
+          "unit": "cup",
+          "preparation": "1/3 cup vegetable shortening"
+        },
+        {
+          "id": 1007,
+          "name": "donador shakar",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup granulated sugar"
+        },
+        {
+          "id": 1008,
+          "name": "och jigarrang shakar",
+          "amount": "2/3",
+          "unit": "cup",
+          "preparation": "2/3 cup light brown sugar, lightly packed"
+        },
+        {
+          "id": 1009,
+          "name": "tuxum",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large eggs"
+        },
+        {
+          "id": 1010,
+          "name": "Grandy Smit Apple",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 medium sized Granny Smith apple, peeled and diced, about 1 cup"
+        },
+        {
+          "id": 1011,
+          "name": "vanil ekstrakti",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla extract"
+        },
+        {
+          "id": 1012,
+          "name": "olma",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup applesauce"
+        },
+        {
+          "id": 1013,
+          "name": "jigarrang shakar",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 Tablespoons brown sugar, packed"
+        },
+        {
+          "id": 1014,
+          "name": "og'ir qaymoq",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 Tablespoons heavy cream"
+        },
+        {
+          "id": 1015,
+          "name": "chang shakar",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup sifted powdered sugar"
+        },
+        {
+          "id": 1016,
+          "name": "vanil",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon vanilla"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1181,
+          "step_number": 1,
+          "description": "► 2015 yil oktyabr 2015 yil (1) aprel 2015 (1)"
+        },
+        {
+          "id": 1182,
+          "step_number": 2,
+          "description": "►007 (11) Det 2007 (5) 2007 (6)"
+        },
+        {
+          "id": 1183,
+          "step_number": 3,
+          "description": "Yoz va kuz"
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Ehtimol eng yaxshi cookie",
+      "categories": [
+        {
+          "id": 17,
+          "name": "tamaddi"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 42,
+          "name": "pechene va cookie fayllari"
+        }
+      ],
+      "description": "Ehtimol, 1 stakan yog'i bilan eng yaxshi cookie, 1 1/2 chashka jigarrang shakar, 1 choy qoshiq shakar yoqadi.",
+      "image": "https://127.0.0.1:8000/media/recipes/c404146b3b79c0aeede60809b1d21fc1.jpg",
+      "prep_time": 25,
+      "cook_time": 0,
+      "servings": 18,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 336,
+      "protein": 5,
+      "fats": 19,
+      "carbs": 37,
+      "ingredients": [
+        {
+          "id": 1071,
+          "name": "sariyog '",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup butter"
+        },
+        {
+          "id": 1072,
+          "name": "jigarrang shakar",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1⁄2 cups brown sugar"
+        },
+        {
+          "id": 1073,
+          "name": "shakar",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon burnt sugar flavoring"
+        },
+        {
+          "id": 1074,
+          "name": "tuz",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1⁄2 teaspoon salt"
+        },
+        {
+          "id": 1075,
+          "name": "tuxum",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 eggs"
+        },
+        {
+          "id": 1076,
+          "name": "un",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups flour"
+        },
+        {
+          "id": 1077,
+          "name": "doljin",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon cinnamon"
+        },
+        {
+          "id": 1078,
+          "name": "Pishiriq sodasi",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking soda"
+        },
+        {
+          "id": 1079,
+          "name": "bodom",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup almonds, crushed slightly"
+        },
+        {
+          "id": 1080,
+          "name": "shokoladli chiplar",
+          "amount": "12",
+          "unit": "ounce",
+          "preparation": "12 ounces chocolate chips"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1184,
+          "step_number": 1,
+          "description": "Shakar, lazzat, tuxum, tuz bilan qoplangan sariyog ', keyin quruq ingredientlarni birlashtirib, sariyog' bilan birlashtiring. Cookie tagida kichik quduqni tushirish. 10 daqiqa davomida 350 daraja pishiring."
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "name": "Pista kranlari non puding",
+      "categories": [
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 37,
+          "name": "britaniyalik"
+        },
+        {
+          "id": 39,
+          "name": "pishiriqlar"
+        }
+      ],
+      "description": "Xandon pista maydalangan non pudding qiqaq suvli frantsuz noni, 2 stakan 2% sut, ¼ chashka qovurilgan pista.",
+      "image": "https://127.0.0.1:8000/media/recipes/50c7a913e24a7acfdfae455aa385d938.jpg",
+      "prep_time": 75,
+      "cook_time": 0,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 371,
+      "protein": 12,
+      "fats": 11,
+      "carbs": 57,
+      "ingredients": [
+        {
+          "id": 1105,
+          "name": "Frantsuz noni",
+          "amount": "1/2",
+          "unit": "loaf",
+          "preparation": "½ loaves Crusty Stale French Bread"
+        },
+        {
+          "id": 1106,
+          "name": "2% sut",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups 2% Milk"
+        },
+        {
+          "id": 1107,
+          "name": "Pista",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "¼ cups Roasted Pistachios, Chopped"
+        },
+        {
+          "id": 1108,
+          "name": "Quritilgan krannerries",
+          "amount": "1/8",
+          "unit": "cup",
+          "preparation": "⅛ cups Dried Cranberries"
+        },
+        {
+          "id": 1109,
+          "name": "Zaytun moyi",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Pasolivo Citrus Olive Oil"
+        },
+        {
+          "id": 1110,
+          "name": "Tuxum",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 whole Eggs, Beaten"
+        },
+        {
+          "id": 1111,
+          "name": "Donador shakar",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "½ cups Granulated Sugar"
+        },
+        {
+          "id": 1112,
+          "name": "Vanil",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Vanilla"
+        },
+        {
+          "id": 1113,
+          "name": "To'q sariq",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon Fresh Orange Zest"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1185,
+          "step_number": 1,
+          "description": "Sharh yozing"
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "name": "Olma doljin pishirilgan jo'xori bilan qoplangan retseptlar",
+      "categories": [
+        {
+          "id": 33,
+          "name": "nonushta"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 50,
+          "name": "don"
+        }
+      ],
+      "description": "Apple Cinnamaon pishirilgan jo'xori, 1 stakan (300 gramm) yasalgan yasalgan jo'xori, 1 choy qoshiq pishirilgan kukun, 1 va ½ choy qoshiq eritinamon eritmasi.",
+      "image": "https://127.0.0.1:8000/media/recipes/eb7e8a253f6c78e7bc2248f5d016f701",
+      "prep_time": 45,
+      "cook_time": 0,
+      "servings": 12,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 158,
+      "protein": 5,
+      "fats": 3,
+      "carbs": 28,
+      "ingredients": [
+        {
+          "id": 1114,
+          "name": "Yuklab olingan jo'xori",
+          "amount": "300",
+          "unit": "gram",
+          "preparation": "3 cups (300 grams) old-fashioned rolled oats"
+        },
+        {
+          "id": 1115,
+          "name": "Pishiriq kukuni",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking powder"
+        },
+        {
+          "id": 1116,
+          "name": "zamin doljin",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "1 and ½ teaspoons ground cinnamon"
+        },
+        {
+          "id": 1117,
+          "name": "tuz",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "¼ teaspoon salt"
+        },
+        {
+          "id": 1118,
+          "name": "sut",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup milk (almond or regular dairy milk work well)"
+        },
+        {
+          "id": 1119,
+          "name": "tuxum",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large eggs"
+        },
+        {
+          "id": 1120,
+          "name": "zarang siropi",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "½ cup pure maple syrup"
+        },
+        {
+          "id": 1121,
+          "name": "vanil ekstrakti",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla extract"
+        },
+        {
+          "id": 1122,
+          "name": "Grandy Smit Apple",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 medium Granny Smith apple, peeled, cored, and chopped (about 1 cup)"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1186,
+          "step_number": 1,
+          "description": "Pechni 350o ° F (177a ° C) ni oldindan qizdiring. 12-sonli kekler panjasi püskürtün püskürtünni pishirmaydigan purkash va chetga surib qo'ying."
+        },
+        {
+          "id": 1187,
+          "step_number": 2,
+          "description": "Yulaflar, pishirish kukuni, doljin va tuz qo'shing, katta aralashtirilgan idishga va mixlab qo'shilguncha aralashtiring."
+        },
+        {
+          "id": 1188,
+          "step_number": 3,
+          "description": "Alohida aralashgan kosada, sut, tuxum, zarang siropi, va vaniliy ekstrakti to'liq birlashtirilmaguncha. Quruq ingredientlarni nam ingredientlarga qo'shing va mixni birlashtirilgan bo'lgunga qadar qo'shing. Tug'ralgan olma qo'shing va uni muloyimlik bilan aralashtiring."
+        },
+        {
+          "id": 1189,
+          "step_number": 4,
+          "description": "Tayyorlangan muffinli panjaradagi barcha 12 bo'shliqlar orasida aralashmani teng ravishda taqsimlang. 350a ° F dan 350 yoki 27 daqiqa davomida pishiring yoki jo'xorial kubokning tepalari yengil jigarrang va firma."
+        },
+        {
+          "id": 1190,
+          "step_number": 5,
+          "description": "Pechdan olib tashlang va skovorodkada 5- 10 daqiqa davomida sovutishga ruxsat bering, so'ng jo'xorial kuboglarini olib tashlang va sovutish uchun sim tagligiga o'tkazing."
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "name": "AVOCADO DECCE DE LCHINLAR",
+      "categories": [
+        {
+          "id": 33,
+          "name": "nonushta"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 39,
+          "name": "pishiriqlar"
+        }
+      ],
+      "description": "1 1/2 chashka AP un, 1/4 chashka jo'xori, 1/4 oshxona tuzi",
+      "image": "https://127.0.0.1:8000/media/recipes/8616375b2f7897446ca8946c58e5e959.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 16,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 215,
+      "protein": 3,
+      "fats": 7,
+      "carbs": 35,
+      "ingredients": [
+        {
+          "id": 1133,
+          "name": "un",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups AP flour"
+        },
+        {
+          "id": 1134,
+          "name": "makkajo'xori",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup cornmeal"
+        },
+        {
+          "id": 1135,
+          "name": "tuz",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "1/4 tsp salt"
+        },
+        {
+          "id": 1136,
+          "name": "Pishiriq kukuni",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 tsp baking powder"
+        },
+        {
+          "id": 1137,
+          "name": "Pishiriq sodasi",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 tsp baking soda"
+        },
+        {
+          "id": 1138,
+          "name": "sariyog '",
+          "amount": "6",
+          "unit": "tablespoon",
+          "preparation": "6 tbsp butter softened"
+        },
+        {
+          "id": 1139,
+          "name": "shakar",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups sugar"
+        },
+        {
+          "id": 1140,
+          "name": "avokado",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 ripe avocado"
+        },
+        {
+          "id": 1141,
+          "name": "tuxum",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large eggs"
+        },
+        {
+          "id": 1142,
+          "name": "vanil ekstrakti",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 tsp vanilla extract"
+        },
+        {
+          "id": 1143,
+          "name": "sariyog '",
+          "amount": "3/8",
+          "unit": "cup",
+          "preparation": "3/8 cup buttermilk"
+        },
+        {
+          "id": 1144,
+          "name": "DULCE DE LCHE",
+          "amount": "16",
+          "unit": "teaspoon",
+          "preparation": "16 tsp dulce de leche"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1191,
+          "step_number": 1,
+          "description": "Pechni 350 gacha qizdiring. Makin qalaydagi krujkalar linerlarini qo'ying."
+        },
+        {
+          "id": 1192,
+          "step_number": 2,
+          "description": "Sariyog 'va shakarni urganingizda, xona haroratiga tushadigan tuxumni to'ldiring."
+        },
+        {
+          "id": 1193,
+          "step_number": 3,
+          "description": "Stend mikserining idishga soling, yumshatilgan va egilgunga qadar, sariyog 'eriydi."
+        },
+        {
+          "id": 1194,
+          "step_number": 4,
+          "description": "Qarorni qo'shing va chiroq va bema'ni bo'lgunga qadar urish, taxminan 4 daqiqa."
+        },
+        {
+          "id": 1195,
+          "step_number": 5,
+          "description": "AVOCADO qo'shing va qo'shni qo'shing."
+        },
+        {
+          "id": 1196,
+          "step_number": 6,
+          "description": "Hamma narsa yaxshilab aralashtirilganligini ta'minlash uchun idishni qirqish."
+        },
+        {
+          "id": 1197,
+          "step_number": 7,
+          "description": "Har bir tuxum qo'shilgandan keyin bir vaqtning o'zida tuxumni qo'shing."
+        },
+        {
+          "id": 1198,
+          "step_number": 8,
+          "description": "Vanil ekstraktida urish."
+        },
+        {
+          "id": 1199,
+          "step_number": 9,
+          "description": "Mikser tezligini past darajaga kamaytiring va barcha haroratda, keyin qolgan un aralashmasi."
+        },
+        {
+          "id": 1200,
+          "step_number": 10,
+          "description": "Birlashtirilmaguncha urish."
+        },
+        {
+          "id": 1201,
+          "step_number": 11,
+          "description": "Taxminan 3/4 ga to'lgunga qadar krujkalar linerlariga quying."
+        },
+        {
+          "id": 1202,
+          "step_number": 12,
+          "description": "15-20 daqiqa davomida pishiring yoki tish joylari chiqmaguncha."
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Tovuq va kalalli Avgolemono sho'rva",
+      "categories": [
+        {
+          "id": 8,
+          "name": "sho'rva"
+        },
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 47,
+          "name": "O'rta er dengizi"
+        }
+      ],
+      "description": "1 ta tovuq, 12 stakan suv, 2 sabzi bilan tovuq va kalalli AvdaMemono sho'rva.",
+      "image": "https://127.0.0.1:8000/media/recipes/c0364e4186c004996563c113cda630f3.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 10,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 325,
+      "protein": 26,
+      "fats": 20,
+      "carbs": 11,
+      "ingredients": [
+        {
+          "id": 1145,
+          "name": "tovuq",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 whole chicken, about 3 1/2 lbs. with excess fat trimmed and breast skin removed"
+        },
+        {
+          "id": 1146,
+          "name": "suv",
+          "amount": "12",
+          "unit": "cup",
+          "preparation": "12 cups water"
+        },
+        {
+          "id": 1147,
+          "name": "sabzi",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 carrots, cut in half"
+        },
+        {
+          "id": 1148,
+          "name": "seldr",
+          "amount": "2",
+          "unit": "stalk",
+          "preparation": "2 celery stalks, cut in half"
+        },
+        {
+          "id": 1149,
+          "name": "piyoz",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 large onion, peeled and cut in half"
+        },
+        {
+          "id": 1150,
+          "name": "Bay barglari",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 bay leaves"
+        },
+        {
+          "id": 1151,
+          "name": "qora qalampir",
+          "amount": "5",
+          "unit": "whole",
+          "preparation": ""
+        },
+        {
+          "id": 1152,
+          "name": "tuz",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons salt"
+        },
+        {
+          "id": 1153,
+          "name": "makaron",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup orzo pasta, or rice"
+        },
+        {
+          "id": 1154,
+          "name": "tuxum",
+          "amount": "3",
+          "unit": "piece(s)",
+          "preparation": "3 eggs, at room temperature"
+        },
+        {
+          "id": 1155,
+          "name": "limon",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon fresh lemon zest"
+        },
+        {
+          "id": 1156,
+          "name": "limon",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "juice of two lemons, strained"
+        },
+        {
+          "id": 1157,
+          "name": "boshpana",
+          "amount": "1",
+          "unit": "head",
+          "preparation": "1 head kale, roughly chopped"
+        },
+        {
+          "id": 1158,
+          "name": "qalampir",
+          "amount": null,
+          "unit": "salt",
+          "preparation": "and freshly ground pepper"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1203,
+          "step_number": 1,
+          "description": "Birinchi 8 ta ingredientni katta zaxiraga qo'shing. Suvni tez qaynatish, quyidan pastroq olib keling va qisman taxminan 60 daqiqa davomida qoplanadi."
+        },
+        {
+          "id": 1204,
+          "step_number": 2,
+          "description": "Tovuq va sabzavotlarni idishga olib tashlang va bulyonni katta idishga mayda shiddat bilan siqib oling. Tarmoqli bulonni zaxiraga qaytaring va qaynatishga olib keling."
+        },
+        {
+          "id": 1205,
+          "step_number": 3,
+          "description": "Tendergacha orto makaronini qo'shing va pishiring, taxminan 10 dan 12 minutgacha ochildi. Makaron pishirayotganda, tuxum limon aralashmasini tayyorlang. Tuxumni yaxshi va ko'pchog'igacha urish. Limon zorasini va limon sharbatini mo'ylovni davom etayotganda barqaror oqimda qo'shing."
+        },
+        {
+          "id": 1206,
+          "step_number": 4,
+          "description": "Masta ovqat pishirishni tugatgandan so'ng, kaltak qo'shing va issiqlikni o'chiring. Bir piyola yoki katta o'lchash kosasiga qariyb 2 stakan bulon. Sekin-asta Firbiskani davom ettirayotganda issiq bulonni tuxum limon aralashmasiga qo'shing. Bu tuxumni o'stiradi va ularni issiq bulonga qo'shilganidan bir marta siljishiga to'sqinlik qiladi."
+        },
+        {
+          "id": 1207,
+          "step_number": 5,
+          "description": "Tuxum-limon aralashmasini qozonga aralashtiring va 5 dan 10 minut davomida qizib ketguncha qiziydi. Tuxum qo'shilgandan so'ng sho'rvani qayvatirish uchun ehtiyot bo'ling."
+        },
+        {
+          "id": 1208,
+          "step_number": 6,
+          "description": "Tuz va qalampir uchun ziravoringizni sozlang va kerakli darajada ko'proq qo'shing. An'anaga ko'ra sho'rva idish bilan tovuq, selderey, piyoz va sabzi bilan alohida xizmat qiladi. Zavqlaning !!"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Shokoladli chip ta'tilli kekler",
+      "categories": [
+        {
+          "id": 33,
+          "name": "nonushta"
+        },
+        {
+          "id": 35,
+          "name": "amerikalik"
+        },
+        {
+          "id": 39,
+          "name": "pishiriqlar"
+        }
+      ],
+      "description": "Har qanday maqsadli un bilan qilingan shokoladli chip ta'tilli kekler, 1/2 kubok shakar, 1 choy qoshiq pishirilgan kukun.",
+      "image": "https://127.0.0.1:8000/media/recipes/56afec55cf623d606d5d8ba8b948ae92.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 2,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 1545,
+      "protein": 23,
+      "fats": 72,
+      "carbs": 207,
+      "ingredients": [
+        {
+          "id": 1159,
+          "name": "barcha maqsadli un",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups all-purpose flour"
+        },
+        {
+          "id": 1160,
+          "name": "shakar",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup sugar"
+        },
+        {
+          "id": 1161,
+          "name": "Pishiriq kukuni",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking powder"
+        },
+        {
+          "id": 1162,
+          "name": "tuz",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon salt"
+        },
+        {
+          "id": 1163,
+          "name": "tuxum",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 egg, slightly beaten"
+        },
+        {
+          "id": 1164,
+          "name": "sut",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup milk"
+        },
+        {
+          "id": 1165,
+          "name": "o'simlik yog'i",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup vegetable oil"
+        },
+        {
+          "id": 1166,
+          "name": "shokoladli chiplar",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup milk chocolate chips"
+        },
+        {
+          "id": 1167,
+          "name": "Maraschino gilos",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup chopped maraschino cherries"
+        },
+        {
+          "id": 1168,
+          "name": "yong'oq",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup chopped walnuts"
+        },
+        {
+          "id": 1169,
+          "name": "ananas",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup well-drained crushed pineapple"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1209,
+          "step_number": 1,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1210,
+          "step_number": 2,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1211,
+          "step_number": 3,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1212,
+          "step_number": 4,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1213,
+          "step_number": 5,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1214,
+          "step_number": 6,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1215,
+          "step_number": 7,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1216,
+          "step_number": 8,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1217,
+          "step_number": 9,
+          "description": "Video va podkastlar"
+        },
+        {
+          "id": 1218,
+          "step_number": 10,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1219,
+          "step_number": 11,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1220,
+          "step_number": 12,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1221,
+          "step_number": 13,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1222,
+          "step_number": 14,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1223,
+          "step_number": 15,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1224,
+          "step_number": 16,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1225,
+          "step_number": 17,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1226,
+          "step_number": 18,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1227,
+          "step_number": 19,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1228,
+          "step_number": 20,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1229,
+          "step_number": 21,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1230,
+          "step_number": 22,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1231,
+          "step_number": 23,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1232,
+          "step_number": 24,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1233,
+          "step_number": 25,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1234,
+          "step_number": 26,
+          "description": "Video va podkastlar"
+        },
+        {
+          "id": 1235,
+          "step_number": 27,
+          "description": "Tez va oson"
+        },
+        {
+          "id": 1236,
+          "step_number": 28,
+          "description": "BBQ va American"
+        },
+        {
+          "id": 1237,
+          "step_number": 29,
+          "description": "Xitoy va Osiyo"
+        },
+        {
+          "id": 1238,
+          "step_number": 30,
+          "description": "Kulgili va g'alati"
+        },
+        {
+          "id": 1239,
+          "step_number": 31,
+          "description": "Kompaniyalar va brendlar"
+        },
+        {
+          "id": 1240,
+          "step_number": 32,
+          "description": "Pasxa va Fisih"
+        },
+        {
+          "id": 1241,
+          "step_number": 33,
+          "description": "Rojdestvo va yangi yillar"
+        },
+        {
+          "id": 1242,
+          "step_number": 34,
+          "description": "Diabet va diabetik"
+        },
+        {
+          "id": 1243,
+          "step_number": 35,
+          "description": "Ko'rilganidek ..."
+        }
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Pechni pishirilgan española retseptlari",
+      "categories": [
+        {
+          "id": 5,
+          "name": "asosiy taom"
+        },
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 47,
+          "name": "O'rta er dengizi"
+        }
+      ],
+      "description": "Pechka pishirilgan Tortilla Tortilla Tortily Salamiy, 2 ta katta kartoshka (tug'ralgan), 8 ta tuxum bilan qoplangan",
+      "image": "https://127.0.0.1:8000/media/recipes/783f2347f5b8f6007472592602947316",
+      "prep_time": 50,
+      "cook_time": 0,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 421,
+      "protein": 21,
+      "fats": 21,
+      "carbs": 37,
+      "ingredients": [
+        {
+          "id": 1185,
+          "name": "salami",
+          "amount": "1/4",
+          "unit": "pound",
+          "preparation": "1/4 pound thin sliced salami"
+        },
+        {
+          "id": 1186,
+          "name": "kartoshka",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large potatoes (diced)"
+        },
+        {
+          "id": 1187,
+          "name": "tuxum",
+          "amount": "8",
+          "unit": "piece(s)",
+          "preparation": "8 eggs"
+        },
+        {
+          "id": 1188,
+          "name": "piyoz",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup onion (diced)"
+        },
+        {
+          "id": 1189,
+          "name": "maydanoz",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup parsley (chopped)"
+        },
+        {
+          "id": 1190,
+          "name": "o'simlik yog'i",
+          "amount": "1",
+          "unit": "tablespoon",
+          "preparation": "1 tablespoon vegetable oil"
+        },
+        {
+          "id": 1191,
+          "name": "tuz",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "1/8 teaspoon salt"
+        },
+        {
+          "id": 1192,
+          "name": "qalampir",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "1/8 teaspoon pepper"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1244,
+          "step_number": 1,
+          "description": "Samiamni jigarrang boshlanmaguncha, o'rta yuqori olovda pishiring. Samiamni kasterdan olib tashlang va chetga surib qo'ying."
+        },
+        {
+          "id": 1245,
+          "step_number": 2,
+          "description": "Kartoshka, piyoz, o'simlik moyi, tuz va qalampir qo'shing. Kartoshka tender va oltin ekaniga taxminan 10 daqiqa davomida pishiring. Samimi va maydanozni siketga qo'shing."
+        },
+        {
+          "id": 1246,
+          "step_number": 3,
+          "description": "Bir piyolada tuxum va pishloq bilan birlashadi. Tuxumni klasetga to'kib tashlang va ingredientlarni tarqatish uchun aralashtiring."
+        },
+        {
+          "id": 1247,
+          "step_number": 4,
+          "description": "Pechkaga jo'ka oling va 400 ° dan pishiring yoki tortilla qirralarning atrofida jigarrang bo'lguncha. O'rnatilganda ichki ichi toza ekanligiga ishonch hosil qilish uchun pichoqdan foydalaning."
+        }
+      ]
+    },
+    {
+      "id": 115,
+      "name": "Smetana va bulon bilan kartoshka salatasi",
+      "categories": [
+        {
+          "id": 8,
+          "name": "sho'rva"
+        },
+        {
+          "id": 36,
+          "name": "Tushlik / kechki ovqat"
+        },
+        {
+          "id": 47,
+          "name": "O'rta er dengizi"
+        }
+      ],
+      "description": "Smetana va bulon bilan kartoshka salatasi * 7 ta qattiq qaynatilgan tuxum, * ⅕ -1 piyoz (men qizilni afzal ko'raman), * yangi o't. Oddiy va mazali taom.",
+      "image": "https://127.0.0.1:8000/media/recipes/e358d8ca649fdd934adc7d8286bf8406.jpg",
+      "prep_time": 10,
+      "cook_time": 0,
+      "servings": 6,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 157,
+      "protein": 7,
+      "fats": 12,
+      "carbs": 4,
+      "ingredients": [
+        {
+          "id": 1210,
+          "name": "Qattiq qaynatilgan tuxum",
+          "amount": "7",
+          "unit": "piece(s)",
+          "preparation": "* 7 hard boiled egg"
+        },
+        {
+          "id": 1211,
+          "name": "piyoz",
+          "amount": "3/5",
+          "unit": "piece(s)",
+          "preparation": "* ⅕ -1 onion (i prefer red)"
+        },
+        {
+          "id": 1212,
+          "name": "yangi o't",
+          "amount": null,
+          "unit": null,
+          "preparation": "* fresh herb"
+        },
+        {
+          "id": 1213,
+          "name": "sabzavotli bulon",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1/2 to whole cup vegetable broth"
+        },
+        {
+          "id": 1214,
+          "name": "qatiq",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup sour cream (creme fraiche)"
+        },
+        {
+          "id": 1215,
+          "name": "bodring",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "* 1/2 cup juice from pickled cucumber"
+        },
+        {
+          "id": 1216,
+          "name": "tuz",
+          "amount": null,
+          "unit": null,
+          "preparation": "* salt and pepper to taste"
+        },
+        {
+          "id": 1217,
+          "name": "qalampir",
+          "amount": null,
+          "unit": null,
+          "preparation": "* salt and pepper to taste"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1248,
+          "step_number": 1,
+          "description": "Kartoshka, oshpaz, qobig'ini yuving va maydalang."
+        },
+        {
+          "id": 1249,
+          "step_number": 2,
+          "description": "Kartoshka ustiga issiq bulyonni to'kib tashlang va yaxshilab aralashtiring. Bulyon salat shirkasini va bu unchalik yopishqoq emas."
+        },
+        {
+          "id": 1250,
+          "step_number": 3,
+          "description": "Bodring, piyoz va o'tlarni mayda maydalang va salatga qo'shing."
+        },
+        {
+          "id": 1251,
+          "step_number": 4,
+          "description": "Tuxum oqini mayda bo'laklarga bo'ling va salatga qo'shing."
+        },
+        {
+          "id": 1252,
+          "step_number": 5,
+          "description": "Tuxum sarig'ini va tuzlangan bodringdan sharbatini oziq-ovqat protsessoridan aralashtiring, uni vilka bilan bajarishingiz mumkin, u kremli massaga aylanishi kerak."
+        },
+        {
+          "id": 1253,
+          "step_number": 6,
+          "description": "Sosni yaratadigan tuxum sarig'i massasi bilan qaymoqni aralashtiring, ziravorlar qo'shing."
+        },
+        {
+          "id": 1254,
+          "step_number": 7,
+          "description": "Sosni salat ustiga to'kib tashlang, hamma narsani bir-biriga aralashtiring."
+        }
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Salmon butolut Squash makkajo'xori",
+      "categories": [
+        {
+          "id": 4,
+          "name": "tushlik"
+        },
+        {
+          "id": 5,
+          "name": "asosiy taom"
+        },
+        {
+          "id": 6,
+          "name": "asosiy dish"
+        },
+        {
+          "id": 7,
+          "name": "kechki ovqat"
+        },
+        {
+          "id": 8,
+          "name": "sho'rva"
+        },
+        {
+          "id": 9,
+          "name": "glyutensiz"
+        },
+        {
+          "id": 23,
+          "name": "peskater"
+        }
+      ],
+      "description": "Salaf Bhewterut Squash makkajo'xori qichishi, siz qidirayotgan asosiy kurs bo'lishi mumkin.",
+      "image": "https://127.0.0.1:8000/media/recipes/659056-556x370.jpg",
+      "prep_time": 45,
+      "cook_time": 45,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": null,
+      "protein": null,
+      "fats": null,
+      "carbs": null,
+      "ingredients": [
+        {
+          "id": 1218,
+          "name": "butalut qovoq",
+          "amount": "1.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1219,
+          "name": "sabzi",
+          "amount": "1.0",
+          "unit": "large",
+          "preparation": null
+        },
+        {
+          "id": 1220,
+          "name": "makkajo'xori quloqlari",
+          "amount": "3.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1221,
+          "name": "arpabodiyon",
+          "amount": "1.0",
+          "unit": "bunch",
+          "preparation": null
+        },
+        {
+          "id": 1222,
+          "name": "og'ir qaymoq",
+          "amount": "0.25",
+          "unit": "cup",
+          "preparation": null
+        },
+        {
+          "id": 1223,
+          "name": "piyoz",
+          "amount": "2.0",
+          "unit": "tablespoons",
+          "preparation": null
+        },
+        {
+          "id": 1224,
+          "name": "go'shti Qizil baliq",
+          "amount": "12.0",
+          "unit": "ounces",
+          "preparation": null
+        },
+        {
+          "id": 1225,
+          "name": "tuz and qalampir",
+          "amount": "4.0",
+          "unit": "servings",
+          "preparation": null
+        },
+        {
+          "id": 1226,
+          "name": "titroq",
+          "amount": "3.0",
+          "unit": "sprigs",
+          "preparation": null
+        },
+        {
+          "id": 1227,
+          "name": "suv",
+          "amount": "0.25",
+          "unit": "cup",
+          "preparation": null
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1255,
+          "step_number": 1,
+          "description": "Suv quying, o'rta o'lchamdagi sho'rva idishga soling va past olovda qaynatishni boshlang. Piyoz, butetdagi qovoq, sabzi, makkajo'xori, shpallar va arpabodiyon bilan birga yuving. Qoplang va 30 daqiqa davomida past olovda pishiring. Ta'mi va tuz va qalampir qo'shing."
+        },
+        {
+          "id": 1256,
+          "step_number": 2,
+          "description": "Salmonni kesib, krem bilan birga sho'rvaga qo'shing."
+        },
+        {
+          "id": 1257,
+          "step_number": 3,
+          "description": "Yana 20 daqiqa pishiring, qayta ta'm bering va zavqlaning!"
+        }
+      ]
+    },
+    {
+      "id": 117,
+      "name": "Kunna (mazali chinli idish, Panjab, Pokiston)",
+      "categories": [
+        {
+          "id": 14,
+          "name": "Lakto Ov vegetarianlari"
+        },
+        {
+          "id": 22,
+          "name": "dairy siz"
+        },
+        {
+          "id": 24,
+          "name": "Yon idish"
+        },
+        {
+          "id": 29,
+          "name": "vegan"
+        }
+      ],
+      "description": "Kunna (mazali chinli taom, Panjab, Pokiston) shunchaki qidirayotgan yon tomondan bo'lishingiz mumkin.",
+      "image": "https://127.0.0.1:8000/media/recipes/649133-556x370.jpg",
+      "prep_time": 45,
+      "cook_time": 45,
+      "servings": 6,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 0,
+      "protein": null,
+      "fats": null,
+      "carbs": null,
+      "ingredients": [
+        {
+          "id": 1228,
+          "name": "sarimsoq pod",
+          "amount": "1.0",
+          "unit": "medium",
+          "preparation": null
+        },
+        {
+          "id": 1229,
+          "name": "zanjabil poda",
+          "amount": "1.0",
+          "unit": "medium",
+          "preparation": null
+        },
+        {
+          "id": 1230,
+          "name": "yog '",
+          "amount": "1.0",
+          "unit": "cup",
+          "preparation": null
+        },
+        {
+          "id": 1231,
+          "name": "piyoz nos.",
+          "amount": "3.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1232,
+          "name": "ziravorlar: paprika kukuni 1",
+          "amount": "1.0",
+          "unit": "teaspoon",
+          "preparation": null
+        },
+        {
+          "id": 1233,
+          "name": "Bug'doy un choy qoshig'i",
+          "amount": "3.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1234,
+          "name": "qo'y go'shti",
+          "amount": "1.0",
+          "unit": "kilogram",
+          "preparation": null
+        },
+        {
+          "id": 1235,
+          "name": "qo'y go'shti",
+          "amount": "1.0",
+          "unit": "kilogram",
+          "preparation": null
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1258,
+          "step_number": 1,
+          "description": "Go'shtdan boshqa bir olovda past olovda past olovda kam miqdordagi suvni qo'shing va unga qo'shing va unga qo'shing.  Nihoyat Caraway va Garam Masalala va 5-10 daqiqa davomida qaynatilgan."
+        },
+        {
+          "id": 1259,
+          "step_number": 2,
+          "description": "Naan / roti (Pokiston non) yoki qovurilgan guruch bilan xizmat qiling."
+        }
+      ]
+    },
+    {
+      "id": 118,
+      "name": "Asal zanjabili limon muzli choy",
+      "categories": [
+        {
+          "id": 9,
+          "name": "glyutensiz"
+        },
+        {
+          "id": 14,
+          "name": "Lakto Ov vegetarianlari"
+        },
+        {
+          "id": 22,
+          "name": "dairy siz"
+        },
+        {
+          "id": 26,
+          "name": "paleolit"
+        },
+        {
+          "id": 27,
+          "name": "birinchi"
+        },
+        {
+          "id": 51,
+          "name": "ichimlik"
+        },
+        {
+          "id": 52,
+          "name": "ichimlik"
+        }
+      ],
+      "description": "Asal zanjabili limon muzli tanasi 1 xizmat ko'rsatadigan ichimlik.",
+      "image": "https://127.0.0.1:8000/media/recipes/716301-556x370.jpg",
+      "prep_time": 45,
+      "cook_time": 45,
+      "servings": 1,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 0,
+      "protein": null,
+      "fats": null,
+      "carbs": null,
+      "ingredients": [
+        {
+          "id": 1236,
+          "name": "zanjabil",
+          "amount": "1.0",
+          "unit": "small piece",
+          "preparation": null
+        },
+        {
+          "id": 1237,
+          "name": "paketchali choy",
+          "amount": "1.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1238,
+          "name": "asal",
+          "amount": "2.0",
+          "unit": "tablespoons",
+          "preparation": null
+        },
+        {
+          "id": 1239,
+          "name": "limon sharbati",
+          "amount": "3.0",
+          "unit": "tablespoons",
+          "preparation": null
+        },
+        {
+          "id": 1240,
+          "name": "yalpiz barglari",
+          "amount": "2.0",
+          "unit": "",
+          "preparation": null
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1260,
+          "step_number": 1,
+          "description": "1-2 stakan suv qaynatib, choyingizni pishiring."
+        },
+        {
+          "id": 1261,
+          "step_number": 2,
+          "description": "Taylovni sovutish uchun choy qo'ying. Jeyching-ni oling va shunchaki sharbatni olish uchun, choyni oling, choy, zanjabil sharbati, limon sharbati va asalni aralashtiring."
+        },
+        {
+          "id": 1262,
+          "step_number": 3,
+          "description": "Yalpiz barglarini qo'shing va sovuq xizmat qiling.  "
+        }
+      ]
+    }
+  ]
+}

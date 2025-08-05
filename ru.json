@@ -1,0 +1,3364 @@
+{
+  "count": 57,
+  "next": "https://127.0.0.1:8000/api/recipes/?lang=ru&page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 76,
+      "name": "Тыквенный завтрак торт",
+      "categories": [
+        {
+          "id": 33,
+          "name": "завтрак"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 39,
+          "name": "десерты"
+        }
+      ],
+      "description": "Торт из тыквенного завтрака, приготовленный из 1 стакана белой муки, 1 стакана цельной пшеничной муки, 1 стакан овса.",
+      "image": "https://127.0.0.1:8000/media/recipes/f093834747dfbb1ce0a5a395fe98110f.jpg",
+      "prep_time": 75,
+      "cook_time": 0,
+      "servings": 12,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 5800,
+      "protein": 108,
+      "fats": 318,
+      "carbs": 666,
+      "ingredients": [
+        {
+          "id": 773,
+          "name": "Мука",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup White Flour"
+        },
+        {
+          "id": 774,
+          "name": "Цельная пшеничная мука",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Whole Wheat Flour"
+        },
+        {
+          "id": 775,
+          "name": "Овсяной",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Oats"
+        },
+        {
+          "id": 776,
+          "name": "Порошок для выпечки",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Baking Powder"
+        },
+        {
+          "id": 777,
+          "name": "Пищевая сода",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Baking Soda"
+        },
+        {
+          "id": 778,
+          "name": "Наземная корица",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon Ground Cinnamon"
+        },
+        {
+          "id": 779,
+          "name": "Наземный мускатный орех",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Ground Nutmeg"
+        },
+        {
+          "id": 780,
+          "name": "Заземляющий дух",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Ground Allspice"
+        },
+        {
+          "id": 781,
+          "name": "Грунтовые гвоздики",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Ground Cloves"
+        },
+        {
+          "id": 782,
+          "name": "Соль",
+          "amount": "1",
+          "unit": "pinch",
+          "preparation": "1 pinch Salt"
+        },
+        {
+          "id": 783,
+          "name": "Оливковое масло",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Olive Oil"
+        },
+        {
+          "id": 784,
+          "name": "Белый сахар",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup White Sugar"
+        },
+        {
+          "id": 785,
+          "name": "Коричневый сахар",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup Brown Sugar"
+        },
+        {
+          "id": 786,
+          "name": "Яйца",
+          "amount": "4",
+          "unit": "piece(s)",
+          "preparation": "4 whole Eggs"
+        },
+        {
+          "id": 787,
+          "name": "Ваниль",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Vanilla"
+        },
+        {
+          "id": 788,
+          "name": "Тыква",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups Pure Pumpkin"
+        },
+        {
+          "id": 789,
+          "name": "Сырые тыквенные семена",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "½ cups Raw Pumpkin Seeds"
+        },
+        {
+          "id": 790,
+          "name": "Грецкие орехи",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "½ cups Walnuts, Chopped"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1045,
+          "step_number": 1,
+          "description": "Чашка пшеничная мука"
+        },
+        {
+          "id": 1046,
+          "step_number": 2,
+          "description": "½ чайных ложек"
+        },
+        {
+          "id": 1047,
+          "step_number": 3,
+          "description": "½ чайных ложек"
+        },
+        {
+          "id": 1048,
+          "step_number": 4,
+          "description": "½ чайных ложек гвоздики"
+        },
+        {
+          "id": 1049,
+          "step_number": 5,
+          "description": "½ Кубковой тыквы Семена"
+        },
+        {
+          "id": 1050,
+          "step_number": 6,
+          "description": "½ чашки, нарезанные"
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "name": "Печенье из белого шоколада мокко",
+      "categories": [
+        {
+          "id": 17,
+          "name": "перекус"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 42,
+          "name": "Печенье и печенье"
+        }
+      ],
+      "description": "Белое шоколадное печенье мокко, приготовленное из 1 стакана (2 палочки) масла, 1 1/2 стакана сахара, 2 яйца.",
+      "image": "https://127.0.0.1:8000/media/recipes/46d9885a1a9d783f7e87bc9ade37b575.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 48,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 4877,
+      "protein": 56,
+      "fats": 254,
+      "carbs": 640,
+      "ingredients": [
+        {
+          "id": 791,
+          "name": "масло",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup (2 sticks) butter, at room temperature"
+        },
+        {
+          "id": 792,
+          "name": "сахар",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups sugar"
+        },
+        {
+          "id": 793,
+          "name": "яйца",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 eggs, room temperature"
+        },
+        {
+          "id": 794,
+          "name": "ванильный экстракт",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla extract"
+        },
+        {
+          "id": 795,
+          "name": "мука",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups AP flour"
+        },
+        {
+          "id": 796,
+          "name": "какао",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup cocoa powder"
+        },
+        {
+          "id": 797,
+          "name": "растворимый кофе",
+          "amount": "2",
+          "unit": "tablespoon",
+          "preparation": "2 tablespoons instant coffee or espresso powder"
+        },
+        {
+          "id": 798,
+          "name": "пищевая сода",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking soda"
+        },
+        {
+          "id": 799,
+          "name": "соль",
+          "amount": "0 1/4",
+          "unit": "teaspoon",
+          "preparation": "1/4 teaspoon salt"
+        },
+        {
+          "id": 800,
+          "name": "Белый шоколадный чипсы",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup white chocolate chips"
+        },
+        {
+          "id": 801,
+          "name": "Полуславие шоколад",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup semi-sweet chocolate chips"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1051,
+          "step_number": 1,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1052,
+          "step_number": 2,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1053,
+          "step_number": 3,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1054,
+          "step_number": 4,
+          "description": "Итальянский и европейский"
+        },
+        {
+          "id": 1055,
+          "step_number": 5,
+          "description": "Мексиканец и латинский"
+        },
+        {
+          "id": 1056,
+          "step_number": 6,
+          "description": "Десерты и выпечка"
+        },
+        {
+          "id": 1057,
+          "step_number": 7,
+          "description": "Food Newscelebrityfunny & Weirdeseasonal & Sustaintablecompanies & Brandspolitics & Safetycoupons"
+        },
+        {
+          "id": 1058,
+          "step_number": 8,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1059,
+          "step_number": 9,
+          "description": "Сезонный и устойчивый"
+        },
+        {
+          "id": 1060,
+          "step_number": 10,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1061,
+          "step_number": 11,
+          "description": "Политика и безопасность"
+        },
+        {
+          "id": 1062,
+          "step_number": 12,
+          "description": "Holidayscurrent Holidays & Eventseaster & Passoverhalloween & Daygivingchristmas & New Years"
+        },
+        {
+          "id": 1063,
+          "step_number": 13,
+          "description": "Текущие праздники и мероприятия"
+        },
+        {
+          "id": 1064,
+          "step_number": 14,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1065,
+          "step_number": 15,
+          "description": "Хэллоуин и День Благодарения"
+        },
+        {
+          "id": 1066,
+          "step_number": 16,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1067,
+          "step_number": 17,
+          "description": "Health & NutritionGluten Бесплатная и пищевая аллергии, вегетарианские и верандиеты и потеря веса, и диабетик"
+        },
+        {
+          "id": 1068,
+          "step_number": 18,
+          "description": "Без глютена и пищевая аллергия"
+        },
+        {
+          "id": 1069,
+          "step_number": 19,
+          "description": "Вегетарианский и веганский"
+        },
+        {
+          "id": 1070,
+          "step_number": 20,
+          "description": "Диета и потеря веса"
+        },
+        {
+          "id": 1071,
+          "step_number": 21,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1072,
+          "step_number": 22,
+          "description": "Видео и подкасты"
+        },
+        {
+          "id": 1073,
+          "step_number": 23,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1074,
+          "step_number": 24,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1075,
+          "step_number": 25,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1076,
+          "step_number": 26,
+          "description": "Итальянский и европейский"
+        },
+        {
+          "id": 1077,
+          "step_number": 27,
+          "description": "Мексиканец и латинский"
+        },
+        {
+          "id": 1078,
+          "step_number": 28,
+          "description": "Десерты и выпечка"
+        },
+        {
+          "id": 1079,
+          "step_number": 29,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1080,
+          "step_number": 30,
+          "description": "Сезонный и устойчивый"
+        },
+        {
+          "id": 1081,
+          "step_number": 31,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1082,
+          "step_number": 32,
+          "description": "Политика и безопасность"
+        },
+        {
+          "id": 1083,
+          "step_number": 33,
+          "description": "Текущие праздники и мероприятия"
+        },
+        {
+          "id": 1084,
+          "step_number": 34,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1085,
+          "step_number": 35,
+          "description": "Хэллоуин и День Благодарения"
+        },
+        {
+          "id": 1086,
+          "step_number": 36,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1087,
+          "step_number": 37,
+          "description": "Без глютена и пищевая аллергия"
+        },
+        {
+          "id": 1088,
+          "step_number": 38,
+          "description": "Вегетарианский и веганский"
+        },
+        {
+          "id": 1089,
+          "step_number": 39,
+          "description": "Диета и потеря веса"
+        },
+        {
+          "id": 1090,
+          "step_number": 40,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1091,
+          "step_number": 41,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1092,
+          "step_number": 42,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1093,
+          "step_number": 43,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1094,
+          "step_number": 44,
+          "description": "Итальянский и европейский"
+        },
+        {
+          "id": 1095,
+          "step_number": 45,
+          "description": "Мексиканец и латинский"
+        },
+        {
+          "id": 1096,
+          "step_number": 46,
+          "description": "Десерты и выпечка"
+        },
+        {
+          "id": 1097,
+          "step_number": 47,
+          "description": "Food Newscelebrityfunny & Weirdeseasonal & Sustaintablecompanies & Brandspolitics & Safetycoupons"
+        },
+        {
+          "id": 1098,
+          "step_number": 48,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1099,
+          "step_number": 49,
+          "description": "Сезонный и устойчивый"
+        },
+        {
+          "id": 1100,
+          "step_number": 50,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1101,
+          "step_number": 51,
+          "description": "Политика и безопасность"
+        },
+        {
+          "id": 1102,
+          "step_number": 52,
+          "description": "Holidayscurrent Holidays & Eventseaster & Passoverhalloween & Daygivingchristmas & New Years"
+        },
+        {
+          "id": 1103,
+          "step_number": 53,
+          "description": "Текущие праздники и мероприятия"
+        },
+        {
+          "id": 1104,
+          "step_number": 54,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1105,
+          "step_number": 55,
+          "description": "Хэллоуин и День Благодарения"
+        },
+        {
+          "id": 1106,
+          "step_number": 56,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1107,
+          "step_number": 57,
+          "description": "Health & NutritionGluten Бесплатная и пищевая аллергии, вегетарианские и верандиеты и потеря веса, и диабетик"
+        },
+        {
+          "id": 1108,
+          "step_number": 58,
+          "description": "Без глютена и пищевая аллергия"
+        },
+        {
+          "id": 1109,
+          "step_number": 59,
+          "description": "Вегетарианский и веганский"
+        },
+        {
+          "id": 1110,
+          "step_number": 60,
+          "description": "Диета и потеря веса"
+        },
+        {
+          "id": 1111,
+          "step_number": 61,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1112,
+          "step_number": 62,
+          "description": "Видео и подкасты"
+        },
+        {
+          "id": 1113,
+          "step_number": 63,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1114,
+          "step_number": 64,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1115,
+          "step_number": 65,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1116,
+          "step_number": 66,
+          "description": "Итальянский и европейский"
+        },
+        {
+          "id": 1117,
+          "step_number": 67,
+          "description": "Мексиканец и латинский"
+        },
+        {
+          "id": 1118,
+          "step_number": 68,
+          "description": "Десерты и выпечка"
+        },
+        {
+          "id": 1119,
+          "step_number": 69,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1120,
+          "step_number": 70,
+          "description": "Сезонный и устойчивый"
+        },
+        {
+          "id": 1121,
+          "step_number": 71,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1122,
+          "step_number": 72,
+          "description": "Политика и безопасность"
+        },
+        {
+          "id": 1123,
+          "step_number": 73,
+          "description": "Текущие праздники и мероприятия"
+        },
+        {
+          "id": 1124,
+          "step_number": 74,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1125,
+          "step_number": 75,
+          "description": "Хэллоуин и День Благодарения"
+        },
+        {
+          "id": 1126,
+          "step_number": 76,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1127,
+          "step_number": 77,
+          "description": "Без глютена и пищевая аллергия"
+        },
+        {
+          "id": 1128,
+          "step_number": 78,
+          "description": "Вегетарианский и веганский"
+        },
+        {
+          "id": 1129,
+          "step_number": 79,
+          "description": "Диета и потеря веса"
+        },
+        {
+          "id": 1130,
+          "step_number": 80,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1131,
+          "step_number": 81,
+          "description": "Как видно в ..."
+        },
+        {
+          "id": 1132,
+          "step_number": 82,
+          "description": "Блог еды дня"
+        },
+        {
+          "id": 1133,
+          "step_number": 83,
+          "description": "Винный блог дня"
+        },
+        {
+          "id": 1134,
+          "step_number": 84,
+          "description": "Следуйте в Instagram"
+        },
+        {
+          "id": 1135,
+          "step_number": 85,
+          "description": "Как на Facebook"
+        },
+        {
+          "id": 1136,
+          "step_number": 86,
+          "description": "Следуйте в Твиттере"
+        },
+        {
+          "id": 1137,
+          "step_number": 87,
+          "description": "Следуйте на Pinterest"
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "name": "Медовые рецепты кукурузного хлеба с медом",
+      "categories": [
+        {
+          "id": 33,
+          "name": "завтрак"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 45,
+          "name": "хлеб"
+        }
+      ],
+      "description": "Медовая клубничная сковорода рецепты кукурузного хлеба, приготовленные из ½ стакана несолидного масла, ⅓ чашка меда, 2 столовые ложки коричневого сахара.",
+      "image": "https://127.0.0.1:8000/media/recipes/c54b7210aec9f92379a8a1ecd0784bf0",
+      "prep_time": 30,
+      "cook_time": 0,
+      "servings": 11,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 2802,
+      "protein": 47,
+      "fats": 118,
+      "carbs": 403,
+      "ingredients": [
+        {
+          "id": 816,
+          "name": "Неполезное масло",
+          "amount": "0 1/2",
+          "unit": "cup",
+          "preparation": "½ cup unsalted butter, melted"
+        },
+        {
+          "id": 817,
+          "name": "мед",
+          "amount": "0 1/3",
+          "unit": "cup",
+          "preparation": "⅓ cup honey"
+        },
+        {
+          "id": 818,
+          "name": "коричневый сахар",
+          "amount": "2",
+          "unit": "tablespoon",
+          "preparation": "2 tablespoons brown sugar"
+        },
+        {
+          "id": 819,
+          "name": "яйцо",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 large egg, beaten"
+        },
+        {
+          "id": 820,
+          "name": "пахта",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup buttermilk"
+        },
+        {
+          "id": 821,
+          "name": "кукурузная мука",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup + 1 tablespoon cornmeal"
+        },
+        {
+          "id": 822,
+          "name": "Все цели муки",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup + 1 tablespoon all purpose flour"
+        },
+        {
+          "id": 823,
+          "name": "порошок для выпечки",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking powder"
+        },
+        {
+          "id": 824,
+          "name": "пищевая сода",
+          "amount": "0 1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoon baking soda"
+        },
+        {
+          "id": 825,
+          "name": "соль",
+          "amount": "1",
+          "unit": "pinch",
+          "preparation": "Pinch of salt"
+        },
+        {
+          "id": 826,
+          "name": "кукурузные ядра",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup corn kernels, fresh/frozen and drained/canned and drained"
+        },
+        {
+          "id": 827,
+          "name": "Клубника",
+          "amount": "0 3/4",
+          "unit": "cup",
+          "preparation": "¾ cup chopped strawberries"
+        },
+        {
+          "id": 828,
+          "name": "масло",
+          "amount": null,
+          "unit": "butter",
+          "preparation": ""
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1138,
+          "step_number": 1,
+          "description": "Разогрейте духовку до 425f."
+        },
+        {
+          "id": 1139,
+          "step_number": 2,
+          "description": "В то время как духовка предварительно нагревает, растопите масло в 10 -дюймовом чугуне или в безопасности в духовке. Убедитесь, что растопленное масло покрывает все поверхности сковороды. Затем вылейте растопленное масло в миску среднего или большого размера."
+        },
+        {
+          "id": 1140,
+          "step_number": 3,
+          "description": "Добавьте в миску мед, коричневый сахар, яйцо и пахту. Взбейте до тех пор, пока все ингредиенты не будут хорошо включены. Отложите на данный момент."
+        },
+        {
+          "id": 1141,
+          "step_number": 4,
+          "description": "В другой большой миске взбейте кукурузную муку, муку, разрыхлитель, пищевую соду и соль, пока не будет включено. Вылейте влажные ингредиенты в сухие ингредиенты и перемешайте, пока не смешано. Сложите в кукурузные ядра и нарезанную клубнику, стараясь осторожны, чтобы не перегонять."
+        },
+        {
+          "id": 1142,
+          "step_number": 5,
+          "description": "Вылейте тесто в горячую сковороду. Если сковорода не горячая, нагрейте сковороду на плите пару минут."
+        },
+        {
+          "id": 1143,
+          "step_number": 6,
+          "description": "Выпекать кукурузный хлеб в течение примерно 20-25 минут, пока вершина не подрумянится, а центр будет приготовлен. Вставьте зубочистку в центр кукурузного хлеба. Если зубочистка выйдет чистой, кукурузный хлеб готов."
+        },
+        {
+          "id": 1144,
+          "step_number": 7,
+          "description": "Дайте кукурузу остыть в течение нескольких минут, прежде чем разрезать его на ломтики."
+        },
+        {
+          "id": 1145,
+          "step_number": 8,
+          "description": "Храните остатки в герметичном контейнере в холодильнике или для того, чтобы сохранить их, храните их в безопасном контейнере в морозильной камере в морозильной камере."
+        },
+        {
+          "id": 1146,
+          "step_number": 9,
+          "description": "Чтобы разогреть кукурузный хлеб, выпекайте кукурузный хлеб при 350F в течение примерно 10-15 минут, пока кукурузный хлеб не будет прогревается, а вершина не станет хрустящим и карамелизованным."
+        },
+        {
+          "id": 1147,
+          "step_number": 10,
+          "description": "Подавать клубничный сковорочный кукурузный хлеб теплым с медовым маслом."
+        }
+      ]
+    },
+    {
+      "id": 83,
+      "name": "Candy Cane Cookies",
+      "categories": [
+        {
+          "id": 17,
+          "name": "перекус"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 42,
+          "name": "Печенье и печенье"
+        }
+      ],
+      "description": "Конфеты -тростниковое печенье, приготовленное из 1 стакана масла, 3/4 стакана сахарного сахара, 1/2 стакана кондитерского сахара.",
+      "image": "https://127.0.0.1:8000/media/recipes/84ac67c458aac71976c600f9740af6a2.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 4339,
+      "protein": 35,
+      "fats": 194,
+      "carbs": 626,
+      "ingredients": [
+        {
+          "id": 867,
+          "name": "масло",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup butter"
+        },
+        {
+          "id": 868,
+          "name": "гранулированный сахар",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup granulated sugar"
+        },
+        {
+          "id": 869,
+          "name": "кондитерские изделия",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup confectioners sugar"
+        },
+        {
+          "id": 870,
+          "name": "яичные желтки",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 egg yolks"
+        },
+        {
+          "id": 871,
+          "name": "перечной",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons peppermint extract"
+        },
+        {
+          "id": 872,
+          "name": "ваниль",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla"
+        },
+        {
+          "id": 873,
+          "name": "мука",
+          "amount": "2 1/4",
+          "unit": "cup",
+          "preparation": "2 1/4 cups flour"
+        },
+        {
+          "id": 874,
+          "name": "соль",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon salt"
+        },
+        {
+          "id": 875,
+          "name": "пищевая окраска",
+          "amount": "12",
+          "unit": "drop",
+          "preparation": "12 drops red food coloring"
+        },
+        {
+          "id": 876,
+          "name": "сахар",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup sanding sugar (for rolling in) about"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1148,
+          "step_number": 1,
+          "description": "Используя микшер с подставкой, оснащенную веслом, взбейте масло и сахар, пока не стало легким и пушистым, около 4-5 минут. Добавить яичные желтки, ароматизаторы и взбить до тех пор, пока он не будет включен."
+        },
+        {
+          "id": 1149,
+          "step_number": 2,
+          "description": "Добавьте муку и соль и перемешайте, пока не смешано."
+        },
+        {
+          "id": 1150,
+          "step_number": 3,
+          "description": "Разделите тесто пополам и добавьте красную пищевую окраску в половину теста."
+        },
+        {
+          "id": 1151,
+          "step_number": 4,
+          "description": "Скатайте каждый квадрат на 9 -дюймовый квадрат. Переверните одну квадрат теста поверх другого. Аккуратно перекати его, чтобы придерживаться вместе. Охладите 15 минут. Разрежьте тесто пополам. Нарежьте на полоски 1/4 дюйма и погрузитесь в сахар. Поверните тесто и форму в форму конфеты. Поместите на смазанный смазанный противень. (Когда моя кастрюля была заполнена, я положил их обратно в холодильник на 15 минут)"
+        },
+        {
+          "id": 1152,
+          "step_number": 5,
+          "description": "Разогрейте духовку до 350 °. Выпекать в течение 10 - 13 минут или пока края не начнут показывать Браунинг. Охладите на листе Cookie в течение 5 минут, прежде чем снять с охлаждающей стойкой."
+        }
+      ]
+    },
+    {
+      "id": 84,
+      "name": "Тыквенный пирог с тонким блюдом",
+      "categories": [
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 39,
+          "name": "десерты"
+        }
+      ],
+      "description": "Тонкий блюдо из тыквенного пирога, приготовленного с * 1 стакан тыквенного пюре, * 2 большого яйца, * 1/2 стакана коричневого сахара.",
+      "image": "https://127.0.0.1:8000/media/recipes/dbcbafb5b8b253ba5838ba7113e13b76.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 8,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 2001,
+      "protein": 28,
+      "fats": 114,
+      "carbs": 224,
+      "ingredients": [
+        {
+          "id": 877,
+          "name": "тыквенное пюре",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup pumpkin puree"
+        },
+        {
+          "id": 878,
+          "name": "яйцо",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "* 2 large egg"
+        },
+        {
+          "id": 879,
+          "name": "коричневый сахар",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "* 1/2 cup brown sugar"
+        },
+        {
+          "id": 880,
+          "name": "наземная корица",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1/2 tsp ground cinnamon"
+        },
+        {
+          "id": 881,
+          "name": "соль",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "* 1/4 tsp salt"
+        },
+        {
+          "id": 882,
+          "name": "кукурузный крахмал",
+          "amount": "1",
+          "unit": "tablespoon",
+          "preparation": "* 1 tbsp cornstarch"
+        },
+        {
+          "id": 883,
+          "name": "наземный мускатный орех",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "* 1/4 tsp ground nutmeg"
+        },
+        {
+          "id": 884,
+          "name": "заземляющий гвоздик",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "* 1/8 teaspoon ground clove"
+        },
+        {
+          "id": 885,
+          "name": "black перец",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "* 1/8 teaspoon ground black pepper"
+        },
+        {
+          "id": 886,
+          "name": "тяжелые сливки",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "* 1/2 cup heavy cream"
+        },
+        {
+          "id": 887,
+          "name": "молоко",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "* 1/4 cup milk"
+        },
+        {
+          "id": 888,
+          "name": "пирог",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "* 1 pie crust"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1153,
+          "step_number": 1,
+          "description": "Разогрейте духовку до 350f."
+        },
+        {
+          "id": 1154,
+          "step_number": 2,
+          "description": "Смешайте пюре из тыквы, яйца и коричневый сахар в миске и взбейте вместе."
+        },
+        {
+          "id": 1155,
+          "step_number": 3,
+          "description": "Добавьте все специи и кукурузный крахмал."
+        },
+        {
+          "id": 1156,
+          "step_number": 4,
+          "description": "Вылейте крем и молоко."
+        },
+        {
+          "id": 1157,
+          "step_number": 5,
+          "description": "Продолжайте взбивать, пока смесь не загустеет, а все ингредиенты не будут хорошо объединены."
+        },
+        {
+          "id": 1158,
+          "step_number": 6,
+          "description": "Вылейте начинку в кору, оставляя ¼ из нее незаполненным."
+        },
+        {
+          "id": 1159,
+          "step_number": 7,
+          "description": "Выпекать от 45 минут до часа."
+        },
+        {
+          "id": 1160,
+          "step_number": 8,
+          "description": "Подавать и наслаждаться."
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "name": "Кусок Испании: испанская тортилья",
+      "categories": [
+        {
+          "id": 5,
+          "name": "основное блюдо"
+        },
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 47,
+          "name": "Средиземноморье"
+        }
+      ],
+      "description": "Кусочек Испании: испанская тортилья, сделанная с 2 чашками оливкового масла, 3 среднего рассеянного картофеля, 1/2 белого лука.",
+      "image": "https://127.0.0.1:8000/media/recipes/8c629ad96b4c3476020f320edbee6d50.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 1177,
+      "protein": 11,
+      "fats": 114,
+      "carbs": 31,
+      "ingredients": [
+        {
+          "id": 922,
+          "name": "Оливковое масло",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups Olive Oil"
+        },
+        {
+          "id": 923,
+          "name": "РУССЕТ КАРТАТИ",
+          "amount": "3",
+          "unit": "piece(s)",
+          "preparation": "3 Medium Russet Potatoes"
+        },
+        {
+          "id": 924,
+          "name": "White лук",
+          "amount": "1/2",
+          "unit": "piece(s)",
+          "preparation": "1/2 White Onion"
+        },
+        {
+          "id": 925,
+          "name": "Яйца",
+          "amount": "5",
+          "unit": "piece(s)",
+          "preparation": "4-6 Large Eggs"
+        },
+        {
+          "id": 926,
+          "name": "соль",
+          "amount": null,
+          "unit": "Salt",
+          "preparation": ""
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1161,
+          "step_number": 1,
+          "description": "Нагрейте 1-2 стакана оливкового масла на среднем огне в непригарной сковороде."
+        },
+        {
+          "id": 1162,
+          "step_number": 2,
+          "description": "Добавьте лук в оливковое масло, дайте кипеть в течение 5 минут или до тех пор, пока лук не станет ароматическим и не начнет смягчаться."
+        },
+        {
+          "id": 1163,
+          "step_number": 3,
+          "description": "Добавьте соленый, нарезанный картофель в лук и масляную смесь."
+        },
+        {
+          "id": 1164,
+          "step_number": 4,
+          "description": "После того, как картофель золотится, удалите лук и картофель из масла с помощью выдолбленной ложки и поместите в миску."
+        },
+        {
+          "id": 1165,
+          "step_number": 5,
+          "description": "Установите оставшееся масло в сторону, чтобы охладить, зарезервируйте в банке в холодильнике для будущих лепешек."
+        },
+        {
+          "id": 1166,
+          "step_number": 6,
+          "description": "Взбить 4-6 яиц и добавить в картофель и лук, тщательно смешивая содержимое."
+        },
+        {
+          "id": 1167,
+          "step_number": 7,
+          "description": "Нагрейте 8 '' неплохую кастрюлю до среднего огня. Вылейте смесь в кастрюлю."
+        },
+        {
+          "id": 1168,
+          "step_number": 8,
+          "description": "Установите перевернутую тарелку на вершину сковороды и переверните! Установите сковороду обратно на плиту и сдвиньте тортилью от тарелки до сковороды, приготовленной вверх."
+        },
+        {
+          "id": 1169,
+          "step_number": 9,
+          "description": "Готовьте еще 10-20 секунд. Повторите шаг 12, если предпочтительнее более золотой коры или менее жидкого центра."
+        },
+        {
+          "id": 1170,
+          "step_number": 10,
+          "description": "Подавать и наслаждаться!"
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "name": "Шоколадная чипка цуккини банановый хлеб :: re",
+      "categories": [
+        {
+          "id": 33,
+          "name": "завтрак"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 45,
+          "name": "хлеб"
+        }
+      ],
+      "description": "Шоколадная стружка цуккини банановый хлеб :: re Сделано с * 4 яйцом, * 1 3/4 стакана сахара, * 1 стакана кокосового масла.",
+      "image": "https://127.0.0.1:8000/media/recipes/65bf0410986e87b389d4d023ae8914a3.jpg",
+      "prep_time": 15,
+      "cook_time": 45,
+      "servings": 24,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 329,
+      "protein": 5,
+      "fats": 16,
+      "carbs": 44,
+      "ingredients": [
+        {
+          "id": 969,
+          "name": "яйцо",
+          "amount": "4",
+          "unit": "piece(s)",
+          "preparation": "* 4 egg"
+        },
+        {
+          "id": 970,
+          "name": "сахар",
+          "amount": "1 3/4",
+          "unit": "cup",
+          "preparation": "* 1 3/4 cup sugar, plus a little more for dusting the top of the dough"
+        },
+        {
+          "id": 971,
+          "name": "тесто",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "* 1 3/4 cup sugar, plus a little more for dusting the top of the dough"
+        },
+        {
+          "id": 972,
+          "name": "кокосовое масло",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup coconut oil"
+        },
+        {
+          "id": 973,
+          "name": "банан",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 2 medium ripe banana, mashed (about 1 cup)"
+        },
+        {
+          "id": 974,
+          "name": "пшеница",
+          "amount": "3",
+          "unit": "cup",
+          "preparation": "* 3 cup all purpose flour {i used freshly ground soft white wheat}"
+        },
+        {
+          "id": 975,
+          "name": "порошок для выпечки",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1-1/2 teaspoon baking powder"
+        },
+        {
+          "id": 976,
+          "name": "пищевая сода",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1-1/2 teaspoon baking soda"
+        },
+        {
+          "id": 977,
+          "name": "наземная корица",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "* 1-1/2 teaspoon ground cinnamon"
+        },
+        {
+          "id": 978,
+          "name": "соль",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "* 1 teaspoon salt"
+        },
+        {
+          "id": 979,
+          "name": "цуккини",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "* 1-1/2 cup shredded unpeeled zucchini"
+        },
+        {
+          "id": 980,
+          "name": "Шоколадная чип",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup chocolate chip"
+        },
+        {
+          "id": 981,
+          "name": "грецкий орех",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* optional: 1 cup chopped nut {pecan or walnut}"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1171,
+          "step_number": 1,
+          "description": "Взбить яйца в миске."
+        },
+        {
+          "id": 1172,
+          "step_number": 2,
+          "description": "Добавьте сахар и масло и взбейте до легкого и пушистого."
+        },
+        {
+          "id": 1173,
+          "step_number": 3,
+          "description": "Добавьте бананы и хорошо перемешайте. Смешайте муку, разрыхлитель, пищевую соду, корицу и соль; Размешайте в яичную смесь."
+        },
+        {
+          "id": 1174,
+          "step_number": 4,
+          "description": "При желании добавьте цуккини, шоколадные чипсы и орехи."
+        },
+        {
+          "id": 1175,
+          "step_number": 5,
+          "description": "Вылейте в два смазанного смазанными 9-дюймами. x 5-in. буханки."
+        },
+        {
+          "id": 1176,
+          "step_number": 6,
+          "description": "Выпекать при 350 градусах в течение 50 минут или до тех пор, пока зубочистка не станет чистой. Охладить 10 минут. Снимите из кастрюли в стеллажи, чтобы полностью остыть."
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "name": "Любимый рецепт гироса из хлеба",
+      "categories": [
+        {
+          "id": 5,
+          "name": "основное блюдо"
+        },
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 47,
+          "name": "Средиземноморье"
+        }
+      ],
+      "description": "Любимый рецепт мясного хлебного гироса, приготовленный из 1 яйца, 6 зубчиков чеснока, 3 столовые ложки сушеного орегано.",
+      "image": "https://127.0.0.1:8000/media/recipes/40204823040c4eae84f6ff8d69146ef1.jpg",
+      "prep_time": 30,
+      "cook_time": 0,
+      "servings": 8,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 564,
+      "protein": 30,
+      "fats": 25,
+      "carbs": 58,
+      "ingredients": [
+        {
+          "id": 982,
+          "name": "яйцо",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 egg, lightly beaten"
+        },
+        {
+          "id": 983,
+          "name": "чеснок",
+          "amount": "6",
+          "unit": "clove",
+          "preparation": "6 garlic cloves, minced"
+        },
+        {
+          "id": 984,
+          "name": "сушеный орегано",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 tbsp dried oregano"
+        },
+        {
+          "id": 985,
+          "name": "kosher соль",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "1-1/2 tsp kosher salt"
+        },
+        {
+          "id": 986,
+          "name": "перец",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 tsp pepper"
+        },
+        {
+          "id": 987,
+          "name": "земля ягненка",
+          "amount": "1",
+          "unit": "pound",
+          "preparation": "1 lb ground lamb"
+        },
+        {
+          "id": 988,
+          "name": "Наземная индейка",
+          "amount": "1",
+          "unit": "pound",
+          "preparation": "1 lb ground turkey or beef"
+        },
+        {
+          "id": 989,
+          "name": "Простой йогурт",
+          "amount": "8",
+          "unit": "ounce",
+          "preparation": "1 cup (8 oz) plain yogurt"
+        },
+        {
+          "id": 990,
+          "name": "огурец",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 medium cucumber, peeled, seeded and chopped"
+        },
+        {
+          "id": 991,
+          "name": "лимонный сок",
+          "amount": "2",
+          "unit": "tablespoon",
+          "preparation": "2 tbsp lemon juice"
+        },
+        {
+          "id": 992,
+          "name": "соль",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 tsp salt"
+        },
+        {
+          "id": 993,
+          "name": "лаваш хлеб",
+          "amount": "8",
+          "unit": "piece(s)",
+          "preparation": "8 whole pita breads"
+        },
+        {
+          "id": 994,
+          "name": "оливковое масло",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 tbsp olive oil, divided"
+        },
+        {
+          "id": 995,
+          "name": "помидор",
+          "amount": "16",
+          "unit": "slice",
+          "preparation": "16 slices tomato"
+        },
+        {
+          "id": 996,
+          "name": "sweet лук",
+          "amount": "8",
+          "unit": "piece(s)",
+          "preparation": "8 slices sweet onion, halved"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1177,
+          "step_number": 1,
+          "description": "В большой миске смешайте яйцо, чеснок, орегано, кошерную соль и перец. Крошка ягненка и говядина над смесью; хорошо перемешать."
+        },
+        {
+          "id": 1178,
+          "step_number": 2,
+          "description": "Похлопывать в не смазанный 9-дюйм. x 5-in. хлебная кастрюля. Выпекать, открытый, при 350 ° в течение 60-70 минут или до тех пор, пока не останется розовый, а мясной термометр не прочитал 160 °. Полностью охладитесь на решетке. Охладите в течение 1-2 часов."
+        },
+        {
+          "id": 1179,
+          "step_number": 3,
+          "description": "Смажьте лаваш хлеб с 1 столовой ложкой масла; Нагрейте на слегка смазанном смазанной сетке по 1 минуту с каждой стороны. Согреться. Нарежьте мясной хлеб на очень тонкие ломтики. В большой сковороде жарьте мясной хлеб в оставшемся масле в партиях до хрустящих."
+        },
+        {
+          "id": 1180,
+          "step_number": 4,
+          "description": "На каждом лаваш -хлебе слой помидор, ломтики лука и мясного хлеба; Вершина с немного соусом цацики. Осторожно сложите питы пополам. Подавать с оставшимся соусом. Доходность: 8 порций."
+        }
+      ]
+    },
+    {
+      "id": 95,
+      "name": "Яблочный соус",
+      "categories": [
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 38,
+          "name": "Центральная Европа"
+        },
+        {
+          "id": 39,
+          "name": "десерты"
+        }
+      ],
+      "description": "Яблочный соус Специя Бундт Рецепты, приготовленные из 2 1/4 стакана, просеянная небеленная универсальная мука, 1 чайная ложка пищевой соды, 1/2 чайной ложки соли.",
+      "image": "https://127.0.0.1:8000/media/recipes/9a880d7ba547dfaf1c057d88390ea1f3",
+      "prep_time": 80,
+      "cook_time": 0,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 1277,
+      "protein": 13,
+      "fats": 62,
+      "carbs": 173,
+      "ingredients": [
+        {
+          "id": 997,
+          "name": "универсальная мука",
+          "amount": "2 1/4",
+          "unit": "cup",
+          "preparation": "2 1/4 cups sifted unbleached all-purpose flour"
+        },
+        {
+          "id": 998,
+          "name": "пищевая сода",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking soda"
+        },
+        {
+          "id": 999,
+          "name": "соль",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon salt"
+        },
+        {
+          "id": 1000,
+          "name": "наземная корица",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "1 1/2 teaspoon ground cinnamon"
+        },
+        {
+          "id": 1001,
+          "name": "заземляющий дух",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon ground allspice"
+        },
+        {
+          "id": 1002,
+          "name": "наземный мускатный орех",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon ground nutmeg"
+        },
+        {
+          "id": 1003,
+          "name": "орехи ореха",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup pecans, lightly toasted finely chopped (optional)"
+        },
+        {
+          "id": 1004,
+          "name": "масло",
+          "amount": "1/3",
+          "unit": "cup",
+          "preparation": "1/3 cup butter, room temperature"
+        },
+        {
+          "id": 1005,
+          "name": "лимонный цедра",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon grated lemon zest"
+        },
+        {
+          "id": 1006,
+          "name": "укорочение",
+          "amount": "1/3",
+          "unit": "cup",
+          "preparation": "1/3 cup vegetable shortening"
+        },
+        {
+          "id": 1007,
+          "name": "гранулированный сахар",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup granulated sugar"
+        },
+        {
+          "id": 1008,
+          "name": "светло -коричневый сахар",
+          "amount": "2/3",
+          "unit": "cup",
+          "preparation": "2/3 cup light brown sugar, lightly packed"
+        },
+        {
+          "id": 1009,
+          "name": "яйца",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large eggs"
+        },
+        {
+          "id": 1010,
+          "name": "Бабушка Смит яблоко",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 medium sized Granny Smith apple, peeled and diced, about 1 cup"
+        },
+        {
+          "id": 1011,
+          "name": "ванильный экстракт",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla extract"
+        },
+        {
+          "id": 1012,
+          "name": "яблочное пюре",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup applesauce"
+        },
+        {
+          "id": 1013,
+          "name": "коричневый сахар",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 Tablespoons brown sugar, packed"
+        },
+        {
+          "id": 1014,
+          "name": "тяжелые сливки",
+          "amount": "3",
+          "unit": "tablespoon",
+          "preparation": "3 Tablespoons heavy cream"
+        },
+        {
+          "id": 1015,
+          "name": "сахарный порошок",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup sifted powdered sugar"
+        },
+        {
+          "id": 1016,
+          "name": "ваниль",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon vanilla"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1181,
+          "step_number": 1,
+          "description": "►2015 (2) октябрь 2015 (1) апрель 2015 (1)"
+        },
+        {
+          "id": 1182,
+          "step_number": 2,
+          "description": "►2007 (11) декабрь 2007 г. (5) ноябрь 2007 г. (6)"
+        },
+        {
+          "id": 1183,
+          "step_number": 3,
+          "description": "Лето и осень"
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Возможно, лучшее печенье",
+      "categories": [
+        {
+          "id": 17,
+          "name": "перекус"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 42,
+          "name": "Печенье и печенье"
+        }
+      ],
+      "description": "Возможно, лучшее печенье из 1 стакана масла, 1 1–2 стакана коричневого сахара, 1 чайная ложка сожженного ароматизатора сахара.",
+      "image": "https://127.0.0.1:8000/media/recipes/c404146b3b79c0aeede60809b1d21fc1.jpg",
+      "prep_time": 25,
+      "cook_time": 0,
+      "servings": 18,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 336,
+      "protein": 5,
+      "fats": 19,
+      "carbs": 37,
+      "ingredients": [
+        {
+          "id": 1071,
+          "name": "масло",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup butter"
+        },
+        {
+          "id": 1072,
+          "name": "коричневый сахар",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1⁄2 cups brown sugar"
+        },
+        {
+          "id": 1073,
+          "name": "сахар",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon burnt sugar flavoring"
+        },
+        {
+          "id": 1074,
+          "name": "соль",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1⁄2 teaspoon salt"
+        },
+        {
+          "id": 1075,
+          "name": "яйца",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 eggs"
+        },
+        {
+          "id": 1076,
+          "name": "мука",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups flour"
+        },
+        {
+          "id": 1077,
+          "name": "корица",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon cinnamon"
+        },
+        {
+          "id": 1078,
+          "name": "пищевая сода",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking soda"
+        },
+        {
+          "id": 1079,
+          "name": "миндаль",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup almonds, crushed slightly"
+        },
+        {
+          "id": 1080,
+          "name": "шоколадные чипсы",
+          "amount": "12",
+          "unit": "ounce",
+          "preparation": "12 ounces chocolate chips"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1184,
+          "step_number": 1,
+          "description": "Взбейте масло с сахаром, ароматизатором, яйцами, солью, затем смешайте сухие ингредиенты и добавьте в масло. Загляните в маленький совок на подносе печенья. Выпекать при 350 градусах в течение 10 минут."
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "name": "Pistachio клюквенное хлебное пудинг",
+      "categories": [
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 37,
+          "name": "британский"
+        },
+        {
+          "id": 39,
+          "name": "десерты"
+        }
+      ],
+      "description": "Фисташковой клюквенной хлеб пудинг, приготовленный из ½ хрустальных хрустящих французского хлеба, 2 стакана 2% молока, ¼ стакана жареные фисташки.",
+      "image": "https://127.0.0.1:8000/media/recipes/50c7a913e24a7acfdfae455aa385d938.jpg",
+      "prep_time": 75,
+      "cook_time": 0,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 371,
+      "protein": 12,
+      "fats": 11,
+      "carbs": 57,
+      "ingredients": [
+        {
+          "id": 1105,
+          "name": "Французский хлеб",
+          "amount": "1/2",
+          "unit": "loaf",
+          "preparation": "½ loaves Crusty Stale French Bread"
+        },
+        {
+          "id": 1106,
+          "name": "2% молоко",
+          "amount": "2",
+          "unit": "cup",
+          "preparation": "2 cups 2% Milk"
+        },
+        {
+          "id": 1107,
+          "name": "Фисташки",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "¼ cups Roasted Pistachios, Chopped"
+        },
+        {
+          "id": 1108,
+          "name": "Высушенная клюква",
+          "amount": "1/8",
+          "unit": "cup",
+          "preparation": "⅛ cups Dried Cranberries"
+        },
+        {
+          "id": 1109,
+          "name": "Оливковое масло",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons Pasolivo Citrus Olive Oil"
+        },
+        {
+          "id": 1110,
+          "name": "Яйца",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 whole Eggs, Beaten"
+        },
+        {
+          "id": 1111,
+          "name": "Гранулированный сахар",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "½ cups Granulated Sugar"
+        },
+        {
+          "id": 1112,
+          "name": "Ваниль",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "½ teaspoons Vanilla"
+        },
+        {
+          "id": 1113,
+          "name": "Апельсиновая изюминка",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon Fresh Orange Zest"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1185,
+          "step_number": 1,
+          "description": "Напишите обзор"
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "name": "Яблочная корица, запеченная овсянка рецепты",
+      "categories": [
+        {
+          "id": 33,
+          "name": "завтрак"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 50,
+          "name": "зерновые"
+        }
+      ],
+      "description": "Яблочная корица, запеченная овсянка рецепты, приготовленные из 3 стакана (300 грамм) старомодный овсяной овес, 1 чайная ложка разрыхлителя, 1 и ½ чайной ложки наземной корицы.",
+      "image": "https://127.0.0.1:8000/media/recipes/eb7e8a253f6c78e7bc2248f5d016f701",
+      "prep_time": 45,
+      "cook_time": 0,
+      "servings": 12,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 158,
+      "protein": 5,
+      "fats": 3,
+      "carbs": 28,
+      "ingredients": [
+        {
+          "id": 1114,
+          "name": "катился овес",
+          "amount": "300",
+          "unit": "gram",
+          "preparation": "3 cups (300 grams) old-fashioned rolled oats"
+        },
+        {
+          "id": 1115,
+          "name": "порошок для выпечки",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking powder"
+        },
+        {
+          "id": 1116,
+          "name": "наземная корица",
+          "amount": "1 1/2",
+          "unit": "teaspoon",
+          "preparation": "1 and ½ teaspoons ground cinnamon"
+        },
+        {
+          "id": 1117,
+          "name": "соль",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "¼ teaspoon salt"
+        },
+        {
+          "id": 1118,
+          "name": "молоко",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup milk (almond or regular dairy milk work well)"
+        },
+        {
+          "id": 1119,
+          "name": "яйца",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large eggs"
+        },
+        {
+          "id": 1120,
+          "name": "кленовый сироп",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "½ cup pure maple syrup"
+        },
+        {
+          "id": 1121,
+          "name": "ванильный экстракт",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon vanilla extract"
+        },
+        {
+          "id": 1122,
+          "name": "Бабушка Смит яблоко",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 medium Granny Smith apple, peeled, cored, and chopped (about 1 cup)"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1186,
+          "step_number": 1,
+          "description": "Разогрейте духовку до 350 ° F (177 ° C). Очень хорошо разбрызгивайте кастрюлю для кекса из 12 счетов с брызг с приготовлением пищи и отложите."
+        },
+        {
+          "id": 1187,
+          "step_number": 2,
+          "description": "Добавьте овес, разрыхлитель, корицу и соль в большую миску и перемешайте, пока не смешано."
+        },
+        {
+          "id": 1188,
+          "step_number": 3,
+          "description": "В отдельной миске смешайте молоко, яйца, кленовый сироп и ванильный экстракт до полного комбинезона. Добавьте сухие ингредиенты в влажные ингредиенты и перемешайте, пока хорошо не смешано. Добавьте нарезанное яблоко и осторожно перемешайте."
+        },
+        {
+          "id": 1189,
+          "step_number": 4,
+          "description": "Равномерно распределяйте смесь между всеми 12 полостями в приготовленной сковороде. Выпекать при 350 ° F в течение 25-27 минут, или до тех пор, пока вершины овсяных чашек не станут слегка золотисто -коричневыми и твердыми."
+        },
+        {
+          "id": 1190,
+          "step_number": 5,
+          "description": "Снимите из духовки и дайте остыть в сковороде в течение примерно 5-10 минут, затем снимите чашки овсянки и перенеситесь на стеллаж, чтобы завершить охлаждение."
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "name": "Маффины из авокадо Dulce de Leche",
+      "categories": [
+        {
+          "id": 33,
+          "name": "завтрак"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 39,
+          "name": "десерты"
+        }
+      ],
+      "description": "Маффины из авокадо Dulce de Leche, приготовленные из 1 1/2 стакана муки AP, 1/4 стакана кукурузной муки, 1/4 чайной ложки соли.",
+      "image": "https://127.0.0.1:8000/media/recipes/8616375b2f7897446ca8946c58e5e959.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 16,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 215,
+      "protein": 3,
+      "fats": 7,
+      "carbs": 35,
+      "ingredients": [
+        {
+          "id": 1133,
+          "name": "мука",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups AP flour"
+        },
+        {
+          "id": 1134,
+          "name": "кукурузная мука",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup cornmeal"
+        },
+        {
+          "id": 1135,
+          "name": "соль",
+          "amount": "1/4",
+          "unit": "teaspoon",
+          "preparation": "1/4 tsp salt"
+        },
+        {
+          "id": 1136,
+          "name": "порошок для выпечки",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 tsp baking powder"
+        },
+        {
+          "id": 1137,
+          "name": "пищевая сода",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 tsp baking soda"
+        },
+        {
+          "id": 1138,
+          "name": "масло",
+          "amount": "6",
+          "unit": "tablespoon",
+          "preparation": "6 tbsp butter softened"
+        },
+        {
+          "id": 1139,
+          "name": "сахар",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups sugar"
+        },
+        {
+          "id": 1140,
+          "name": "авокадо",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 ripe avocado"
+        },
+        {
+          "id": 1141,
+          "name": "яйца",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large eggs"
+        },
+        {
+          "id": 1142,
+          "name": "ванильный экстракт",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 tsp vanilla extract"
+        },
+        {
+          "id": 1143,
+          "name": "пахта",
+          "amount": "3/8",
+          "unit": "cup",
+          "preparation": "3/8 cup buttermilk"
+        },
+        {
+          "id": 1144,
+          "name": "Дулсе де Лече",
+          "amount": "16",
+          "unit": "teaspoon",
+          "preparation": "16 tsp dulce de leche"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1191,
+          "step_number": 1,
+          "description": "Разогрейте духовку до 350. Поместите вкладыши для кексов в маффин."
+        },
+        {
+          "id": 1192,
+          "step_number": 2,
+          "description": "Установите яйца на стойке, чтобы прийти к комнатной температуре, пока вы били масло и сахар."
+        },
+        {
+          "id": 1193,
+          "step_number": 3,
+          "description": "В миске смесителя подставки взбейте масло на средней скорости, пока не станут мягкими и податливыми."
+        },
+        {
+          "id": 1194,
+          "step_number": 4,
+          "description": "Добавьте сахар и взбейте до легкого и пушистого, около 4 минут."
+        },
+        {
+          "id": 1195,
+          "step_number": 5,
+          "description": "Добавьте авокадо и победите еще одну минуту, чтобы включить."
+        },
+        {
+          "id": 1196,
+          "step_number": 6,
+          "description": "Соскребайте боковые стороны чаши, чтобы все было тщательно смешано."
+        },
+        {
+          "id": 1197,
+          "step_number": 7,
+          "description": "Добавить яйца по одному, бить через 1 минуту после добавления каждого яйца."
+        },
+        {
+          "id": 1198,
+          "step_number": 8,
+          "description": "Бит в ванильном экстракте."
+        },
+        {
+          "id": 1199,
+          "step_number": 9,
+          "description": "Уменьшите скорость миксера до минимума и добавьте половину муки, все пахты, а затем остальную смесь муки."
+        },
+        {
+          "id": 1200,
+          "step_number": 10,
+          "description": "Взбить только до комбинированного."
+        },
+        {
+          "id": 1201,
+          "step_number": 11,
+          "description": "Вылейте в кексные лайнеры, пока они не станут примерно на 3/4."
+        },
+        {
+          "id": 1202,
+          "step_number": 12,
+          "description": "Выпекать в течение 15-20 минут или пока вставка зубочистки не выйдет в чистоту."
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Avgolemono Soup с курицей и капустой",
+      "categories": [
+        {
+          "id": 8,
+          "name": "суп"
+        },
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 47,
+          "name": "Средиземноморье"
+        }
+      ],
+      "description": "Суп Avgolemono с курицей и капустой, приготовленной из 1 целой курицы, 12 чашек воды, 2 моркови.",
+      "image": "https://127.0.0.1:8000/media/recipes/c0364e4186c004996563c113cda630f3.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 10,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 325,
+      "protein": 26,
+      "fats": 20,
+      "carbs": 11,
+      "ingredients": [
+        {
+          "id": 1145,
+          "name": "курица",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 whole chicken, about 3 1/2 lbs. with excess fat trimmed and breast skin removed"
+        },
+        {
+          "id": 1146,
+          "name": "вода",
+          "amount": "12",
+          "unit": "cup",
+          "preparation": "12 cups water"
+        },
+        {
+          "id": 1147,
+          "name": "морковь",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 carrots, cut in half"
+        },
+        {
+          "id": 1148,
+          "name": "сельдерей",
+          "amount": "2",
+          "unit": "stalk",
+          "preparation": "2 celery stalks, cut in half"
+        },
+        {
+          "id": 1149,
+          "name": "лук",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 large onion, peeled and cut in half"
+        },
+        {
+          "id": 1150,
+          "name": "лавровый лист",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 bay leaves"
+        },
+        {
+          "id": 1151,
+          "name": "Черный перец",
+          "amount": "5",
+          "unit": "whole",
+          "preparation": ""
+        },
+        {
+          "id": 1152,
+          "name": "соль",
+          "amount": "2",
+          "unit": "teaspoon",
+          "preparation": "2 teaspoons salt"
+        },
+        {
+          "id": 1153,
+          "name": "паста",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup orzo pasta, or rice"
+        },
+        {
+          "id": 1154,
+          "name": "яйца",
+          "amount": "3",
+          "unit": "piece(s)",
+          "preparation": "3 eggs, at room temperature"
+        },
+        {
+          "id": 1155,
+          "name": "лимонный цедра",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon fresh lemon zest"
+        },
+        {
+          "id": 1156,
+          "name": "лимоны",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "juice of two lemons, strained"
+        },
+        {
+          "id": 1157,
+          "name": "капуста",
+          "amount": "1",
+          "unit": "head",
+          "preparation": "1 head kale, roughly chopped"
+        },
+        {
+          "id": 1158,
+          "name": "перец",
+          "amount": null,
+          "unit": "salt",
+          "preparation": "and freshly ground pepper"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1203,
+          "step_number": 1,
+          "description": "Добавьте первые 8 ингредиентов в большой запас. Доведите воду до быстрого кипения, понижены до среднего низкого уровня и варите частично покрытую примерно от 60 до 90 минут."
+        },
+        {
+          "id": 1204,
+          "step_number": 2,
+          "description": "Снимите курицу и овощи в миску и осторожно разделите бульон через тонкое сито в большую миску. Верните напряженный бульон в склад и доведите до кипения."
+        },
+        {
+          "id": 1205,
+          "step_number": 3,
+          "description": "Добавьте пасту Orzo и варите, раскрытую в течение примерно 10-12 минут до готовности. Пока паста готовит, приготовьте смесь из яичного лимона. Используя венчику, взбивая яйца до красивого и пенистого. Добавьте лимонную цедру и лимонный сок в устойчивом потоке, продолжая взбивать."
+        },
+        {
+          "id": 1206,
+          "step_number": 4,
+          "description": "Когда макароны закончили готовить, добавьте капусту и выключите жару. Разделите около 2 чашек бульона в миску или большую измерительную чашку. Медленно добавьте горячий бульон в смесь яичного лимона, продолжая взбивать. Это подчеркнет яйца и предотвратит их ссориться, как только они будут добавлены в горячий бульон."
+        },
+        {
+          "id": 1207,
+          "step_number": 5,
+          "description": "Размешайте яичную смесь в кастрюлю и нагрейте на очень низком огне в течение приблизительно 5-10 минут, пока не нагревается. Будьте осторожны, чтобы не кипятить суп, как только яйца будут добавлены."
+        },
+        {
+          "id": 1208,
+          "step_number": 6,
+          "description": "Отрегулируйте приправу для соли и перца и добавьте больше по желанию. Традиционно суп подается в мисках с курицей, сельдереем, луком и морковью на отдельном блюде. Наслаждаться!!"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Шоколадные праздничные кексы",
+      "categories": [
+        {
+          "id": 33,
+          "name": "завтрак"
+        },
+        {
+          "id": 35,
+          "name": "американец"
+        },
+        {
+          "id": 39,
+          "name": "десерты"
+        }
+      ],
+      "description": "Шоколадные праздничные кексы, приготовленные из 1 1/2 стакана универсальной муки, 1/2 стакана сахара, 1 чайная ложка разрыхлителя.",
+      "image": "https://127.0.0.1:8000/media/recipes/56afec55cf623d606d5d8ba8b948ae92.jpg",
+      "prep_time": 15,
+      "cook_time": 15,
+      "servings": 2,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 1545,
+      "protein": 23,
+      "fats": 72,
+      "carbs": 207,
+      "ingredients": [
+        {
+          "id": 1159,
+          "name": "универсальная мука",
+          "amount": "1 1/2",
+          "unit": "cup",
+          "preparation": "1 1/2 cups all-purpose flour"
+        },
+        {
+          "id": 1160,
+          "name": "сахар",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup sugar"
+        },
+        {
+          "id": 1161,
+          "name": "порошок для выпечки",
+          "amount": "1",
+          "unit": "teaspoon",
+          "preparation": "1 teaspoon baking powder"
+        },
+        {
+          "id": 1162,
+          "name": "соль",
+          "amount": "1/2",
+          "unit": "teaspoon",
+          "preparation": "1/2 teaspoon salt"
+        },
+        {
+          "id": 1163,
+          "name": "яйцо",
+          "amount": "1",
+          "unit": "piece(s)",
+          "preparation": "1 egg, slightly beaten"
+        },
+        {
+          "id": 1164,
+          "name": "молоко",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup milk"
+        },
+        {
+          "id": 1165,
+          "name": "растительное масло",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup vegetable oil"
+        },
+        {
+          "id": 1166,
+          "name": "шоколадные чипсы",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup milk chocolate chips"
+        },
+        {
+          "id": 1167,
+          "name": "Мараскино вишня",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup chopped maraschino cherries"
+        },
+        {
+          "id": 1168,
+          "name": "грецкие орехи",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "1/2 cup chopped walnuts"
+        },
+        {
+          "id": 1169,
+          "name": "ананас",
+          "amount": "3/4",
+          "unit": "cup",
+          "preparation": "3/4 cup well-drained crushed pineapple"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1209,
+          "step_number": 1,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1210,
+          "step_number": 2,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1211,
+          "step_number": 3,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1212,
+          "step_number": 4,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1213,
+          "step_number": 5,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1214,
+          "step_number": 6,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1215,
+          "step_number": 7,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1216,
+          "step_number": 8,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1217,
+          "step_number": 9,
+          "description": "Видео и подкасты"
+        },
+        {
+          "id": 1218,
+          "step_number": 10,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1219,
+          "step_number": 11,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1220,
+          "step_number": 12,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1221,
+          "step_number": 13,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1222,
+          "step_number": 14,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1223,
+          "step_number": 15,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1224,
+          "step_number": 16,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1225,
+          "step_number": 17,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1226,
+          "step_number": 18,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1227,
+          "step_number": 19,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1228,
+          "step_number": 20,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1229,
+          "step_number": 21,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1230,
+          "step_number": 22,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1231,
+          "step_number": 23,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1232,
+          "step_number": 24,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1233,
+          "step_number": 25,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1234,
+          "step_number": 26,
+          "description": "Видео и подкасты"
+        },
+        {
+          "id": 1235,
+          "step_number": 27,
+          "description": "Быстро и легко"
+        },
+        {
+          "id": 1236,
+          "step_number": 28,
+          "description": "Барбекю и американский"
+        },
+        {
+          "id": 1237,
+          "step_number": 29,
+          "description": "Китайский и азиатский"
+        },
+        {
+          "id": 1238,
+          "step_number": 30,
+          "description": "Забавно и странно"
+        },
+        {
+          "id": 1239,
+          "step_number": 31,
+          "description": "Компании и бренды"
+        },
+        {
+          "id": 1240,
+          "step_number": 32,
+          "description": "Пасха и Пасха"
+        },
+        {
+          "id": 1241,
+          "step_number": 33,
+          "description": "Рождество и Новый год"
+        },
+        {
+          "id": 1242,
+          "step_number": 34,
+          "description": "Диабет и диабетик"
+        },
+        {
+          "id": 1243,
+          "step_number": 35,
+          "description": "Как видно в ..."
+        }
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Печь запеченные тортилья",
+      "categories": [
+        {
+          "id": 5,
+          "name": "основное блюдо"
+        },
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 47,
+          "name": "Средиземноморье"
+        }
+      ],
+      "description": "Печь запеченные тортильи эспайны рецепты, приготовленные с тонкими нарезанными салями на 1/4 фунта, 2 больших картофеля (нарезанные кубиками), 8 яиц.",
+      "image": "https://127.0.0.1:8000/media/recipes/783f2347f5b8f6007472592602947316",
+      "prep_time": 50,
+      "cook_time": 0,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 421,
+      "protein": 21,
+      "fats": 21,
+      "carbs": 37,
+      "ingredients": [
+        {
+          "id": 1185,
+          "name": "салями",
+          "amount": "1/4",
+          "unit": "pound",
+          "preparation": "1/4 pound thin sliced salami"
+        },
+        {
+          "id": 1186,
+          "name": "картофель",
+          "amount": "2",
+          "unit": "piece(s)",
+          "preparation": "2 large potatoes (diced)"
+        },
+        {
+          "id": 1187,
+          "name": "яйца",
+          "amount": "8",
+          "unit": "piece(s)",
+          "preparation": "8 eggs"
+        },
+        {
+          "id": 1188,
+          "name": "лук",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "1 cup onion (diced)"
+        },
+        {
+          "id": 1189,
+          "name": "петрушка",
+          "amount": "1/4",
+          "unit": "cup",
+          "preparation": "1/4 cup parsley (chopped)"
+        },
+        {
+          "id": 1190,
+          "name": "растительное масло",
+          "amount": "1",
+          "unit": "tablespoon",
+          "preparation": "1 tablespoon vegetable oil"
+        },
+        {
+          "id": 1191,
+          "name": "соль",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "1/8 teaspoon salt"
+        },
+        {
+          "id": 1192,
+          "name": "перец",
+          "amount": "1/8",
+          "unit": "teaspoon",
+          "preparation": "1/8 teaspoon pepper"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1244,
+          "step_number": 1,
+          "description": "Приготовьте салями в сковороде на среднем огне, пока он не начнет коричневый. Удалите салями из сковороды и отложите в сторону."
+        },
+        {
+          "id": 1245,
+          "step_number": 2,
+          "description": "Добавьте картофель, лук, растительное масло, соль и перец. Готовьте в сковороде около 10 минут, пока картофель не станет нежным и золотым. Добавьте салями и петрушку в сковороду."
+        },
+        {
+          "id": 1246,
+          "step_number": 3,
+          "description": "В миске взбейте яйца и сыр. Вылейте яйца в сковороду и перемешайте, чтобы распределить ингредиенты."
+        },
+        {
+          "id": 1247,
+          "step_number": 4,
+          "description": "Положите сковороду в духовку и запекайте при 400 ° в течение 10 минут или до тех пор, пока тортилья не станут пыхтекой и коричневой по краям. Используйте нож, чтобы проверить, чтобы убедиться, что внутренняя часть выходит в чистоту при вставке в центр."
+        }
+      ]
+    },
+    {
+      "id": 115,
+      "name": "Картофельный салат со сметаной и бульоном",
+      "categories": [
+        {
+          "id": 8,
+          "name": "суп"
+        },
+        {
+          "id": 36,
+          "name": "Обед/ужин"
+        },
+        {
+          "id": 47,
+          "name": "Средиземноморье"
+        }
+      ],
+      "description": "Картофельный салат со сметаной и бульоном с * 7 яйцом с твердым вкрой, * ⅕ -1 луком (я предпочитаю красный), * свежая трава. Простое и вкусное блюдо.",
+      "image": "https://127.0.0.1:8000/media/recipes/e358d8ca649fdd934adc7d8286bf8406.jpg",
+      "prep_time": 10,
+      "cook_time": 0,
+      "servings": 6,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 157,
+      "protein": 7,
+      "fats": 12,
+      "carbs": 4,
+      "ingredients": [
+        {
+          "id": 1210,
+          "name": "Яйцо вкрутую",
+          "amount": "7",
+          "unit": "piece(s)",
+          "preparation": "* 7 hard boiled egg"
+        },
+        {
+          "id": 1211,
+          "name": "лук",
+          "amount": "3/5",
+          "unit": "piece(s)",
+          "preparation": "* ⅕ -1 onion (i prefer red)"
+        },
+        {
+          "id": 1212,
+          "name": "Свежая трава",
+          "amount": null,
+          "unit": null,
+          "preparation": "* fresh herb"
+        },
+        {
+          "id": 1213,
+          "name": "овощный бульон",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1/2 to whole cup vegetable broth"
+        },
+        {
+          "id": 1214,
+          "name": "сметана",
+          "amount": "1",
+          "unit": "cup",
+          "preparation": "* 1 cup sour cream (creme fraiche)"
+        },
+        {
+          "id": 1215,
+          "name": "огурец",
+          "amount": "1/2",
+          "unit": "cup",
+          "preparation": "* 1/2 cup juice from pickled cucumber"
+        },
+        {
+          "id": 1216,
+          "name": "соль",
+          "amount": null,
+          "unit": null,
+          "preparation": "* salt and pepper to taste"
+        },
+        {
+          "id": 1217,
+          "name": "перец",
+          "amount": null,
+          "unit": null,
+          "preparation": "* salt and pepper to taste"
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1248,
+          "step_number": 1,
+          "description": "Вымойте картофель, варите, очистите и нарежьте."
+        },
+        {
+          "id": 1249,
+          "step_number": 2,
+          "description": "Вылейте горячий бульон на картофель и хорошо перемешайте. Бульон делает салат сочным, и он не такой липкий."
+        },
+        {
+          "id": 1250,
+          "step_number": 3,
+          "description": "Мелко нарежьте огурцы, лук и травы и добавьте в салат."
+        },
+        {
+          "id": 1251,
+          "step_number": 4,
+          "description": "Разрежьте яичный белок на маленькие кусочки и добавьте в салат."
+        },
+        {
+          "id": 1252,
+          "step_number": 5,
+          "description": "Смешайте яичные желтки и сок из маринованных огурцов в кухонном комбайне, вы можете сделать это тоже с вилкой, она должна стать сливочной массой."
+        },
+        {
+          "id": 1253,
+          "step_number": 6,
+          "description": "Смешайте сметану с массой яичного желтка, создавая соус, добавьте специи."
+        },
+        {
+          "id": 1254,
+          "step_number": 7,
+          "description": "Вылейте соус на салат, смешайте все вместе."
+        }
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Лосось",
+      "categories": [
+        {
+          "id": 4,
+          "name": "обед"
+        },
+        {
+          "id": 5,
+          "name": "основное блюдо"
+        },
+        {
+          "id": 6,
+          "name": "основное dish"
+        },
+        {
+          "id": 7,
+          "name": "ужин"
+        },
+        {
+          "id": 8,
+          "name": "суп"
+        },
+        {
+          "id": 9,
+          "name": "без глютена"
+        },
+        {
+          "id": 23,
+          "name": "Пескатарианец"
+        }
+      ],
+      "description": "Лосось орех из тыквы кукурузы может быть просто основным блюдом, которое вы ищете.",
+      "image": "https://127.0.0.1:8000/media/recipes/659056-556x370.jpg",
+      "prep_time": 45,
+      "cook_time": 45,
+      "servings": 4,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": null,
+      "protein": null,
+      "fats": null,
+      "carbs": null,
+      "ingredients": [
+        {
+          "id": 1218,
+          "name": "Сквош ореха",
+          "amount": "1.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1219,
+          "name": "морковь",
+          "amount": "1.0",
+          "unit": "large",
+          "preparation": null
+        },
+        {
+          "id": 1220,
+          "name": "уши кукурузы",
+          "amount": "3.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1221,
+          "name": "укроп",
+          "amount": "1.0",
+          "unit": "bunch",
+          "preparation": null
+        },
+        {
+          "id": 1222,
+          "name": "тяжелые сливки",
+          "amount": "0.25",
+          "unit": "cup",
+          "preparation": null
+        },
+        {
+          "id": 1223,
+          "name": "лук",
+          "amount": "2.0",
+          "unit": "tablespoons",
+          "preparation": null
+        },
+        {
+          "id": 1224,
+          "name": "лосось",
+          "amount": "12.0",
+          "unit": "ounces",
+          "preparation": null
+        },
+        {
+          "id": 1225,
+          "name": "соль and перец",
+          "amount": "4.0",
+          "unit": "servings",
+          "preparation": null
+        },
+        {
+          "id": 1226,
+          "name": "зеленый зеленый цвет",
+          "amount": "3.0",
+          "unit": "sprigs",
+          "preparation": null
+        },
+        {
+          "id": 1227,
+          "name": "вода",
+          "amount": "0.25",
+          "unit": "cup",
+          "preparation": null
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1255,
+          "step_number": 1,
+          "description": "Вылейте воду в кастрюлю для супа среднего размера и начните кипятить на низком пламени. Нарежьте лук, тыквенный орех, морковь, кукурузу, вместе с галным гадом и укропом и добавьте их в кастрюлю. Накрыть крышкой и дайте готовить на низком пламени в течение 30 минут. Вкус и добавьте соль и перец."
+        },
+        {
+          "id": 1256,
+          "step_number": 2,
+          "description": "Нарежьте лосося и добавьте его в суп вместе со сливками."
+        },
+        {
+          "id": 1257,
+          "step_number": 3,
+          "description": "Дайте готовить еще 20 минут, попробовать еще раз и наслаждаться!"
+        }
+      ]
+    },
+    {
+      "id": 117,
+      "name": "Кунна (вкусное блюдо из чиниоти, Пенджаб, Пакистан)",
+      "categories": [
+        {
+          "id": 14,
+          "name": "Lacto ovo вегетарианский"
+        },
+        {
+          "id": 22,
+          "name": "dairy свободный"
+        },
+        {
+          "id": 24,
+          "name": "гарнир"
+        },
+        {
+          "id": 29,
+          "name": "веганский"
+        }
+      ],
+      "description": "Кунна (вкусное блюдо из чиниоти, Пенджаб, Пакистан) может быть просто гарниром, которое вы ищете.",
+      "image": "https://127.0.0.1:8000/media/recipes/649133-556x370.jpg",
+      "prep_time": 45,
+      "cook_time": 45,
+      "servings": 6,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 0,
+      "protein": null,
+      "fats": null,
+      "carbs": null,
+      "ingredients": [
+        {
+          "id": 1228,
+          "name": "чесночный капсул",
+          "amount": "1.0",
+          "unit": "medium",
+          "preparation": null
+        },
+        {
+          "id": 1229,
+          "name": "Имбирный капсул",
+          "amount": "1.0",
+          "unit": "medium",
+          "preparation": null
+        },
+        {
+          "id": 1230,
+          "name": "масло",
+          "amount": "1.0",
+          "unit": "cup",
+          "preparation": null
+        },
+        {
+          "id": 1231,
+          "name": "лук nos.",
+          "amount": "3.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1232,
+          "name": "Специи: паприка порошок 1",
+          "amount": "1.0",
+          "unit": "teaspoon",
+          "preparation": null
+        },
+        {
+          "id": 1233,
+          "name": "пшеничная мука чайная ложка",
+          "amount": "3.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1234,
+          "name": "баранина",
+          "amount": "1.0",
+          "unit": "kilogram",
+          "preparation": null
+        },
+        {
+          "id": 1235,
+          "name": "баранина",
+          "amount": "1.0",
+          "unit": "kilogram",
+          "preparation": null
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1258,
+          "step_number": 1,
+          "description": "В большом глиняном горшке (Handi Matti Ki) или любого кастрюля Mettalic добавьте мясо, чесночный имбирь и варите 1-3 минуты, затем добавьте воду 1/4 стакана и лук и специи, кроме муки, трамирования и гарам масала. Накрыть на медленном огне до тех пор, пока не добавляют мясо, а затем добавьте масло и жар.  На последнее время спрей и гарам масала и варите 5-10 минут. Крупная Кунна готова"
+        },
+        {
+          "id": 1259,
+          "step_number": 2,
+          "description": "Подавать с Нааном/ Роти (пакистанский хлеб) или с жареным рисом."
+        }
+      ]
+    },
+    {
+      "id": 118,
+      "name": "Медовый имбирный лимонный чай со льдом",
+      "categories": [
+        {
+          "id": 9,
+          "name": "без глютена"
+        },
+        {
+          "id": 14,
+          "name": "Lacto ovo вегетарианский"
+        },
+        {
+          "id": 22,
+          "name": "dairy свободный"
+        },
+        {
+          "id": 26,
+          "name": "палеолит"
+        },
+        {
+          "id": 27,
+          "name": "первичный"
+        },
+        {
+          "id": 51,
+          "name": "напиток"
+        },
+        {
+          "id": 52,
+          "name": "напиток"
+        }
+      ],
+      "description": "Медовый имбирный лимонный Iced Tean - это напиток, который обслуживает 1.",
+      "image": "https://127.0.0.1:8000/media/recipes/716301-556x370.jpg",
+      "prep_time": 45,
+      "cook_time": 45,
+      "servings": 1,
+      "subscription_plan": "standard",
+      "healthy": false,
+      "premium": false,
+      "calories": 0,
+      "protein": null,
+      "fats": null,
+      "carbs": null,
+      "ingredients": [
+        {
+          "id": 1236,
+          "name": "имбирь",
+          "amount": "1.0",
+          "unit": "small piece",
+          "preparation": null
+        },
+        {
+          "id": 1237,
+          "name": "чайный пакетик",
+          "amount": "1.0",
+          "unit": "",
+          "preparation": null
+        },
+        {
+          "id": 1238,
+          "name": "мед",
+          "amount": "2.0",
+          "unit": "tablespoons",
+          "preparation": null
+        },
+        {
+          "id": 1239,
+          "name": "лимонный сок",
+          "amount": "3.0",
+          "unit": "tablespoons",
+          "preparation": null
+        },
+        {
+          "id": 1240,
+          "name": "монетные листья",
+          "amount": "2.0",
+          "unit": "",
+          "preparation": null
+        }
+      ],
+      "instructions": [
+        {
+          "id": 1260,
+          "step_number": 1,
+          "description": "Варить 1-2 чашки воды и варить чай."
+        },
+        {
+          "id": 1261,
+          "step_number": 2,
+          "description": "Поместите чай в холодильник, чтобы охладить. Приготовьте имбирь и проведите его через сито, чтобы просто получить сок. В кувшине льда, смешайте чай, имбирный сок, лимонный сок и мед."
+        },
+        {
+          "id": 1262,
+          "step_number": 3,
+          "description": "Добавьте листья мяты и подайте холод.  "
+        }
+      ]
+    }
+  ]
+}
