@@ -452,8 +452,8 @@ except Exception:  # If initialization fails, fall back to manual dictionary
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language.
 
-    Tries OpenAI's API first when configured, then googletrans, and finally
-    a small built-in dictionary as a last resort.
+    Uses Google Translate first, then falls back to OpenAI and finally to a
+    small built-in dictionary.
     """
     if not text:
         return ''
@@ -461,23 +461,18 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     phrases = PHRASE_DICT.get(dest, {})
     if lowered in phrases:
         return phrases[lowered]
-    manual = _manual_translate(text, dest)
-    if manual.lower() != text.lower():
-        return manual
 
-    result = _openai_translate(text, dest, src)
-    if result:
-        return _manual_translate(result, dest)
-
+    result = ''
     if _translator:
         try:  # pragma: no cover - network
             result = _translator.translate(text, src=src, dest=dest).text
-            if result and result.lower() != text.lower():
-                return _manual_translate(result, dest)
         except Exception:
-            pass
+            result = ''
+    if not result:
+        result = _direct_google_translate(text, dest, src)
+    if not result:
+        result = _openai_translate(text, dest, src)
 
-    result = _direct_google_translate(text, dest, src)
     if result and result.lower() != text.lower():
         return _manual_translate(result, dest)
 
