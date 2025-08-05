@@ -8,6 +8,38 @@ from django.core.management.base import BaseCommand
 from recipes.models import Category, Ingredient, Instruction, Recipe
 from recipes.translation_utils import apply_translations
 
+# Common non-halal ingredients. Recipes containing any of these will be skipped
+# during import. The list is not exhaustive but covers typical pork and
+# alcoholic products found in TheMealDB dataset.
+HARAM_INGREDIENTS = {
+    "pork",
+    "ham",
+    "bacon",
+    "lard",
+    "pancetta",
+    "prosciutto",
+    "salami",
+    "pepperoni",
+    "chorizo",
+    "wine",
+    "beer",
+    "ale",
+    "rum",
+    "whiskey",
+    "whisky",
+    "bourbon",
+    "vodka",
+    "gin",
+    "brandy",
+    "tequila",
+    "cognac",
+    "champagne",
+    "sherry",
+    "cider",
+    "vermouth",
+    "sake",
+}
+
 
 class Command(BaseCommand):
     help = "Fetch recipes from TheMealDB API and save them to the database"
@@ -103,6 +135,16 @@ class Command(BaseCommand):
                     ingredients.append(
                         (ing_name.strip(), measure.strip() if measure and measure.strip() else None)
                     )
+
+            # Skip recipes containing any non-halal ingredients
+            ingredient_names = [ing.lower() for ing, _ in ingredients]
+            if any(haram in ing for ing in ingredient_names for haram in HARAM_INGREDIENTS):
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"Skipping recipe with non-halal ingredients: {name}"
+                    )
+                )
+                continue
 
             calories = max(len(ingredients) * 50, 50)
             # Estimate macronutrients using simple proportions of calories.
