@@ -72,13 +72,16 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a helpful and accurate translator.",
+                    "content": (
+                        "You are a professional culinary translator. "
+                        "Provide natural, context-aware translations and return only the translated text."
+                    ),
                 },
                 {
                     "role": "user",
                     "content": (
-                        f"Translate the following text from {LANGUAGE_NAMES.get(src, src)} "
-                        f"to {LANGUAGE_NAMES.get(dest, dest)}: {text}"
+                        f"Translate this cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
+                        f"to {LANGUAGE_NAMES.get(dest, dest)}:\n{text}"
                     ),
                 },
             ],
@@ -112,7 +115,7 @@ def _google_translate(text: str, dest: str, src: str) -> str:
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
-    """Translate text to the destination language using ChatGPT."""
+    """Translate text to the destination language with context-aware wording."""
     if not text:
         return ''
     manual = _manual_translate(text, dest)

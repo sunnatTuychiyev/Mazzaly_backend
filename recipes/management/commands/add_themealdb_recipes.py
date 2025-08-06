@@ -177,6 +177,10 @@ class Command(BaseCommand):
 
         apply_translations(recipe)
         self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))
+        desc_uz = getattr(recipe, "description_uz", recipe.description)
+        desc_ru = getattr(recipe, "description_ru", recipe.description)
+        self.stdout.write(f"Description (UZ): {desc_uz}")
+        self.stdout.write(f"Description (RU): {desc_ru}")
         return True
 
     def handle(self, search_term="", *args, **options):
