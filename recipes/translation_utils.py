@@ -1,4 +1,8 @@
 import os
+import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 try:  # pragma: no cover - optional dependency
     import openai
