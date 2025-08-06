@@ -1,6 +1,4 @@
 import os
-import json
-from typing import Optional
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -204,106 +202,34 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     return _manual_translate(text, dest) or result or text
 
 
-def _chatgpt_translate_recipe(data: dict, dest: str) -> Optional[dict]:
-    """Translate an entire recipe JSON blob with ChatGPT and return dict."""
-    if not openai:
-        print("OpenAI package not installed; cannot translate recipe via ChatGPT")
-        return None
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        print("OPENAI_API_KEY not set; cannot translate recipe via ChatGPT")
-        return None
-
-    language = LANGUAGE_NAMES.get(dest, dest)
-    system_prompt = (
-        "You are a professional culinary translator. Always provide natural, "
-        "context-aware, and correct translations suitable for home cooks. "
-        f"Translate the following recipe data from English to {language}. "
-        "Never translate word-for-word; always give complete, natural, and meaningful sentences. "
-        "Return only the translated JSON object, nothing else."
-    )
-
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": json.dumps(data, ensure_ascii=False)},
-    ]
-
-    try:  # pragma: no cover - network
-        if hasattr(openai, "ChatCompletion"):
-            openai.api_key = api_key
-            completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=messages,
-                temperature=0,
-            )
-            content = completion.choices[0].message["content"].strip()
-        elif OpenAI:
-            client = OpenAI(api_key=api_key)
-            completion = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=messages,
-                temperature=0,
-            )
-            content = completion.choices[0].message.content.strip()
-        else:
-            return None
-        return json.loads(content)
-    except Exception as exc:
-        print(f"ChatGPT recipe translation failed: {exc}")
-        return None
-
-
 def apply_translations(recipe):
-    """Translate and populate all recipe fields using a single ChatGPT call per language."""
+    """Translate and populate all recipe fields sending each text separately."""
     languages = ['uz', 'ru']
 
     categories = list(recipe.categories.all())
     ingredients = list(recipe.ingredients.all())
     steps = list(recipe.instructions.order_by('step_number'))
 
-    base_data = {
-        "name": recipe.name,
-        "description": recipe.description,
-        "categories": [c.name for c in categories],
-        "ingredients": [
-            {"name": ing.name, "amount": ing.amount or ""} for ing in ingredients
-        ],
-        "steps": [step.description for step in steps],
-    }
-
     for lang in languages:
-        translated = _chatgpt_translate_recipe(base_data, lang)
-        if not translated:
-            continue
-
-        setattr(recipe, f"name_{lang}", translated.get("name", recipe.name))
+        setattr(recipe, f"name_{lang}", translate_text(recipe.name, lang))
         setattr(
             recipe,
             f"description_{lang}",
-            translated.get("description", recipe.description),
+            translate_text(recipe.description or "", lang),
         )
 
-        cat_trans = translated.get("categories", [])
-        for cat_obj, name in zip(categories, cat_trans):
-            setattr(cat_obj, f"name_{lang}", name or cat_obj.name)
+        for cat_obj in categories:
+            setattr(cat_obj, f"name_{lang}", translate_text(cat_obj.name, lang))
 
-        ing_trans = translated.get("ingredients", [])
-        for ing_obj, item in zip(ingredients, ing_trans):
-            if isinstance(item, dict):
-                name = item.get("name")
-            else:
-                name = None
-            if name:
-                setattr(ing_obj, f"name_{lang}", name)
+        for ing_obj in ingredients:
+            setattr(ing_obj, f"name_{lang}", translate_text(ing_obj.name, lang))
 
-        step_trans = translated.get("steps", [])
-        for step_obj, text in zip(steps, step_trans):
-            if isinstance(text, dict):
-                desc = text.get("description")
-            else:
-                desc = text
-            if desc:
-                setattr(step_obj, f"description_{lang}", desc)
+        for step_obj in steps:
+            setattr(
+                step_obj,
+                f"description_{lang}",
+                translate_text(step_obj.description, lang),
+            )
 
     recipe.save()
     for obj in categories + ingredients + steps:
