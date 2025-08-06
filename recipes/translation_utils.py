@@ -102,7 +102,9 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
         return ""
     system_prompt = (
         "You are a professional culinary translator. "
-        "Provide natural, context-aware translations and return only the translated text."
+        "Translate the text accurately while preserving meaning, measurements, and culinary terms. "
+        "Ensure the wording is natural and grammatically correct, avoiding literal errors or duplicated words. "
+        "Return only the translated text without any commentary."
     )
     if dest == 'uz':
         system_prompt += " Use Uzbek in the Latin alphabet."
@@ -113,8 +115,10 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
         {
             "role": "user",
             "content": (
-                f"Translate this cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
-                f"to {LANGUAGE_NAMES.get(dest, dest)}:\n{text}"
+                f"Translate the following cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
+                f"to {LANGUAGE_NAMES.get(dest, dest)}. Keep the meaning identical even if the wording changes. "
+                f"Do not add or omit details, and provide only the translation:\n"
+                f"{text}"
             ),
         },
     ]
@@ -127,6 +131,30 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
                 messages=messages,
                 temperature=0,
             )
+            translated = completion.choices[0].message["content"].strip()
+
+            proof_messages = [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a meticulous translation proofreader. "
+                        "If the provided translation accurately reflects the original text and sounds natural, "
+                        "return it unchanged. Otherwise, supply a corrected translation. Return only the final translation."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"Original ({LANGUAGE_NAMES.get(src, src)}): {text}\n"
+                        f"Translation ({LANGUAGE_NAMES.get(dest, dest)}): {translated}"
+                    ),
+                },
+            ]
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=proof_messages,
+                temperature=0,
+            )
             return completion.choices[0].message["content"].strip()
         elif OpenAI:
             # New openai>=1.0 client
@@ -134,6 +162,30 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
+                temperature=0,
+            )
+            translated = completion.choices[0].message.content.strip()
+
+            proof_messages = [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a meticulous translation proofreader. "
+                        "If the provided translation accurately reflects the original text and sounds natural, "
+                        "return it unchanged. Otherwise, supply a corrected translation. Return only the final translation."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"Original ({LANGUAGE_NAMES.get(src, src)}): {text}\n"
+                        f"Translation ({LANGUAGE_NAMES.get(dest, dest)}): {translated}"
+                    ),
+                },
+            ]
+            completion = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=proof_messages,
                 temperature=0,
             )
             return completion.choices[0].message.content.strip()
