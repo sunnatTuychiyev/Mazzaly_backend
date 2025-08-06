@@ -102,7 +102,8 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
         return ""
     system_prompt = (
         "You are a professional culinary translator. "
-        "Provide natural, context-aware translations and return only the translated text."
+        "Translate the text accurately while preserving meaning, measurements, and culinary terms. "
+        "Return only the translated text without any commentary."
     )
     if dest == 'uz':
         system_prompt += " Use Uzbek in the Latin alphabet."
@@ -113,8 +114,9 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
         {
             "role": "user",
             "content": (
-                f"Translate this cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
-                f"to {LANGUAGE_NAMES.get(dest, dest)}:\n{text}"
+                f"Translate the following cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
+                f"to {LANGUAGE_NAMES.get(dest, dest)}. Ensure the translation conveys the same meaning and details:\n"
+                f"{text}"
             ),
         },
     ]
