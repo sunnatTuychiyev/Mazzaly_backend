@@ -1,5 +1,4 @@
 import os
-import requests
 
 try:  # pragma: no cover - optional dependency
     import openai
@@ -10,11 +9,6 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover - library may be missing
     openai = None  # type: ignore
     OpenAI = None  # type: ignore
-
-try:  # pragma: no cover - optional dependency
-    from googletrans import Translator  # type: ignore
-except Exception:  # pragma: no cover - library may be missing
-    Translator = None  # type: ignore
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
@@ -68,35 +62,14 @@ def _manual_translate(text: str, dest: str) -> str:
 LANGUAGE_NAMES = {'en': 'English', 'uz': 'Uzbek', 'ru': 'Russian'}
 
 
-def _google_translate(text: str, dest: str, src: str) -> str:
-    """Translate text using Google Translate."""
-    if Translator:
-        try:  # pragma: no cover - network
-            translator = Translator()
-            translated = translator.translate(text, dest=dest, src=src)
-            return translated.text
-        except Exception:
-            pass
-    try:  # pragma: no cover - network
-        resp = requests.get(
-            "https://translate.googleapis.com/translate_a/single",
-            params={"client": "gtx", "sl": src, "tl": dest, "dt": "t", "q": text},
-            timeout=10,
-        )
-        if resp.ok:
-            data = resp.json()
-            return "".join(part[0] for part in data[0])
-    except Exception:
-        pass
-    return ""
-
-
 def _chatgpt_translate(text: str, dest: str, src: str) -> str:
     """Translate text using OpenAI's ChatGPT API."""
     if not openai:
+        print("OpenAI package not installed; cannot translate via ChatGPT")
         return ""
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
+        print("OPENAI_API_KEY not set; cannot translate via ChatGPT")
         return ""
     messages = [
         {
@@ -194,9 +167,7 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     manual = _manual_translate(text, dest)
     if manual:
         return manual
-    result = _google_translate(text, dest, src)
-    if not result:
-        result = _chatgpt_translate(text, dest, src)
+    result = _chatgpt_translate(text, dest, src)
     return _manual_translate(text, dest) or result or text
 
 
