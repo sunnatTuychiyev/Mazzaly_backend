@@ -1,7 +1,5 @@
 import os
 
-import requests
-
 try:  # pragma: no cover - optional dependency
     import openai
 except Exception:  # pragma: no cover - library may be missing
@@ -92,24 +90,37 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
         return ""
 
 
-def _google_translate(text: str, dest: str, src: str) -> str:
-    """Fallback translation using Google's unofficial API."""
+def generate_description(name: str, category: str, area: str, instructions: str) -> str:
+    """Generate a short English description for a recipe using ChatGPT."""
+    if not openai:
+        return ""
     try:  # pragma: no cover - network
-        params = {
-            "client": "gtx",
-            "sl": src,
-            "tl": dest,
-            "dt": "t",
-            "q": text,
-        }
-        resp = requests.get(
-            "https://translate.googleapis.com/translate_a/single",
-            params=params,
+        if not openai.api_key:
+            openai.api_key = os.getenv("OPENAI_API_KEY")
+        prompt_parts = [
+            f"Dish name: {name}.",
+        ]
+        if category:
+            prompt_parts.append(f"Category: {category}.")
+        if area:
+            prompt_parts.append(f"Cuisine: {area}.")
+        if instructions:
+            prompt_parts.append(
+                "Main steps: " + instructions.strip().replace("\n", " ")[:200]
+            )
+        prompt = " ".join(prompt_parts)
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a professional recipe writer. Write concise, engaging descriptions.",
+                },
+                {"role": "user", "content": f"Write a 1-2 sentence description of this dish. {prompt}"},
+            ],
             timeout=10,
         )
-        resp.raise_for_status()
-        data = resp.json()
-        return "".join(part[0] for part in data[0] if part[0])
+        return completion.choices[0].message["content"].strip()
     except Exception:
         return ""
 
@@ -122,8 +133,6 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     if manual:
         return manual
     result = _chatgpt_translate(text, dest, src)
-    if not result:
-        result = _google_translate(text, dest, src)
     return result or manual or text
 
 

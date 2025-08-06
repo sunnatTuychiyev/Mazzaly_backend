@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
 from recipes.models import Category, Ingredient, Instruction, Recipe
-from recipes.translation_utils import apply_translations
+from recipes.translation_utils import apply_translations, generate_description
 
 # Common non-halal ingredients. Recipes containing any of these will be skipped
 # during import. The list is not exhaustive but covers typical pork and
@@ -79,19 +79,26 @@ class Command(BaseCommand):
             self.stdout.write(f"Skipping existing recipe: {name}")
             return False
 
-        desc_parts = []
         category = meal.get("strCategory")
-        if category:
-            desc_parts.append(f"This is a {category.lower()} dish.")
         area = meal.get("strArea")
-        if area:
-            desc_parts.append(f"It originates from {area}.")
-
         instructions_text = meal.get("strInstructions", "")
-        if instructions_text:
-            first_sentence = instructions_text.strip().split(".")[0].strip()
-            if first_sentence:
-                desc_parts.append(f"{first_sentence}.")
+        description = generate_description(
+            name,
+            category or "",
+            area or "",
+            instructions_text or "",
+        )
+        if not description:
+            desc_parts = []
+            if category:
+                desc_parts.append(f"This is a {category.lower()} dish.")
+            if area:
+                desc_parts.append(f"It originates from {area}.")
+            if instructions_text:
+                first_sentence = instructions_text.strip().split(".")[0].strip()
+                if first_sentence:
+                    desc_parts.append(f"{first_sentence}.")
+            description = " ".join(desc_parts)
 
         ingredients = []
         for i in range(1, 21):
@@ -118,7 +125,7 @@ class Command(BaseCommand):
 
         recipe = Recipe.objects.create(
             name=name,
-            description=" ".join(desc_parts),
+            description=description,
             prep_time=10,
             cook_time=10,
             servings=1,
