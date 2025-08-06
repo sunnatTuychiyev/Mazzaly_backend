@@ -2,8 +2,13 @@ import os
 
 try:  # pragma: no cover - optional dependency
     import openai
+    try:
+        from openai import OpenAI  # type: ignore
+    except Exception:  # pragma: no cover - v0 API
+        OpenAI = None  # type: ignore
 except Exception:  # pragma: no cover - library may be missing
-    openai = None
+    openai = None  # type: ignore
+    OpenAI = None  # type: ignore
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
@@ -61,68 +66,92 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
     """Translate text using OpenAI's ChatGPT API."""
     if not openai:
         return ""
+    api_key = os.getenv("OPENAI_API_KEY")
     try:  # pragma: no cover - network
-        # api key is read from OPENAI_API_KEY environment variable
-        if not openai.api_key:
-            openai.api_key = os.getenv("OPENAI_API_KEY")
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a professional culinary translator. "
-                        "Provide natural, context-aware translations and return only the translated text."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        f"Translate this cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
-                        f"to {LANGUAGE_NAMES.get(dest, dest)}:\n{text}"
-                    ),
-                },
-            ],
-            timeout=10,
-        )
-        return completion.choices[0].message["content"].strip()
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a professional culinary translator. "
+                    "Provide natural, context-aware translations and return only the translated text."
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"Translate this cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
+                    f"to {LANGUAGE_NAMES.get(dest, dest)}:\n{text}"
+                ),
+            },
+        ]
+        if hasattr(openai, "ChatCompletion"):  # openai<1.0
+            if not openai.api_key:
+                openai.api_key = api_key
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=messages,
+                timeout=10,
+            )
+            return completion.choices[0].message["content"].strip()
+        if OpenAI:  # openai>=1.0
+            client = OpenAI(api_key=api_key)
+            completion = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=messages,
+                timeout=10,
+            )
+            return completion.choices[0].message.content.strip()
     except Exception:
         return ""
+    return ""
 
 
 def generate_description(name: str, category: str, area: str, instructions: str) -> str:
     """Generate a short English description for a recipe using ChatGPT."""
     if not openai:
         return ""
+    api_key = os.getenv("OPENAI_API_KEY")
     try:  # pragma: no cover - network
-        if not openai.api_key:
-            openai.api_key = os.getenv("OPENAI_API_KEY")
-        prompt_parts = [
-            f"Dish name: {name}.",
+        if category or area or instructions:
+            prompt_parts = [f"Dish name: {name}."]
+            if category:
+                prompt_parts.append(f"Category: {category}.")
+            if area:
+                prompt_parts.append(f"Cuisine: {area}.")
+            if instructions:
+                prompt_parts.append(
+                    "Main steps: " + instructions.strip().replace("\n", " ")[:200]
+                )
+            prompt = " ".join(prompt_parts)
+        else:
+            prompt = f"Dish name: {name}."
+        messages = [
+            {
+                "role": "system",
+                "content": "You are a professional recipe writer. Write concise, engaging descriptions.",
+            },
+            {"role": "user", "content": f"Write a 1-2 sentence description of this dish. {prompt}"},
         ]
-        if category:
-            prompt_parts.append(f"Category: {category}.")
-        if area:
-            prompt_parts.append(f"Cuisine: {area}.")
-        if instructions:
-            prompt_parts.append(
-                "Main steps: " + instructions.strip().replace("\n", " ")[:200]
+        if hasattr(openai, "ChatCompletion"):  # openai<1.0
+            if not openai.api_key:
+                openai.api_key = api_key
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=messages,
+                timeout=10,
             )
-        prompt = " ".join(prompt_parts)
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a professional recipe writer. Write concise, engaging descriptions.",
-                },
-                {"role": "user", "content": f"Write a 1-2 sentence description of this dish. {prompt}"},
-            ],
-            timeout=10,
-        )
-        return completion.choices[0].message["content"].strip()
+            return completion.choices[0].message["content"].strip()
+        if OpenAI:  # openai>=1.0
+            client = OpenAI(api_key=api_key)
+            completion = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=messages,
+                timeout=10,
+            )
+            return completion.choices[0].message.content.strip()
     except Exception:
         return ""
+    return ""
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
