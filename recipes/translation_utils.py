@@ -1,4 +1,5 @@
 import os
+import requests
 
 try:  # pragma: no cover - optional dependency
     import openai
@@ -9,6 +10,11 @@ try:  # pragma: no cover - optional dependency
 except Exception:  # pragma: no cover - library may be missing
     openai = None  # type: ignore
     OpenAI = None  # type: ignore
+
+try:  # pragma: no cover - optional dependency
+    from googletrans import Translator  # type: ignore
+except Exception:  # pragma: no cover - library may be missing
+    Translator = None  # type: ignore
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
@@ -62,11 +68,36 @@ def _manual_translate(text: str, dest: str) -> str:
 LANGUAGE_NAMES = {'en': 'English', 'uz': 'Uzbek', 'ru': 'Russian'}
 
 
+def _google_translate(text: str, dest: str, src: str) -> str:
+    """Translate text using Google Translate."""
+    if Translator:
+        try:  # pragma: no cover - network
+            translator = Translator()
+            translated = translator.translate(text, dest=dest, src=src)
+            return translated.text
+        except Exception:
+            pass
+    try:  # pragma: no cover - network
+        resp = requests.get(
+            "https://translate.googleapis.com/translate_a/single",
+            params={"client": "gtx", "sl": src, "tl": dest, "dt": "t", "q": text},
+            timeout=10,
+        )
+        if resp.ok:
+            data = resp.json()
+            return "".join(part[0] for part in data[0])
+    except Exception:
+        pass
+    return ""
+
+
 def _chatgpt_translate(text: str, dest: str, src: str) -> str:
     """Translate text using OpenAI's ChatGPT API."""
     if not openai:
         return ""
     api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return ""
     messages = [
         {
             "role": "system",
@@ -86,17 +117,16 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
     try:  # pragma: no cover - network
         if hasattr(openai, "ChatCompletion"):
             # Legacy openai<1.0 client
-            if api_key:
-                openai.api_key = api_key
+            openai.api_key = api_key
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
                 temperature=0,
             )
             return completion.choices[0].message["content"].strip()
-        if OpenAI:
+        elif OpenAI:
             # New openai>=1.0 client
-            client = OpenAI(api_key=api_key) if api_key else OpenAI()
+            client = OpenAI(api_key=api_key)
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
@@ -115,6 +145,8 @@ def generate_description(name: str, category: str, area: str, instructions: str)
     if not openai:
         return ""
     api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return ""
     try:  # pragma: no cover - network
         if category or area or instructions:
             prompt_parts = [f"Dish name: {name}."]
@@ -137,14 +169,13 @@ def generate_description(name: str, category: str, area: str, instructions: str)
             {"role": "user", "content": f"Write a 1-2 sentence description of this dish. {prompt}"},
         ]
         if hasattr(openai, "ChatCompletion"):  # openai<1.0
-            if not openai.api_key:
-                openai.api_key = api_key
+            openai.api_key = api_key
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
             )
             return completion.choices[0].message["content"].strip()
-        if OpenAI:  # openai>=1.0
+        elif OpenAI:  # openai>=1.0
             client = OpenAI(api_key=api_key)
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -163,8 +194,10 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     manual = _manual_translate(text, dest)
     if manual:
         return manual
-    result = _chatgpt_translate(text, dest, src)
-    return result or manual or text
+    result = _google_translate(text, dest, src)
+    if not result:
+        result = _chatgpt_translate(text, dest, src)
+    return _manual_translate(text, dest) or result or text
 
 
 def apply_translations(recipe):
