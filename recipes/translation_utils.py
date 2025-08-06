@@ -1,9 +1,9 @@
-import requests
+import os
 
-try:
-    from googletrans import Translator
+try:  # pragma: no cover - optional dependency
+    import openai
 except Exception:  # pragma: no cover - library may be missing
-    Translator = None
+    openai = None
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
@@ -54,49 +54,47 @@ def _manual_translate(text: str, dest: str) -> str:
     return FALLBACK_DICT.get(dest, {}).get(text.lower(), "")
 
 
-def _direct_google_translate(text: str, dest: str, src: str) -> str:
-    """Fallback to Google Translate's unofficial API via HTTP request."""
+LANGUAGE_NAMES = {'en': 'English', 'uz': 'Uzbek', 'ru': 'Russian'}
+
+
+def _chatgpt_translate(text: str, dest: str, src: str) -> str:
+    """Translate text using OpenAI's ChatGPT API."""
+    if not openai:
+        return ""
     try:  # pragma: no cover - network
-        resp = requests.get(
-            "https://translate.googleapis.com/translate_a/single",
-            params={
-                "client": "gtx",
-                "sl": src,
-                "tl": dest,
-                "dt": "t",
-                "q": text,
-            },
+        # api key is read from OPENAI_API_KEY environment variable
+        if not openai.api_key:
+            openai.api_key = os.getenv("OPENAI_API_KEY")
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful and accurate translator.",
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"Translate the following text from {LANGUAGE_NAMES.get(src, src)} "
+                        f"to {LANGUAGE_NAMES.get(dest, dest)}: {text}"
+                    ),
+                },
+            ],
             timeout=10,
         )
-        resp.raise_for_status()
-        data = resp.json()[0]
-        return "".join(part[0] for part in data if part and part[0])
+        return completion.choices[0].message["content"].strip()
     except Exception:
         return ""
 
 
-# Instantiate translator with a short timeout so network issues fail fast
-try:  # pragma: no cover - network usage not exercised in tests
-    _translator = Translator(timeout=5) if Translator else None
-except Exception:
-    _translator = None
-
-
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
-    """Translate text to the destination language using Google Translate."""
+    """Translate text to the destination language using ChatGPT."""
     if not text:
         return ''
     manual = _manual_translate(text, dest)
     if manual:
         return manual
-    if _translator:
-        try:  # pragma: no cover - network
-            result = _translator.translate(text, src=src, dest=dest).text
-            if result:
-                return result
-        except Exception:
-            pass
-    result = _direct_google_translate(text, dest, src)
+    result = _chatgpt_translate(text, dest, src)
     return result or manual or text
 
 
