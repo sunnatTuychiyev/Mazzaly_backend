@@ -46,7 +46,33 @@ FALLBACK_DICT = {
         "peppermint": "yalpiz",
         "food coloring": "ovqat bo'yog'i",
     },
-    'ru': {},
+    'ru': {
+        "american": "американский",
+        "desserts": "десерты",
+        "biscuits and cookies": "бисквиты и печенье",
+        "british": "британский",
+        "main dish": "основное блюдо",
+        "cereals": "крупы",
+        "pescatarian": "пескетарианский",
+        "lacto ovo vegetarian": "лакто-ово вегетарианский",
+        "dairy free": "без молочных продуктов",
+        "side dish": "гарнир",
+        "paleolithic": "палеолитический",
+        "primal": "первобытный",
+        "mediterranean": "средиземноморский",
+        "ground cinnamon": "молотая корица",
+        "ground nutmeg": "молотый мускатный орех",
+        "ground allspice": "молотый душистый перец",
+        "ground cloves": "молотая гвоздика",
+        "instant coffee": "растворимый кофе",
+        "unsalted butter": "несолёное сливочное масло",
+        "buttermilk": "пахта",
+        "cornmeal": "кукурузная мука",
+        "cornstarch": "кукурузный крахмал",
+        "confectioners sugar": "сахарная пудра",
+        "peppermint": "перечная мята",
+        "food coloring": "пищевой краситель",
+    },
 }
 
 
@@ -75,14 +101,16 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
     if not api_key:
         print("OPENAI_API_KEY not set; cannot translate via ChatGPT")
         return ""
+    system_prompt = (
+        "You are a professional culinary translator. "
+        "Provide natural, context-aware translations and return only the translated text."
+    )
+    if dest == 'uz':
+        system_prompt += " Use Uzbek in the Latin alphabet."
+    elif dest == 'ru':
+        system_prompt += " Use standard Russian culinary terminology."
     messages = [
-        {
-            "role": "system",
-            "content": (
-                "You are a professional culinary translator. "
-                "Provide natural, context-aware translations and return only the translated text."
-            ),
-        },
+        {"role": "system", "content": system_prompt},
         {
             "role": "user",
             "content": (
