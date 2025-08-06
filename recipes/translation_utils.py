@@ -67,39 +67,45 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
     if not openai:
         return ""
     api_key = os.getenv("OPENAI_API_KEY")
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are a professional culinary translator. "
+                "Provide natural, context-aware translations and return only the translated text."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Translate this cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
+                f"to {LANGUAGE_NAMES.get(dest, dest)}:\n{text}"
+            ),
+        },
+    ]
     try:  # pragma: no cover - network
-        messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You are a professional culinary translator. "
-                    "Provide natural, context-aware translations and return only the translated text."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"Translate this cooking-related text from {LANGUAGE_NAMES.get(src, src)} "
-                    f"to {LANGUAGE_NAMES.get(dest, dest)}:\n{text}"
-                ),
-            },
-        ]
-        if hasattr(openai, "ChatCompletion"):  # openai<1.0
-            if not openai.api_key:
+        if hasattr(openai, "ChatCompletion"):
+            # Legacy openai<1.0 client
+            if api_key:
                 openai.api_key = api_key
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
+                temperature=0,
             )
             return completion.choices[0].message["content"].strip()
-        if OpenAI:  # openai>=1.0
-            client = OpenAI(api_key=api_key)
+        if OpenAI:
+            # New openai>=1.0 client
+            client = OpenAI(api_key=api_key) if api_key else OpenAI()
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
+                temperature=0,
             )
             return completion.choices[0].message.content.strip()
-    except Exception:
+    except Exception as exc:
+        # Surface translation failures so they're visible in the management command
+        print(f"ChatGPT translation failed: {exc}")
         return ""
     return ""
 
