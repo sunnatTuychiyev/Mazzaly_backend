@@ -1,5 +1,7 @@
 import os
 
+import requests
+
 try:  # pragma: no cover - optional dependency
     import openai
 except Exception:  # pragma: no cover - library may be missing
@@ -87,6 +89,28 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
         return ""
 
 
+def _google_translate(text: str, dest: str, src: str) -> str:
+    """Fallback translation using Google's unofficial API."""
+    try:  # pragma: no cover - network
+        params = {
+            "client": "gtx",
+            "sl": src,
+            "tl": dest,
+            "dt": "t",
+            "q": text,
+        }
+        resp = requests.get(
+            "https://translate.googleapis.com/translate_a/single",
+            params=params,
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return "".join(part[0] for part in data[0] if part[0])
+    except Exception:
+        return ""
+
+
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language using ChatGPT."""
     if not text:
@@ -95,6 +119,8 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     if manual:
         return manual
     result = _chatgpt_translate(text, dest, src)
+    if not result:
+        result = _google_translate(text, dest, src)
     return result or manual or text
 
 
