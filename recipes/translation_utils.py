@@ -90,7 +90,6 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
-                timeout=10,
             )
             return completion.choices[0].message["content"].strip()
         if OpenAI:  # openai>=1.0
@@ -98,7 +97,6 @@ def _chatgpt_translate(text: str, dest: str, src: str) -> str:
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
-                timeout=10,
             )
             return completion.choices[0].message.content.strip()
     except Exception:
@@ -138,7 +136,6 @@ def generate_description(name: str, category: str, area: str, instructions: str)
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
-                timeout=10,
             )
             return completion.choices[0].message["content"].strip()
         if OpenAI:  # openai>=1.0
@@ -146,7 +143,6 @@ def generate_description(name: str, category: str, area: str, instructions: str)
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=messages,
-                timeout=10,
             )
             return completion.choices[0].message.content.strip()
     except Exception:
