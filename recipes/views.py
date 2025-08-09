@@ -66,8 +66,14 @@ def _parse_amount(val):
     s = str(val).strip()
     if not s:
         return None
+    # Support locales that use commas as decimal separators by normalizing to dots
+    s = s.replace(",", ".")
     try:
-        return sum(Fraction(part) for part in re.split(r"\s*\+\s*|\s+", s) if part)
+        return sum(
+            Fraction(part)
+            for part in re.split(r"\s*\+\s*|\s+", s)
+            if part
+        )
     except (ValueError, ZeroDivisionError):
         return None
 
