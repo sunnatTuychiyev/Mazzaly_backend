@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
-from recipes.models import Recipe, Ingredient, Instruction
+from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem
 
 class RecipeSubscriptionTests(APITestCase):
     def setUp(self):
@@ -250,4 +250,41 @@ class RecipeCardAPITests(APITestCase):
         data = self._get_data(res)
         card = next(item for item in data if item["id"] == self.standard_recipe.id)
         assert card["views"] == self.standard_recipe.views
+
+
+class ShoppingListAddRecipeTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="shopper@example.com",
+            first_name="Shopper",
+            last_name="User",
+            password="StrongPass1",
+        )
+        Subscription.objects.create(user=self.user, plan=Subscription.PLAN_PREMIUM)
+        self.recipe = Recipe.objects.create(
+            name="Banana",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        Ingredient.objects.create(
+            recipe=self.recipe, name="very ripe banana", amount="1"
+        )
+
+    def test_duplicate_add_accumulates_amount(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("shoppinglist-add-recipe-ingredients")
+        data = {"recipe_id": self.recipe.id}
+        res1 = self.client.post(url, data, format="json")
+        assert res1.status_code == 200
+        item = ShoppingListItem.objects.get(
+            user=self.user, name="very ripe banana"
+        )
+        assert item.amount == "1"
+        res2 = self.client.post(url, data, format="json")
+        assert res2.status_code == 200
+        item.refresh_from_db()
+        assert item.amount == "2"
 

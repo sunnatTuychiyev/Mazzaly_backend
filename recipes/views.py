@@ -212,40 +212,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(recipe)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-        operation_description="Add all ingredients from a recipe to the current user's shopping list",
-        responses={200: openapi.Response('Ingredients added', schema=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={'status': openapi.Schema(type=openapi.TYPE_STRING)}
-        ))},
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['recipe_id'],
-            properties={'recipe_id': openapi.Schema(type=openapi.TYPE_INTEGER)}
-        )
-    )
-    @action(detail=False, methods=['post'], url_path='add-recipe')
-    def add_recipe_ingredients(self, request):
-        recipe_id = request.data.get('recipe_id')
-        if not recipe_id:
-            return Response({'error': 'recipe_id is required'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            recipe = Recipe.objects.get(id=recipe_id)
-        except Recipe.DoesNotExist:
-            return Response({'error': 'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
-        for ing in recipe.ingredients.all():
-            item, created = ShoppingListItem.objects.get_or_create(
-                user=request.user,
-                name=ing.name,
-                unit=ing.unit or "",
-                defaults={'amount': ing.amount, 'checked': False}
-            )
-            if not created:
-                item.amount = f"{item.amount} + {ing.amount}"
-                item.save()
-        return Response({'status': 'Ingredients added to shopping list'})
-
-
 class RecipeCardViewSet(RecipeViewSet):
     """Read-only viewset providing simplified recipe data for cards."""
     serializer_class = RecipeCardSerializer
@@ -399,6 +365,9 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
                 defaults={'amount': ing.amount, 'checked': False}
             )
             if not created:
-                item.amount = f"{item.amount} + {ing.amount}"
+                if str(item.amount).isdigit() and str(ing.amount).isdigit():
+                    item.amount = str(int(item.amount) + int(ing.amount))
+                else:
+                    item.amount = f"{item.amount} + {ing.amount}"
                 item.save()
         return Response({'status': 'Ingredients added to shopping list'})
