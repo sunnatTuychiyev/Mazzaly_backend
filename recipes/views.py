@@ -5,6 +5,8 @@ from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 import datetime
 from django.db.models import Min, Q, F
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
+from fractions import Fraction
+import re
 try:  # pragma: no cover - drf_yasg optional
     from drf_yasg.utils import swagger_auto_schema
     from drf_yasg import openapi
@@ -55,6 +57,19 @@ def get_recipes_for_user(user):
     if plan == Subscription.PLAN_HEALTHY:
         return qs.exclude(subscription_plan=Subscription.PLAN_PREMIUM)
     return qs.filter(subscription_plan=Subscription.PLAN_STANDARD)
+
+
+def _parse_amount(val):
+    """Return Fraction representation of the amount or None if unparsable."""
+    if val in (None, ""):
+        return None
+    s = str(val).strip()
+    if not s:
+        return None
+    try:
+        return sum(Fraction(part) for part in re.split(r"\s*\+\s*|\s+", s) if part)
+    except (ValueError, ZeroDivisionError):
+        return None
 
 # Shared Swagger parameter for selecting response language
 LANG_PARAM = openapi.Parameter(
@@ -365,8 +380,10 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
                 defaults={'amount': ing.amount, 'checked': False}
             )
             if not created:
-                if str(item.amount).isdigit() and str(ing.amount).isdigit():
-                    item.amount = str(int(item.amount) + int(ing.amount))
+                item_amt = _parse_amount(item.amount)
+                ing_amt = _parse_amount(ing.amount)
+                if item_amt is not None and ing_amt is not None:
+                    item.amount = str(item_amt + ing_amt)
                 else:
                     item.amount = f"{item.amount} + {ing.amount}"
                 item.save()

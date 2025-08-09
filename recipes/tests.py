@@ -273,6 +273,18 @@ class ShoppingListAddRecipeTests(APITestCase):
             recipe=self.recipe, name="very ripe banana", amount="1"
         )
 
+        self.fraction_recipe = Recipe.objects.create(
+            name="Half Banana",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        Ingredient.objects.create(
+            recipe=self.fraction_recipe, name="very ripe banana", amount="1/2"
+        )
+
     def test_duplicate_add_accumulates_amount(self):
         self.client.force_authenticate(self.user)
         url = reverse("shoppinglist-add-recipe-ingredients")
@@ -287,4 +299,19 @@ class ShoppingListAddRecipeTests(APITestCase):
         assert res2.status_code == 200
         item.refresh_from_db()
         assert item.amount == "2"
+
+    def test_duplicate_fraction_add_accumulates_amount(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("shoppinglist-add-recipe-ingredients")
+        data = {"recipe_id": self.fraction_recipe.id}
+        res1 = self.client.post(url, data, format="json")
+        assert res1.status_code == 200
+        item = ShoppingListItem.objects.get(
+            user=self.user, name="very ripe banana"
+        )
+        assert item.amount == "1/2"
+        res2 = self.client.post(url, data, format="json")
+        assert res2.status_code == 200
+        item.refresh_from_db()
+        assert item.amount == "1"
 
