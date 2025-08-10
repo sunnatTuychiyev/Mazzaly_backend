@@ -101,7 +101,7 @@ class Command(BaseCommand):
             prompt_parts.append(f"with tags {tags}")
         prompt_parts.append(
             "Do not use pork, wine, alcohol or similar ingredients. "
-            "Return data as a JSON array where each recipe has the keys: name, description, prep_time, cook_time, servings, ingredients (list of objects with name, amount, unit, preparation), instructions (list of objects with step_number and description)."
+            "Respond in English. Return data as a JSON array where each recipe has the keys: name, description, prep_time, cook_time, servings, ingredients (list of objects with name, amount, unit, preparation), instructions (list of objects with step_number and description)."
         )
         prompt = " ".join(prompt_parts)
 
@@ -118,6 +118,7 @@ class Command(BaseCommand):
         if not isinstance(recipes_data, list):
             recipes_data = [recipes_data]
 
+        imported_recipes = []
         for data in recipes_data:
             ingredients = data.get("ingredients", [])
             if any(
@@ -168,6 +169,8 @@ class Command(BaseCommand):
                     description=step.get("description", ""),
                 )
 
-            apply_translations(recipe)
-
+            imported_recipes.append(recipe)
             self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))
+
+        for recipe in imported_recipes:
+            apply_translations(recipe)
