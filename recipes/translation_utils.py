@@ -1,5 +1,6 @@
 import os
 import re
+import copy
 from typing import Dict, List
 
 try:
@@ -400,6 +401,62 @@ def gpt_translate_to_uzbek(text: str) -> str:
         return resp.choices[0].message["content"].strip()
     except Exception:
         return ""
+
+
+CULINARY_UZBEK_PROMPT = (
+    "You are a native Uzbek culinary translator. Translate the user's English cooking text "
+    "into natural, fluent Uzbek while preserving meaning. Use these term preferences: "
+    "'omelet/omelette'→'omlet', 'veggie'→'sabzavotli', 'spinach'→'ismaloq', "
+    "'mushroom(s)'→'qo\'ziqorin(lar)', 'onion'→'piyoz', 'garlic'→'sarimsoq', "
+    "'olive oil'→'zaytun moyi', 'feta cheese'→'feta pishloq', 'black pepper'→'qora murch'. "
+    "In cooking context translate 'tender' as 'yumshoq'. Keep measurement units like cup, tbsp, "
+    "tsp, large in English. For ranges like '20-25', use an en dash (–). Respond with only the "
+    "translation."
+)
+
+
+def gpt_culinary_translate_to_uzbek(text: str) -> str:
+    """Translate English cooking text to Uzbek using GPT-5-Nano with culinary rules."""
+    if not text or not openai or not os.getenv("OPENAI_API_KEY"):
+        return ""
+    try:  # pragma: no cover - network
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        max_tokens = min(1000, max(60, len(text.split()) * 4))
+        resp = openai.ChatCompletion.create(
+            model="gpt-5-nano",
+            messages=[
+                {"role": "system", "content": CULINARY_UZBEK_PROMPT},
+                {"role": "user", "content": text},
+            ],
+            max_tokens=max_tokens,
+        )
+        translated = resp.choices[0].message["content"].strip()
+        return re.sub(r"(\d+)-(\d+)", r"\1–\2", translated)
+    except Exception:
+        return ""
+
+
+def translate_recipe_en_to_uz(recipe: Dict) -> Dict:
+    """Translate selected fields of a recipe JSON from English to Uzbek."""
+    if not recipe:
+        return recipe
+    translated = copy.deepcopy(recipe)
+    if "name" in translated:
+        translated["name"] = gpt_culinary_translate_to_uzbek(translated["name"])
+    if "description" in translated:
+        translated["description"] = gpt_culinary_translate_to_uzbek(translated["description"])
+    for category in translated.get("categories", []):
+        if "name" in category:
+            category["name"] = gpt_culinary_translate_to_uzbek(category["name"])
+    for ingredient in translated.get("ingredients", []):
+        if "name" in ingredient:
+            ingredient["name"] = gpt_culinary_translate_to_uzbek(ingredient["name"])
+        if ingredient.get("preparation"):
+            ingredient["preparation"] = gpt_culinary_translate_to_uzbek(ingredient["preparation"])
+    for step in translated.get("instructions", []):
+        if "description" in step:
+            step["description"] = gpt_culinary_translate_to_uzbek(step["description"])
+    return translated
 
 
 def _manual_translate(text: str, dest: str) -> str:

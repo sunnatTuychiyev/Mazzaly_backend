@@ -1,8 +1,11 @@
 from django.urls import reverse
+from django.test import TestCase
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
 from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem
+from recipes.translation_utils import translate_recipe_en_to_uz
+from unittest.mock import patch
 
 class RecipeSubscriptionTests(APITestCase):
     def setUp(self):
@@ -341,4 +344,43 @@ class ShoppingListAddRecipeTests(APITestCase):
         assert res2.status_code == 200
         item.refresh_from_db()
         assert item.amount == "1"
+
+
+class TranslationUtilsTests(TestCase):
+    @patch("recipes.translation_utils.gpt_culinary_translate_to_uzbek")
+    def test_translate_recipe_en_to_uz(self, mock_translate):
+        mock_translate.side_effect = lambda text: f"UZ:{text}"
+        sample = {
+            "id": 1,
+            "name": "Egg Omelet",
+            "categories": [{"id": 1, "name": "Breakfast"}],
+            "description": "Desc",
+            "image": "url",
+            "prep_time": 5,
+            "cook_time": 5,
+            "servings": 1,
+            "subscription_plan": "standard",
+            "healthy": False,
+            "premium": False,
+            "calories": None,
+            "protein": None,
+            "fats": None,
+            "carbs": None,
+            "ingredients": [
+                {"id": 1, "name": "large eggs", "amount": "2", "unit": None, "preparation": None},
+                {"id": 2, "name": "olive oil", "amount": "1", "unit": "tbsp", "preparation": "chopped"},
+            ],
+            "instructions": [
+                {"id": 1, "step_number": 1, "description": "Whisk eggs"},
+            ],
+        }
+        translated = translate_recipe_en_to_uz(sample)
+        assert translated["name"] == "UZ:Egg Omelet"
+        assert translated["categories"][0]["name"] == "UZ:Breakfast"
+        assert translated["description"] == "UZ:Desc"
+        assert translated["ingredients"][0]["name"] == "UZ:large eggs"
+        assert translated["ingredients"][1]["preparation"] == "UZ:chopped"
+        assert translated["instructions"][0]["description"] == "UZ:Whisk eggs"
+        assert translated["prep_time"] == 5
+        assert translated["ingredients"][1]["unit"] == "tbsp"
 
