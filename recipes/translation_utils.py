@@ -353,13 +353,22 @@ def _openai_translate(text: str, dest: str, src: str) -> str:
         openai.api_key = os.getenv("OPENAI_API_KEY")
         src_lang = LANG_NAMES.get(src, src)
         dest_lang = LANG_NAMES.get(dest, dest)
+        # Allocate enough tokens to cover longer recipe instructions
+        max_tokens = min(1000, max(60, len(text.split()) * 4))
         resp = openai.ChatCompletion.create(
             model="gpt-5-nano",
             messages=[
-                {"role": "system", "content": f"Translate the user's text from {src_lang} to {dest_lang}."},
+                {
+                    "role": "system",
+                    "content": (
+                        f"You are a professional culinary translator. Translate from {src_lang} to {dest_lang} "
+                        "using correct grammar and preserving meaning. If the text contains multiple lines, "
+                        "translate each line separately and maintain line breaks. Respond with only the translated text."
+                    ),
+                },
                 {"role": "user", "content": text},
             ],
-            max_tokens=60,
+            max_tokens=max_tokens,
         )
         return resp.choices[0].message["content"].strip()
     except Exception:
@@ -420,11 +429,6 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     phrases = PHRASE_DICT.get(dest, {})
     if lowered in phrases:
         return phrases[lowered]
-    words = len(text.split())
-    if words <= 3:
-        manual = _manual_translate(text, dest)
-        if manual.lower() != text.lower():
-            return manual
     result = _openai_translate(text, dest, src)
     if result:
         return result
@@ -441,7 +445,7 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     if result and result.lower() != text.lower():
         return result
 
-    if words <= 3:
+    if len(text.split()) <= 3:
         return _manual_translate(text, dest)
 
     return text
