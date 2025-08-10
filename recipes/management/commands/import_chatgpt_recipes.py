@@ -131,12 +131,18 @@ class Command(BaseCommand):
                 )
                 continue
 
+            def _to_int(value, default=0):
+                if isinstance(value, (int, float)):
+                    return int(value)
+                match = re.search(r"\d+", str(value))
+                return int(match.group()) if match else default
+
             recipe = Recipe.objects.create(
                 name=data.get("name", "Unnamed"),
                 description=data.get("description", ""),
-                prep_time=int(data.get("prep_time", 0) or 0),
-                cook_time=int(data.get("cook_time", 0) or 0),
-                servings=int(data.get("servings", 1) or 1),
+                prep_time=_to_int(data.get("prep_time")),
+                cook_time=_to_int(data.get("cook_time")),
+                servings=_to_int(data.get("servings", 1), default=1),
                 subscription_plan=Recipe.PLAN_STANDARD,
                 healthy=False,
             )
@@ -165,7 +171,7 @@ class Command(BaseCommand):
             for step in data.get("instructions", []):
                 Instruction.objects.create(
                     recipe=recipe,
-                    step_number=step.get("step_number", 1),
+                    step_number=_to_int(step.get("step_number", 1), default=1),
                     description=step.get("description", ""),
                 )
 
