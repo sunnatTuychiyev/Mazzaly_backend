@@ -7,11 +7,14 @@ try:
 except Exception:  # pragma: no cover - library may be missing
     Translator = None
 import requests
+from dotenv import load_dotenv
 
 try:  # pragma: no cover - optional dependency
     import openai
 except Exception:  # pragma: no cover
     openai = None
+
+load_dotenv()
 
 # Supported languages for translations and API responses
 SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
@@ -351,7 +354,7 @@ def _openai_translate(text: str, dest: str, src: str) -> str:
         src_lang = LANG_NAMES.get(src, src)
         dest_lang = LANG_NAMES.get(dest, dest)
         resp = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-5-nano",
             messages=[
                 {"role": "system", "content": f"Translate the user's text from {src_lang} to {dest_lang}."},
                 {"role": "user", "content": text},

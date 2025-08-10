@@ -4,12 +4,16 @@ import re
 
 import openai
 import requests
+from dotenv import load_dotenv
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError
 
 from recipes.models import Category, Ingredient, Instruction, Recipe
 from recipes.translation_utils import apply_translations
+
+
+load_dotenv()
 
 
 FORBIDDEN_INGREDIENTS = {
@@ -102,7 +106,7 @@ class Command(BaseCommand):
         prompt = " ".join(prompt_parts)
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-5-nano",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7,
         )
