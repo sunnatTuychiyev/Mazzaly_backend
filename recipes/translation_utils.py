@@ -375,6 +375,33 @@ def _openai_translate(text: str, dest: str, src: str) -> str:
         return ""
 
 
+def gpt_translate_to_uzbek(text: str) -> str:
+    """Translate English text to Uzbek using GPT-5-Nano."""
+    if not text or not openai or not os.getenv("OPENAI_API_KEY"):
+        return ""
+    try:  # pragma: no cover - network
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        max_tokens = min(1000, max(60, len(text.split()) * 4))
+        resp = openai.ChatCompletion.create(
+            model="gpt-5-nano",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a native Uzbek linguist. Translate the user's English text into "
+                        "natural, fluent, and grammatically correct Uzbek while preserving the "
+                        "original meaning and style. Respond with only the translation."
+                    ),
+                },
+                {"role": "user", "content": text},
+            ],
+            max_tokens=max_tokens,
+        )
+        return resp.choices[0].message["content"].strip()
+    except Exception:
+        return ""
+
+
 def _manual_translate(text: str, dest: str) -> str:
     """Simple phrase and word based translation."""
     mapping = FALLBACK_DICT.get(dest, {})
@@ -429,6 +456,10 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     phrases = PHRASE_DICT.get(dest, {})
     if lowered in phrases:
         return phrases[lowered]
+    if src == 'en' and dest == 'uz':
+        result = gpt_translate_to_uzbek(text)
+        if result:
+            return result
     result = _openai_translate(text, dest, src)
     if result:
         return result
