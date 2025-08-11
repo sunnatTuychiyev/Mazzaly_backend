@@ -11,7 +11,8 @@ class TranslateListTests(SimpleTestCase):
         mock_post.return_value.json.return_value = {
             'translations': [{'text': 'hola'}, {'text': 'mundo'}]
         }
-        result = translate_list(['hello', 'world'], 'es')
+        with patch('recipes.translation_yandex.API_KEY', 'key'):
+            result = translate_list(['hello', 'world'], 'es')
         self.assertEqual(result, ['hola', 'mundo'])
         self.assertTrue(mock_post.called)
         payload = mock_post.call_args.kwargs['json']

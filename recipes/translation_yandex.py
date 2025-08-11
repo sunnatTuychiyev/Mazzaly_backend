@@ -12,6 +12,7 @@ import requests
 logger = logging.getLogger("recipes")
 
 API_KEY = os.getenv("YANDEX_TRANSLATE_API_KEY", "")
+IAM_TOKEN = os.getenv("YANDEX_IAM_TOKEN", "")
 ENDPOINT = os.getenv(
     "YANDEX_TRANSLATE_ENDPOINT",
     "https://translate.api.cloud.yandex.net/translate/v2/translate",
@@ -26,12 +27,27 @@ FALLBACK_DICT = {
 
 
 def _post(payload: dict) -> requests.Response:
-    """Send POST request to Yandex API with authentication headers."""
+    """Send POST request to Yandex API with authentication headers.
+
+    Raises
+    ------
+    RuntimeError
+        If no API key or IAM token is configured.
+    """
+
+    if not API_KEY and not IAM_TOKEN:
+        raise RuntimeError("Yandex API credentials not configured")
+
     headers = {"Content-Type": "application/json"}
-    if API_KEY:
+    if IAM_TOKEN:
+        headers["Authorization"] = f"Bearer {IAM_TOKEN}"
+    else:
         headers["Authorization"] = f"Api-Key {API_KEY}"
+
     if FOLDER_ID:
+        headers["X-Folder-Id"] = FOLDER_ID
         payload.setdefault("folderId", FOLDER_ID)
+
     return requests.post(ENDPOINT, headers=headers, json=payload, timeout=10)
 
 
@@ -55,7 +71,8 @@ def translate_text(text: str, target_lang: str) -> str:
             return data["translations"][0]["text"]
         except Exception as exc:  # pragma: no cover - network errors
             logger.warning("Yandex translate failed (attempt %s): %s", attempt, exc)
-            if attempt == 3:
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            if isinstance(exc, RuntimeError) or status == 401 or attempt == 3:
                 logger.error("Translation failed for '%s'", text)
                 break
             time.sleep(delay)
@@ -84,10 +101,12 @@ def translate_list(texts: List[str], target_lang: str) -> List[str]:
                 logger.warning(
                     "Yandex batch translate failed (attempt %s): %s", attempt, exc
                 )
-                if attempt == 3:
+                status = getattr(getattr(exc, "response", None), "status_code", None)
+                if status == 401 or attempt == 3:
                     logger.error("Batch translation failed: %s", texts)
-                    break
+                    return ["" for _ in texts]
                 time.sleep(delay)
-    except Exception:
-        pass
+    except RuntimeError:
+        logger.error("Batch translation failed: %s", texts)
+        return ["" for _ in texts]
     return [translate_text(t, target_lang) for t in texts]
