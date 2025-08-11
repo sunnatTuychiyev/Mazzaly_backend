@@ -19,6 +19,7 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError
 
 from recipes.models import Category, Ingredient, Instruction, Recipe
+from recipes.translation_service import translate_json
 
 
 BANNED_INGREDIENTS = [
@@ -462,6 +463,8 @@ class Command(BaseCommand):
                     protein=_get_nutrient(recipe_data, "PROCNT", servings),
                     fats=_get_nutrient(recipe_data, "FAT", servings),
                     carbs=_get_nutrient(recipe_data, "CHOCDF", servings),
+                    source="edamam",
+                    source_id=recipe_data.get("uri"),
                 )
 
                 filename = os.path.basename(urlparse(image_url).path) or "image.jpg"
@@ -475,12 +478,10 @@ class Command(BaseCommand):
                 if not categories:
                     categories = _guess_categories(title, ingredient_lines)
                 categories = list(dict.fromkeys(categories))
-                for cat in categories:
-                    category, _ = Category.objects.get_or_create(name=cat)
-                    recipe.categories.add(category)
 
                 ingredients_ok = True
                 seen_names = set()
+                ingredient_infos = []
                 for ing in recipe_data.get("ingredients", []):
                     name = ing.get("food")
                     if not name:
@@ -511,12 +512,13 @@ class Command(BaseCommand):
                             self.stdout.write("Preparation removed: duplicated ingredient name")
                     else:
                         prep_text = "As needed"
-                    Ingredient.objects.create(
-                        recipe=recipe,
-                        name=name,
-                        amount=amount,
-                        unit=unit,
-                        preparation=prep_text,
+                    ingredient_infos.append(
+                        {
+                            "name": name,
+                            "amount": amount,
+                            "unit": unit,
+                            "preparation": prep_text,
+                        }
                     )
                 if not ingredients_ok:
                     self.stderr.write(f"Skipping {title}: incomplete ingredient data")
@@ -546,9 +548,63 @@ class Command(BaseCommand):
                     self.stderr.write(f"Skipping {title}: missing instructions")
                     recipe.delete()
                     continue
-                for idx, text in enumerate(instructions, 1):
+
+                normalized = {
+                    "name": title,
+                    "description": description,
+                    "categories": categories,
+                    "ingredients": [i["name"] for i in ingredient_infos],
+                    "steps": instructions,
+                }
+                translations = translate_json(normalized)
+                recipe.name_uz = translations.get("name_uz", "")
+                recipe.name_ru = translations.get("name_ru", "")
+                recipe.description_uz = translations.get("description_uz", "")
+                recipe.description_ru = translations.get("description_ru", "")
+                recipe.save()
+
+                for cat, uz, ru in zip(
+                    categories,
+                    translations.get("categories_uz", []),
+                    translations.get("categories_ru", []),
+                ):
+                    category, _ = Category.objects.get_or_create(name=cat)
+                    if uz:
+                        category.name_uz = uz
+                    if ru:
+                        category.name_ru = ru
+                    category.save()
+                    recipe.categories.add(category)
+
+                for info, uz, ru in zip(
+                    ingredient_infos,
+                    translations.get("ingredients_uz", []),
+                    translations.get("ingredients_ru", []),
+                ):
+                    Ingredient.objects.create(
+                        recipe=recipe,
+                        name=info["name"],
+                        name_uz=uz,
+                        name_ru=ru,
+                        amount=info["amount"],
+                        unit=info["unit"],
+                        preparation=info["preparation"],
+                    )
+
+                for idx, (text, uz, ru) in enumerate(
+                    zip(
+                        instructions,
+                        translations.get("steps_uz", []),
+                        translations.get("steps_ru", []),
+                    ),
+                    1,
+                ):
                     Instruction.objects.create(
-                        recipe=recipe, step_number=idx, description=text
+                        recipe=recipe,
+                        step_number=idx,
+                        description=text,
+                        description_uz=uz,
+                        description_ru=ru,
                     )
 
                 fetched += 1
