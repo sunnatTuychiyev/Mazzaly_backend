@@ -48,8 +48,13 @@ def translate_text(text: Optional[str], target_lang: str) -> str:
 
     try:
         url = "https://translate.api.cloud.yandex.net/translate/v2/translate"
-        headers = {"Authorization": f"Api-Key {api_key}"}
+        headers = {
+            "Authorization": f"Api-Key {api_key}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
         payload = {
+            "sourceLanguageCode": "en",
             "targetLanguageCode": target_lang,
             "texts": [text],
             "folderId": folder_id,
