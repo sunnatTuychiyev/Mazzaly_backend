@@ -14,3 +14,7 @@ class TranslateListTests(SimpleTestCase):
         result = translate_list(['hello', 'world'], 'es')
         self.assertEqual(result, ['hola', 'mundo'])
         self.assertTrue(mock_post.called)
+        payload = mock_post.call_args.kwargs['json']
+        self.assertEqual(payload['sourceLanguageCode'], 'en')
+        self.assertEqual(payload['targetLanguageCode'], 'es')
+        self.assertEqual(payload['texts'], ['hello', 'world'])

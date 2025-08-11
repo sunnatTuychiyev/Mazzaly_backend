@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import os
 import time
@@ -27,11 +26,12 @@ FALLBACK_DICT = {
 
 
 def _post(payload: dict) -> requests.Response:
+    """Send POST request to Yandex API with authentication headers."""
     headers = {"Content-Type": "application/json"}
     if API_KEY:
         headers["Authorization"] = f"Api-Key {API_KEY}"
     if FOLDER_ID:
-        payload.setdefault("folder_id", FOLDER_ID)
+        payload.setdefault("folderId", FOLDER_ID)
     return requests.post(ENDPOINT, headers=headers, json=payload, timeout=10)
 
 
@@ -42,9 +42,14 @@ def translate_text(text: str, target_lang: str) -> str:
     lower = text.lower()
     if lower in FALLBACK_DICT and target_lang in FALLBACK_DICT[lower]:
         return FALLBACK_DICT[lower][target_lang]
+    payload = {
+        "texts": [text],
+        "targetLanguageCode": target_lang,
+        "sourceLanguageCode": "en",
+    }
     for attempt, delay in enumerate([0.5, 1, 2], start=1):
         try:
-            resp = _post({"texts": [text], "targetLanguageCode": target_lang})
+            resp = _post(payload)
             resp.raise_for_status()
             data = resp.json()
             return data["translations"][0]["text"]
@@ -61,16 +66,24 @@ def translate_list(texts: List[str], target_lang: str) -> List[str]:
     """Translate a list of strings to *target_lang* using batching."""
     if not texts:
         return []
+    payload = {
+        "texts": texts,
+        "targetLanguageCode": target_lang,
+        "sourceLanguageCode": "en",
+    }
     try:
-        resp = None
         for attempt, delay in enumerate([0.5, 1, 2], start=1):
             try:
-                resp = _post({"texts": texts, "targetLanguageCode": target_lang})
+                resp = _post(payload)
                 resp.raise_for_status()
                 data = resp.json()
-                return [t.get("text", "") for t in data.get("translations", [])]
+                translations = [t.get("text", "") for t in data.get("translations", [])]
+                if len(translations) == len(texts):
+                    return translations
             except Exception as exc:  # pragma: no cover - network errors
-                logger.warning("Yandex batch translate failed (attempt %s): %s", attempt, exc)
+                logger.warning(
+                    "Yandex batch translate failed (attempt %s): %s", attempt, exc
+                )
                 if attempt == 3:
                     logger.error("Batch translation failed: %s", texts)
                     break
