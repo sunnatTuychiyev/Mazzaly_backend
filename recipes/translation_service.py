@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Dict, List
 
-from .translation_yandex import translate_list, translate_text
+from .translation_google import translate_list, translate_text
 
 logger = logging.getLogger("recipes")
 

@@ -1,4 +1,4 @@
-"""Yandex Cloud Translate API helpers with robust placeholders and culinary fixes."""
+"""Google Translate API helpers with robust placeholders and culinary fixes."""
 
 from __future__ import annotations
 
@@ -74,8 +74,8 @@ _CACHE: Dict[Tuple[str, str], str] = {}
 
 
 def _target_codes(lang: str) -> List[str]:
-    """Return Yandex target codes for *lang* (maps 'uz' to 'uz')."""
-    return ["uz"] if lang == "uz" else [lang]
+    """Return Google target codes for *lang*."""
+    return [lang]
 
 
 def _norm_unit(u: str) -> str:
@@ -182,43 +182,34 @@ def _restore_placeholders(translated: str, mapping: Dict[int, Tuple[str, str, st
     return re.sub(r"\s+", " ", out).strip()
 
 
-def _request_yandex(texts: List[str], target_lang: str) -> List[str]:
-    """Call Yandex Translate API for *texts* and return translated strings."""
+def _request_google(texts: List[str], target_lang: str) -> List[str]:
+    """Call Google Translate API for *texts* and return translated strings."""
 
     endpoint = getattr(
         settings,
-        "YANDEX_TRANSLATE_ENDPOINT",
-        "https://translate.api.cloud.yandex.net/translate/v2/translate",
+        "GOOGLE_TRANSLATE_ENDPOINT",
+        "https://translation.googleapis.com/language/translate/v2",
     )
-    api_key = getattr(settings, "YANDEX_TRANSLATE_API_KEY", "")
-    iam_token = getattr(settings, "YANDEX_IAM_TOKEN", "")
-    folder_id = getattr(settings, "YANDEX_FOLDER_ID", "")
+    api_key = getattr(settings, "GOOGLE_TRANSLATE_API_KEY", "")
 
-    if not api_key and not iam_token:
-        raise RuntimeError("Yandex credentials missing")
+    if not api_key:
+        raise RuntimeError("Google Translate API key missing")
 
-    headers = {"Content-Type": "application/json"}
-    if iam_token:
-        headers["Authorization"] = f"Bearer {iam_token}"
-    else:
-        headers["Authorization"] = f"Api-Key {api_key}"
-
-    base = {"texts": texts, "sourceLanguageCode": "en"}
+    params = {"key": api_key}
+    base = {"q": texts, "source": "en", "format": "text"}
 
     for code in _target_codes(target_lang):
         body = dict(base)
-        body["targetLanguageCode"] = code
-        if folder_id:
-            body["folderId"] = folder_id
+        body["target"] = code
 
         for i, wait in enumerate([0, 0.5, 1, 2], 1):
             if wait:
                 time.sleep(wait)
             try:
-                resp = requests.post(endpoint, headers=headers, json=body, timeout=15)
+                resp = requests.post(endpoint, params=params, json=body, timeout=15)
             except requests.RequestException as exc:
                 logger.warning(
-                    "Yandex network error (try %s, code %s): %s", i, code, exc
+                    "Google network error (try %s, code %s): %s", i, code, exc
                 )
                 continue
 
@@ -226,24 +217,21 @@ def _request_yandex(texts: List[str], target_lang: str) -> List[str]:
                 try:
                     data = resp.json()
                 except ValueError as exc:  # pragma: no cover - bad JSON
-                    logger.error("Yandex bad JSON: %s", exc)
+                    logger.error("Google bad JSON: %s", exc)
                     return [""] * len(texts)
-                return [t.get("text", "") for t in data.get("translations", [])]
+                translations = data.get("data", {}).get("translations", [])
+                return [t.get("translatedText", "") for t in translations]
 
             msg = resp.text[:200]
             logger.warning(
-                "Yandex HTTP %s (try %s, code %s): %s", resp.status_code, i, code, msg
+                "Google HTTP %s (try %s, code %s): %s", resp.status_code, i, code, msg
             )
-            if resp.status_code == 400 and (
-                "unsupported target_language_code" in msg or "folder ID" in msg
-            ):
-                break
 
     return [""] * len(texts)
 
 
 def translate_text(text: str, target_lang: str) -> str:
-    """Translate *text* into *target_lang* using Yandex Translate."""
+    """Translate *text* into *target_lang* using Google Translate."""
     if not text:
         return ""
 
@@ -252,7 +240,7 @@ def translate_text(text: str, target_lang: str) -> str:
         return _CACHE[cache_key]
 
     masked, mapping = _apply_placeholders(text)
-    out_list = _request_yandex([masked], target_lang)
+    out_list = _request_google([masked], target_lang)
     translated = out_list[0] if out_list else ""
 
     translated = _restore_placeholders(translated or text, mapping, target_lang)
@@ -286,11 +274,11 @@ def translate_list(texts: List[str], target_lang: str) -> List[str]:
         idxs.append(i)
 
     if masked_list:
-        translations = _request_yandex(masked_list, target_lang)
+        translations = _request_google(masked_list, target_lang)
         if not any(translations):
             translations = []
             for m in masked_list:
-                translations.extend(_request_yandex([m], target_lang))
+                translations.extend(_request_google([m], target_lang))
 
         for j, idx in enumerate(idxs):
             restored = _restore_placeholders(translations[j] or texts[idx], maps[j], target_lang)
