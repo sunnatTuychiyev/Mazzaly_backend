@@ -1,9 +1,9 @@
 """Utility helpers for language handling and translation."""
 
-import os
 from typing import Optional
 
 import requests
+from decouple import config
 
 
 SUPPORTED_LANGUAGES = ["en", "uz", "ru"]
@@ -28,8 +28,8 @@ def translate_text(text: Optional[str], target_lang: str) -> str:
     if not text or target_lang not in {"ru", "uz"}:
         return text or ""
 
-    api_key = os.getenv("YANDEX_API_KEY")
-    folder_id = os.getenv("YANDEX_FOLDER_ID")
+    api_key = config("YANDEX_API_KEY", default="")
+    folder_id = config("YANDEX_FOLDER_ID", default="")
     if not api_key or not folder_id:
         return text
 
