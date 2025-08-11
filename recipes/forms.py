@@ -54,3 +54,24 @@ class TheMealDBImportForm(forms.Form):
         label="Meal type",
         initial="breakfast",
     )
+
+
+class ChatGPTImportForm(forms.Form):
+    search_term = forms.CharField(
+        label="Search term",
+        required=False,
+        help_text=(
+            "Search term used to query ChatGPT. Leave blank for random"
+        ),
+    )
+    count = forms.IntegerField(min_value=1, label="Number of recipes")
+    tags = forms.CharField(
+        label="Recipe tags",
+        required=False,
+        help_text="Comma separated tags like 'vegetarian,dessert'",
+    )
+    meal_type = forms.ChoiceField(
+        choices=MEAL_CHOICES,
+        label="Meal type",
+        initial="breakfast",
+    )
