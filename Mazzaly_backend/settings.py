@@ -251,12 +251,13 @@ EDAMAM_APP_KEY = config('EDAMAM_APP_KEY', default='')
 EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
 EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
-# Google Translate API configuration
-GOOGLE_TRANSLATE_API_KEY = config('GOOGLE_TRANSLATE_API_KEY', default='')
-GOOGLE_TRANSLATE_ENDPOINT = config(
-    'GOOGLE_TRANSLATE_ENDPOINT',
-    default='https://translation.googleapis.com/language/translate/v2',
+# OpenAI translation configuration
+OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
+OPENAI_TRANSLATE_ENDPOINT = config(
+    'OPENAI_TRANSLATE_ENDPOINT',
+    default='https://api.openai.com/v1/chat/completions',
 )
+OPENAI_TRANSLATE_MODEL = config('OPENAI_TRANSLATE_MODEL', default='gpt-4o-mini')
 
 # CORS settings
 # Do not use wildcard when credentials are included. Instead specify

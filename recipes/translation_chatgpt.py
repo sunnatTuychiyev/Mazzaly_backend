@@ -1,4 +1,4 @@
-"""Google Translate API helpers with robust placeholders and culinary fixes."""
+"""ChatGPT translation helpers with placeholders and culinary fixes."""
 
 from __future__ import annotations
 
@@ -71,11 +71,6 @@ PH_FMT = "{YXT%d}"
 PH_RE = re.compile(r"\{\s*[YУyу]\s*[XХxх]\s*[TТtт]\s*(\d+)\s*\}", re.I)
 
 _CACHE: Dict[Tuple[str, str], str] = {}
-
-
-def _target_codes(lang: str) -> List[str]:
-    """Return Google target codes for *lang*."""
-    return [lang]
 
 
 def _norm_unit(u: str) -> str:
@@ -182,56 +177,59 @@ def _restore_placeholders(translated: str, mapping: Dict[int, Tuple[str, str, st
     return re.sub(r"\s+", " ", out).strip()
 
 
-def _request_google(texts: List[str], target_lang: str) -> List[str]:
-    """Call Google Translate API for *texts* and return translated strings."""
+def _chatgpt_translate(text: str, target_lang: str) -> str:
+    """Translate *text* to *target_lang* using OpenAI ChatGPT."""
 
     endpoint = getattr(
         settings,
-        "GOOGLE_TRANSLATE_ENDPOINT",
-        "https://translation.googleapis.com/language/translate/v2",
+        "OPENAI_TRANSLATE_ENDPOINT",
+        "https://api.openai.com/v1/chat/completions",
     )
-    api_key = getattr(settings, "GOOGLE_TRANSLATE_API_KEY", "")
+    api_key = getattr(settings, "OPENAI_API_KEY", "")
+    model = getattr(settings, "OPENAI_TRANSLATE_MODEL", "gpt-4o-mini")
 
     if not api_key:
-        raise RuntimeError("Google Translate API key missing")
+        logger.warning("OpenAI API key missing")
+        return ""
 
-    params = {"key": api_key}
-    base = {"q": texts, "source": "en", "format": "text"}
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+    }
+    payload = {
+        "model": model,
+        "messages": [
+            {
+                "role": "system",
+                "content": f"Translate the user's text from English to {target_lang} and return only the translation.",
+            },
+            {"role": "user", "content": text},
+        ],
+        "temperature": 0,
+    }
 
-    for code in _target_codes(target_lang):
-        body = dict(base)
-        body["target"] = code
-
-        for i, wait in enumerate([0, 0.5, 1, 2], 1):
-            if wait:
-                time.sleep(wait)
+    for i, wait in enumerate([0, 0.5, 1, 2], 1):
+        if wait:
+            time.sleep(wait)
+        try:
+            resp = requests.post(endpoint, headers=headers, json=payload, timeout=15)
+        except requests.RequestException as exc:
+            logger.warning("ChatGPT network error (try %s): %s", i, exc)
+            continue
+        if resp.status_code == 200:
             try:
-                resp = requests.post(endpoint, params=params, json=body, timeout=15)
-            except requests.RequestException as exc:
-                logger.warning(
-                    "Google network error (try %s, code %s): %s", i, code, exc
-                )
-                continue
-
-            if resp.status_code == 200:
-                try:
-                    data = resp.json()
-                except ValueError as exc:  # pragma: no cover - bad JSON
-                    logger.error("Google bad JSON: %s", exc)
-                    return [""] * len(texts)
-                translations = data.get("data", {}).get("translations", [])
-                return [t.get("translatedText", "") for t in translations]
-
-            msg = resp.text[:200]
-            logger.warning(
-                "Google HTTP %s (try %s, code %s): %s", resp.status_code, i, code, msg
-            )
-
-    return [""] * len(texts)
+                data = resp.json()
+                return data["choices"][0]["message"]["content"].strip()
+            except Exception as exc:  # pragma: no cover - bad JSON
+                logger.error("ChatGPT bad JSON: %s", exc)
+                return ""
+        logger.warning(
+            "ChatGPT HTTP %s (try %s): %s", resp.status_code, i, resp.text[:200]
+        )
+    return ""
 
 
 def translate_text(text: str, target_lang: str) -> str:
-    """Translate *text* into *target_lang* using Google Translate."""
+    """Translate *text* into *target_lang* using ChatGPT."""
     if not text:
         return ""
 
@@ -240,8 +238,7 @@ def translate_text(text: str, target_lang: str) -> str:
         return _CACHE[cache_key]
 
     masked, mapping = _apply_placeholders(text)
-    out_list = _request_google([masked], target_lang)
-    translated = out_list[0] if out_list else ""
+    translated = _chatgpt_translate(masked, target_lang) or ""
 
     translated = _restore_placeholders(translated or text, mapping, target_lang)
     if target_lang == "uz" and CYR_RE.search(translated):
@@ -252,42 +249,8 @@ def translate_text(text: str, target_lang: str) -> str:
 
 
 def translate_list(texts: List[str], target_lang: str) -> List[str]:
-    """Translate *texts* list into *target_lang* with batching and caching."""
-    if not texts:
-        return []
-
-    results: List[str] = ["" for _ in texts]
-    masked_list: List[str] = []
-    maps: List[Dict[int, Tuple[str, str, str]]] = []
-    idxs: List[int] = []
-
-    for i, t in enumerate(texts):
-        if not t:
-            continue
-        ck = (t, target_lang)
-        if ck in _CACHE:
-            results[i] = _CACHE[ck]
-            continue
-        masked, mp = _apply_placeholders(t)
-        masked_list.append(masked)
-        maps.append(mp)
-        idxs.append(i)
-
-    if masked_list:
-        translations = _request_google(masked_list, target_lang)
-        if not any(translations):
-            translations = []
-            for m in masked_list:
-                translations.extend(_request_google([m], target_lang))
-
-        for j, idx in enumerate(idxs):
-            restored = _restore_placeholders(translations[j] or texts[idx], maps[j], target_lang)
-            if target_lang == "uz" and CYR_RE.search(restored):
-                restored = _cyr_to_lat(restored)
-            results[idx] = restored
-            _CACHE[(texts[idx], target_lang)] = restored
-
-    return results
+    """Translate a list of *texts* into *target_lang* sequentially with caching."""
+    return [translate_text(t, target_lang) for t in texts]
 
 
 __all__ = ["translate_text", "translate_list"]
