@@ -10,11 +10,6 @@ except Exception:  # pragma: no cover - library may be missing
 import requests
 from dotenv import load_dotenv
 
-try:  # pragma: no cover - optional dependency
-    import openai
-except Exception:  # pragma: no cover
-    openai = None
-
 load_dotenv()
 
 # Supported languages for translations and API responses
@@ -346,92 +341,25 @@ PHRASE_DICT: Dict[str, Dict[str, str]] = {
 }
 
 
-def _openai_translate(text: str, dest: str, src: str) -> str:
-    """Translate using OpenAI if available and configured."""
-    if not openai or not os.getenv("OPENAI_API_KEY"):
+def yandex_translate(text: str, dest: str, src: str = 'en') -> str:
+    """Translate text using Yandex Translate API."""
+    key = os.getenv("YANDEX_API_KEY")
+    if not key or not text:
         return ""
     try:  # pragma: no cover - network
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        src_lang = LANG_NAMES.get(src, src)
-        dest_lang = LANG_NAMES.get(dest, dest)
-        # Allocate enough tokens to cover longer recipe instructions
-        max_tokens = min(1000, max(60, len(text.split()) * 4))
-        resp = openai.ChatCompletion.create(
-            model="gpt-5-nano",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        f"You are a professional culinary translator. Translate from {src_lang} to {dest_lang} "
-                        "using correct grammar and preserving meaning. If the text contains multiple lines, "
-                        "translate each line separately and maintain line breaks. Respond with only the translated text."
-                    ),
-                },
-                {"role": "user", "content": text},
-            ],
-            max_tokens=max_tokens,
+        resp = requests.post(
+            "https://translate.yandex.net/api/v1.5/tr.json/translate",
+            params={
+                "key": key,
+                "text": text,
+                "lang": f"{src}-{dest}",
+                "format": "plain",
+            },
+            timeout=10,
         )
-        return resp.choices[0].message["content"].strip()
-    except Exception:
-        return ""
-
-
-def gpt_translate_to_uzbek(text: str) -> str:
-    """Translate English text to Uzbek using GPT-5-Nano."""
-    if not text or not openai or not os.getenv("OPENAI_API_KEY"):
-        return ""
-    try:  # pragma: no cover - network
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        max_tokens = min(1000, max(60, len(text.split()) * 4))
-        resp = openai.ChatCompletion.create(
-            model="gpt-5-nano",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a native Uzbek linguist. Translate the user's English text into "
-                        "natural, fluent, and grammatically correct Uzbek while preserving the "
-                        "original meaning and style. Respond with only the translation."
-                    ),
-                },
-                {"role": "user", "content": text},
-            ],
-            max_tokens=max_tokens,
-        )
-        return resp.choices[0].message["content"].strip()
-    except Exception:
-        return ""
-
-
-CULINARY_UZBEK_PROMPT = (
-    "You are a native Uzbek culinary translator. Translate the user's English cooking text "
-    "into natural, fluent Uzbek while preserving meaning. Use these term preferences: "
-    "'omelet/omelette'→'omlet', 'veggie'→'sabzavotli', 'spinach'→'ismaloq', "
-    "'mushroom(s)'→'qo\'ziqorin(lar)', 'onion'→'piyoz', 'garlic'→'sarimsoq', "
-    "'olive oil'→'zaytun moyi', 'feta cheese'→'feta pishloq', 'black pepper'→'qora murch'. "
-    "In cooking context translate 'tender' as 'yumshoq'. Keep measurement units like cup, tbsp, "
-    "tsp, large in English. For ranges like '20-25', use an en dash (–). Respond with only the "
-    "translation."
-)
-
-
-def gpt_culinary_translate_to_uzbek(text: str) -> str:
-    """Translate English cooking text to Uzbek using GPT-5-Nano with culinary rules."""
-    if not text or not openai or not os.getenv("OPENAI_API_KEY"):
-        return ""
-    try:  # pragma: no cover - network
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        max_tokens = min(1000, max(60, len(text.split()) * 4))
-        resp = openai.ChatCompletion.create(
-            model="gpt-5-nano",
-            messages=[
-                {"role": "system", "content": CULINARY_UZBEK_PROMPT},
-                {"role": "user", "content": text},
-            ],
-            max_tokens=max_tokens,
-        )
-        translated = resp.choices[0].message["content"].strip()
-        return re.sub(r"(\d+)-(\d+)", r"\1–\2", translated)
+        resp.raise_for_status()
+        data = resp.json()
+        return " ".join(data.get("text", []))
     except Exception:
         return ""
 
@@ -442,20 +370,20 @@ def translate_recipe_en_to_uz(recipe: Dict) -> Dict:
         return recipe
     translated = copy.deepcopy(recipe)
     if "name" in translated:
-        translated["name"] = gpt_culinary_translate_to_uzbek(translated["name"])
+        translated["name"] = yandex_translate(translated["name"], "uz", "en")
     if "description" in translated:
-        translated["description"] = gpt_culinary_translate_to_uzbek(translated["description"])
+        translated["description"] = yandex_translate(translated["description"], "uz", "en")
     for category in translated.get("categories", []):
         if "name" in category:
-            category["name"] = gpt_culinary_translate_to_uzbek(category["name"])
+            category["name"] = yandex_translate(category["name"], "uz", "en")
     for ingredient in translated.get("ingredients", []):
         if "name" in ingredient:
-            ingredient["name"] = gpt_culinary_translate_to_uzbek(ingredient["name"])
+            ingredient["name"] = yandex_translate(ingredient["name"], "uz", "en")
         if ingredient.get("preparation"):
-            ingredient["preparation"] = gpt_culinary_translate_to_uzbek(ingredient["preparation"])
+            ingredient["preparation"] = yandex_translate(ingredient["preparation"], "uz", "en")
     for step in translated.get("instructions", []):
         if "description" in step:
-            step["description"] = gpt_culinary_translate_to_uzbek(step["description"])
+            step["description"] = yandex_translate(step["description"], "uz", "en")
     return translated
 
 
@@ -504,7 +432,7 @@ except Exception:  # If initialization fails, fall back to manual dictionary
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language.
 
-    Tries OpenAI's API first when configured, then googletrans, and finally
+    Tries Yandex Translate first when configured, then googletrans, and finally
     a small built-in dictionary as a last resort.
     """
     if not text:
@@ -513,11 +441,7 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
     phrases = PHRASE_DICT.get(dest, {})
     if lowered in phrases:
         return phrases[lowered]
-    if src == 'en' and dest == 'uz':
-        result = gpt_translate_to_uzbek(text)
-        if result:
-            return result
-    result = _openai_translate(text, dest, src)
+    result = yandex_translate(text, dest, src)
     if result:
         return result
 

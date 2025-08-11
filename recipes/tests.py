@@ -347,9 +347,9 @@ class ShoppingListAddRecipeTests(APITestCase):
 
 
 class TranslationUtilsTests(TestCase):
-    @patch("recipes.translation_utils.gpt_culinary_translate_to_uzbek")
+    @patch("recipes.translation_utils.yandex_translate")
     def test_translate_recipe_en_to_uz(self, mock_translate):
-        mock_translate.side_effect = lambda text: f"UZ:{text}"
+        mock_translate.side_effect = lambda text, dest, src='en': f"UZ:{text}"
         sample = {
             "id": 1,
             "name": "Egg Omelet",
