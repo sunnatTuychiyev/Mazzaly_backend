@@ -467,6 +467,14 @@ class Command(BaseCommand):
                 filename = os.path.basename(urlparse(image_url).path) or "image.jpg"
                 recipe.image.save(filename, ContentFile(img_resp.content), save=True)
 
+                if (
+                    not recipe.name_ru or recipe.name_ru == recipe.name
+                    or not recipe.name_uz or recipe.name_uz == recipe.name
+                    or not recipe.description_ru or recipe.description_ru == recipe.description
+                    or not recipe.description_uz or recipe.description_uz == recipe.description
+                ):
+                    recipe.save()
+
                 categories = (
                     recipe_data.get("cuisineType", [])
                     + recipe_data.get("mealType", [])
@@ -516,13 +524,18 @@ class Command(BaseCommand):
                             self.stdout.write("Preparation removed: duplicated ingredient name")
                     else:
                         prep_text = "As needed"
-                    Ingredient.objects.create(
+                    ing_obj = Ingredient.objects.create(
                         recipe=recipe,
                         name=name,
                         amount=amount,
                         unit=unit,
                         preparation=prep_text,
                     )
+                    if (
+                        not ing_obj.name_ru or ing_obj.name_ru == ing_obj.name
+                        or not ing_obj.name_uz or ing_obj.name_uz == ing_obj.name
+                    ):
+                        ing_obj.save()
                 if not ingredients_ok:
                     self.stderr.write(f"Skipping {title}: incomplete ingredient data")
                     recipe.delete()
@@ -552,9 +565,14 @@ class Command(BaseCommand):
                     recipe.delete()
                     continue
                 for idx, text in enumerate(instructions, 1):
-                    Instruction.objects.create(
+                    instr = Instruction.objects.create(
                         recipe=recipe, step_number=idx, description=text
                     )
+                    if (
+                        not instr.description_ru or instr.description_ru == instr.description
+                        or not instr.description_uz or instr.description_uz == instr.description
+                    ):
+                        instr.save()
 
                 fetched += 1
                 self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))
