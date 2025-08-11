@@ -6,6 +6,7 @@ from .models import (
     MealPlan, ShoppingListItem,
     RecipeRating
 )
+from .translation_utils import translate_text
 
 # CATEGORY
 class CategorySerializer(serializers.ModelSerializer):
@@ -18,6 +19,8 @@ class CategorySerializer(serializers.ModelSerializer):
         lang = self.context.get('lang')
         if lang and lang != 'en':
             trans = getattr(instance, f'name_{lang}', '').strip()
+            if not trans or trans == instance.name:
+                trans = translate_text(instance.name, lang)
             if trans:
                 data['name'] = trans
         return data
@@ -39,6 +42,8 @@ class IngredientSerializer(serializers.ModelSerializer):
         lang = self.context.get('lang')
         if lang and lang != 'en':
             trans = getattr(instance, f'name_{lang}', '')
+            if not trans or trans == instance.name:
+                trans = translate_text(instance.name, lang)
             if trans:
                 data['name'] = trans
         return data
@@ -54,6 +59,8 @@ class IngredientNameSerializer(serializers.ModelSerializer):
         lang = self.context.get('lang')
         if lang and lang != 'en':
             trans = getattr(instance, f'name_{lang}', '')
+            if not trans or trans == instance.name:
+                trans = translate_text(instance.name, lang)
             if trans:
                 data['name'] = trans
         return data
@@ -69,6 +76,8 @@ class InstructionSerializer(serializers.ModelSerializer):
         lang = self.context.get('lang')
         if lang and lang != 'en':
             trans = getattr(instance, f'description_{lang}', '')
+            if not trans or trans == instance.description:
+                trans = translate_text(instance.description, lang)
             if trans:
                 data['description'] = trans
         return data
@@ -100,6 +109,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         if lang and lang != 'en':
             for field in ['name', 'description']:
                 trans = getattr(instance, f'{field}_{lang}', '')
+                original = getattr(instance, field)
+                if not trans or trans == original:
+                    trans = translate_text(original, lang)
                 if trans:
                     data[field] = trans
         return data
@@ -163,6 +175,9 @@ class RecipeCardSerializer(serializers.ModelSerializer):
         if lang and lang != 'en':
             for field in ['name', 'description']:
                 trans = getattr(instance, f'{field}_{lang}', '')
+                original = getattr(instance, field)
+                if not trans or trans == original:
+                    trans = translate_text(original, lang)
                 if trans:
                     data[field] = trans
         return data

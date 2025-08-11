@@ -4,6 +4,7 @@ from typing import Optional
 
 import requests
 from decouple import config
+from django.conf import settings
 
 
 SUPPORTED_LANGUAGES = ["en", "uz", "ru"]
@@ -28,8 +29,20 @@ def translate_text(text: Optional[str], target_lang: str) -> str:
     if not text or target_lang not in {"ru", "uz"}:
         return text or ""
 
-    api_key = config("YANDEX_API_KEY", default="")
-    folder_id = config("YANDEX_FOLDER_ID", default="")
+    api_key = (
+        config("YANDEX_API_KEY", default=None)
+        or config("YANDEX_TRANSLATE_API_KEY", default=None)
+        or getattr(settings, "YANDEX_API_KEY", None)
+        or getattr(settings, "YANDEX_TRANSLATE_API_KEY", None)
+        or ""
+    )
+    folder_id = (
+        config("YANDEX_FOLDER_ID", default=None)
+        or config("YANDEX_TRANSLATE_FOLDER_ID", default=None)
+        or getattr(settings, "YANDEX_FOLDER_ID", None)
+        or getattr(settings, "YANDEX_TRANSLATE_FOLDER_ID", None)
+        or ""
+    )
     if not api_key or not folder_id:
         return text
 
