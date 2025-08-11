@@ -6,7 +6,6 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
 from recipes.models import Category, Ingredient, Instruction, Recipe
-from recipes.translation_utils import apply_translations
 
 # Common non-halal ingredients. Recipes containing any of these will be skipped
 # during import. The list is not exhaustive but covers typical pork and
@@ -211,5 +210,4 @@ class Command(BaseCommand):
                         description=step,
                     )
 
-            apply_translations(recipe)
             self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))

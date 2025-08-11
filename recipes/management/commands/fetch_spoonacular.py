@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.files.base import ContentFile
 from django.conf import settings
 from recipes.models import Recipe, Ingredient, Instruction, Category
-from recipes.translation_utils import apply_translations
 import os
 import json
 import requests
@@ -192,5 +191,4 @@ class Command(BaseCommand):
                         step_number=num,
                         description=desc,
                     )
-            apply_translations(recipe)
             self.stdout.write(self.style.SUCCESS(f'Added {recipe.name}'))

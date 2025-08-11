@@ -19,7 +19,6 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError
 
 from recipes.models import Category, Ingredient, Instruction, Recipe
-from recipes.translation_utils import apply_translations
 
 
 BANNED_INGREDIENTS = [
@@ -552,7 +551,6 @@ class Command(BaseCommand):
                         recipe=recipe, step_number=idx, description=text
                     )
 
-                apply_translations(recipe)
                 fetched += 1
                 self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))
 

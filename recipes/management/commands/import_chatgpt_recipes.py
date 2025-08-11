@@ -10,7 +10,6 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError
 
 from recipes.models import Category, Ingredient, Instruction, Recipe
-from recipes.translation_utils import apply_translations
 
 
 load_dotenv()
@@ -118,7 +117,6 @@ class Command(BaseCommand):
         if not isinstance(recipes_data, list):
             recipes_data = [recipes_data]
 
-        imported_recipes = []
         for data in recipes_data:
             ingredients = data.get("ingredients", [])
             if any(
@@ -175,8 +173,6 @@ class Command(BaseCommand):
                     description=step.get("description", ""),
                 )
 
-            imported_recipes.append(recipe)
             self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))
 
-        for recipe in imported_recipes:
-            apply_translations(recipe)
+        # Translations removed; recipes remain in English only
