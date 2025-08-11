@@ -18,12 +18,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="recipe",
             name="source",
-            field=models.CharField(blank=True, default="", max_length=50),
+            field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.AddField(
             model_name="recipe",
             name="source_id",
-            field=models.CharField(blank=True, default="", max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterUniqueTogether(
             name="recipe",
