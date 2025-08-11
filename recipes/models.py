@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+from .translation_utils import translate_text
+
 # --- CATEGORY ---
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -9,6 +11,13 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.name_ru:
+            self.name_ru = translate_text(self.name, "ru")
+        if not self.name_uz:
+            self.name_uz = translate_text(self.name, "uz")
+        super().save(*args, **kwargs)
 
 # --- MEAL TYPE ---
 class MealType(models.Model):
@@ -67,6 +76,15 @@ class Recipe(models.Model):
             self.premium = False
             self.healthy = False
 
+        if not self.name_ru:
+            self.name_ru = translate_text(self.name, "ru")
+        if not self.name_uz:
+            self.name_uz = translate_text(self.name, "uz")
+        if not self.description_ru:
+            self.description_ru = translate_text(self.description, "ru")
+        if not self.description_uz:
+            self.description_uz = translate_text(self.description, "uz")
+
         super().save(*args, **kwargs)
     
 
@@ -87,6 +105,13 @@ class Ingredient(models.Model):
         parts = [self.amount, self.unit, self.name]
         return " ".join(filter(None, parts))
 
+    def save(self, *args, **kwargs):
+        if not self.name_ru:
+            self.name_ru = translate_text(self.name, "ru")
+        if not self.name_uz:
+            self.name_uz = translate_text(self.name, "uz")
+        super().save(*args, **kwargs)
+
 # --- INSTRUCTION ---
 class Instruction(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='instructions', on_delete=models.CASCADE)
@@ -100,6 +125,13 @@ class Instruction(models.Model):
 
     def __str__(self):
         return f"Step {self.step_number}: {self.description[:50]}..."
+
+    def save(self, *args, **kwargs):
+        if not self.description_ru:
+            self.description_ru = translate_text(self.description, "ru")
+        if not self.description_uz:
+            self.description_uz = translate_text(self.description, "uz")
+        super().save(*args, **kwargs)
 
 # --- MEAL PLAN ---
 class MealPlan(models.Model):
