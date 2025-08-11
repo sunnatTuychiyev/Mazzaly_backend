@@ -251,6 +251,14 @@ EDAMAM_APP_KEY = config('EDAMAM_APP_KEY', default='')
 EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
 EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
+# Yandex Translate API configuration
+YANDEX_TRANSLATE_API_KEY = config('YANDEX_TRANSLATE_API_KEY', default='')
+YANDEX_TRANSLATE_ENDPOINT = config(
+    'YANDEX_TRANSLATE_ENDPOINT',
+    default='https://translate.api.cloud.yandex.net/translate/v2/translate',
+)
+YANDEX_FOLDER_ID = config('YANDEX_FOLDER_ID', default='')
+
 # CORS settings
 # Do not use wildcard when credentials are included. Instead specify
 # allowed origins and enable credentials.
