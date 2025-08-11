@@ -149,6 +149,14 @@ class Command(BaseCommand):
             if image_content:
                 recipe.image.save(filename, image_content, save=True)
 
+            if (
+                not recipe.name_ru or recipe.name_ru == recipe.name
+                or not recipe.name_uz or recipe.name_uz == recipe.name
+                or not recipe.description_ru or recipe.description_ru == recipe.description
+                or not recipe.description_uz or recipe.description_uz == recipe.description
+            ):
+                recipe.save()
+
             category_names = []
             if meal_type and meal_type != "random":
                 category_names.append(meal_type)
@@ -156,23 +164,36 @@ class Command(BaseCommand):
                 category_names.extend([t.strip() for t in tags.split(",") if t.strip()])
             for cat_name in category_names:
                 category, _ = Category.objects.get_or_create(name=cat_name)
+                if (
+                    not category.name_ru or category.name_ru == category.name
+                    or not category.name_uz or category.name_uz == category.name
+                ):
+                    category.save()
                 recipe.categories.add(category)
 
             for ing in ingredients:
-                Ingredient.objects.create(
+                ing_obj = Ingredient.objects.create(
                     recipe=recipe,
                     name=ing.get("name", ""),
                     amount=str(ing.get("amount", "")),
                     unit=ing.get("unit"),
                     preparation=ing.get("preparation"),
                 )
+                if (
+                    not ing_obj.name_ru or ing_obj.name_ru == ing_obj.name
+                    or not ing_obj.name_uz or ing_obj.name_uz == ing_obj.name
+                ):
+                    ing_obj.save()
             for step in data.get("instructions", []):
-                Instruction.objects.create(
+                instr = Instruction.objects.create(
                     recipe=recipe,
                     step_number=_to_int(step.get("step_number", 1), default=1),
                     description=step.get("description", ""),
                 )
+                if (
+                    not instr.description_ru or instr.description_ru == instr.description
+                    or not instr.description_uz or instr.description_uz == instr.description
+                ):
+                    instr.save()
 
             self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))
-
-        # Translations removed; recipes remain in English only

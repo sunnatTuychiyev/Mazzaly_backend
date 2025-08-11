@@ -174,6 +174,14 @@ class Command(BaseCommand):
                 except Exception:
                     self.stderr.write(f"Failed to download image for {name}")
 
+            if (
+                not recipe.name_ru or recipe.name_ru == recipe.name
+                or not recipe.name_uz or recipe.name_uz == recipe.name
+                or not recipe.description_ru or recipe.description_ru == recipe.description
+                or not recipe.description_uz or recipe.description_uz == recipe.description
+            ):
+                recipe.save()
+
             categories = []
             if meal.get("strCategory"):
                 categories.append(meal["strCategory"])
@@ -187,14 +195,24 @@ class Command(BaseCommand):
                 categories.extend(tag_list)
             for cat in categories:
                 category, _ = Category.objects.get_or_create(name=cat)
+                if (
+                    not category.name_ru or category.name_ru == category.name
+                    or not category.name_uz or category.name_uz == category.name
+                ):
+                    category.save()
                 recipe.categories.add(category)
 
             for ing_name, measure in ingredients:
-                Ingredient.objects.create(
+                ing_obj = Ingredient.objects.create(
                     recipe=recipe,
                     name=ing_name,
                     amount=measure,
                 )
+                if (
+                    not ing_obj.name_ru or ing_obj.name_ru == ing_obj.name
+                    or not ing_obj.name_uz or ing_obj.name_uz == ing_obj.name
+                ):
+                    ing_obj.save()
 
             instructions = meal.get("strInstructions")
             if instructions:
@@ -204,10 +222,15 @@ class Command(BaseCommand):
                     if s.strip()
                 ]
                 for num, step in enumerate(steps, start=1):
-                    Instruction.objects.create(
+                    instr = Instruction.objects.create(
                         recipe=recipe,
                         step_number=num,
                         description=step,
                     )
+                    if (
+                        not instr.description_ru or instr.description_ru == instr.description
+                        or not instr.description_uz or instr.description_uz == instr.description
+                    ):
+                        instr.save()
 
             self.stdout.write(self.style.SUCCESS(f"Added {recipe.name}"))

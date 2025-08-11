@@ -163,32 +163,60 @@ class Command(BaseCommand):
                 recipe.image.save(filename, content, save=True)
             elif r.get('image'):
                 self.stderr.write(f"Could not download image for {r.get('title')}")
+
+            if (
+                not recipe.name_ru or recipe.name_ru == recipe.name
+                or not recipe.name_uz or recipe.name_uz == recipe.name
+                or not recipe.description_ru or recipe.description_ru == recipe.description
+                or not recipe.description_uz or recipe.description_uz == recipe.description
+            ):
+                recipe.save()
             for cat in r.get('dishTypes', []) + r.get('diets', []):
                 category, _ = Category.objects.get_or_create(name=cat)
+                if (
+                    not category.name_ru or category.name_ru == category.name
+                    or not category.name_uz or category.name_uz == category.name
+                ):
+                    category.save()
                 recipe.categories.add(category)
             for ing in r.get('extendedIngredients', []):
-                Ingredient.objects.create(
+                ing_obj = Ingredient.objects.create(
                     recipe=recipe,
                     name=ing.get('name', ''),
                     amount=str(ing.get('amount', '')),
                     unit=ing.get('unit', ''),
                 )
+                if (
+                    not ing_obj.name_ru or ing_obj.name_ru == ing_obj.name
+                    or not ing_obj.name_uz or ing_obj.name_uz == ing_obj.name
+                ):
+                    ing_obj.save()
             instructions = r.get('analyzedInstructions') or []
             if instructions:
                 for inst in instructions:
                     for step in inst.get('steps', []):
-                        Instruction.objects.create(
+                        instr = Instruction.objects.create(
                             recipe=recipe,
                             step_number=step.get('number', 1),
                             description=step.get('step', ''),
                         )
+                        if (
+                            not instr.description_ru or instr.description_ru == instr.description
+                            or not instr.description_uz or instr.description_uz == instr.description
+                        ):
+                            instr.save()
             else:
                 raw_instructions = r.get('instructions', '')
                 parts = [p.strip() for p in re.split(r"[\n\.]", raw_instructions) if p.strip()]
                 for num, desc in enumerate(parts, 1):
-                    Instruction.objects.create(
+                    instr = Instruction.objects.create(
                         recipe=recipe,
                         step_number=num,
                         description=desc,
                     )
+                    if (
+                        not instr.description_ru or instr.description_ru == instr.description
+                        or not instr.description_uz or instr.description_uz == instr.description
+                    ):
+                        instr.save()
             self.stdout.write(self.style.SUCCESS(f'Added {recipe.name}'))
