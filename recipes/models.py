@@ -13,9 +13,9 @@ class Category(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        if not self.name_ru:
+        if not self.name_ru or self.name_ru == self.name:
             self.name_ru = translate_text(self.name, "ru")
-        if not self.name_uz:
+        if not self.name_uz or self.name_uz == self.name:
             self.name_uz = translate_text(self.name, "uz")
         super().save(*args, **kwargs)
 
@@ -76,13 +76,13 @@ class Recipe(models.Model):
             self.premium = False
             self.healthy = False
 
-        if not self.name_ru:
+        if not self.name_ru or self.name_ru == self.name:
             self.name_ru = translate_text(self.name, "ru")
-        if not self.name_uz:
+        if not self.name_uz or self.name_uz == self.name:
             self.name_uz = translate_text(self.name, "uz")
-        if not self.description_ru:
+        if not self.description_ru or self.description_ru == self.description:
             self.description_ru = translate_text(self.description, "ru")
-        if not self.description_uz:
+        if not self.description_uz or self.description_uz == self.description:
             self.description_uz = translate_text(self.description, "uz")
 
         super().save(*args, **kwargs)
@@ -106,9 +106,9 @@ class Ingredient(models.Model):
         return " ".join(filter(None, parts))
 
     def save(self, *args, **kwargs):
-        if not self.name_ru:
+        if not self.name_ru or self.name_ru == self.name:
             self.name_ru = translate_text(self.name, "ru")
-        if not self.name_uz:
+        if not self.name_uz or self.name_uz == self.name:
             self.name_uz = translate_text(self.name, "uz")
         super().save(*args, **kwargs)
 
@@ -127,9 +127,9 @@ class Instruction(models.Model):
         return f"Step {self.step_number}: {self.description[:50]}..."
 
     def save(self, *args, **kwargs):
-        if not self.description_ru:
+        if not self.description_ru or self.description_ru == self.description:
             self.description_ru = translate_text(self.description, "ru")
-        if not self.description_uz:
+        if not self.description_uz or self.description_uz == self.description:
             self.description_uz = translate_text(self.description, "uz")
         super().save(*args, **kwargs)
 

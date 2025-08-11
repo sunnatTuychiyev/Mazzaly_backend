@@ -156,7 +156,10 @@ class Command(BaseCommand):
                 category_names.extend([t.strip() for t in tags.split(",") if t.strip()])
             for cat_name in category_names:
                 category, _ = Category.objects.get_or_create(name=cat_name)
-                if not category.name_ru or not category.name_uz:
+                if (
+                    not category.name_ru or category.name_ru == category.name
+                    or not category.name_uz or category.name_uz == category.name
+                ):
                     category.save()
                 recipe.categories.add(category)
 
