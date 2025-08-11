@@ -18,32 +18,34 @@ def get_requested_lang(request) -> str:
 
 
 def translate_text(text: Optional[str], target_lang: str) -> str:
-    """Translate ``text`` from English to ``target_lang`` using Yandex.
+    """Translate ``text`` into ``target_lang`` using Yandex Cloud.
 
-    If the Yandex API key is not configured or the request fails, the
-    original ``text`` is returned unchanged. This keeps the application
-    functional even without external translation capabilities.
+    If the Yandex API credentials are missing or a request fails, the
+    original ``text`` is returned unchanged so normal application
+    behaviour continues even without external translation services.
     """
 
     if not text or target_lang not in {"ru", "uz"}:
         return text or ""
 
     api_key = os.getenv("YANDEX_API_KEY")
-    if not api_key:
+    folder_id = os.getenv("YANDEX_FOLDER_ID")
+    if not api_key or not folder_id:
         return text
 
     try:
-        url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
-        params = {
-            "key": api_key,
-            "text": text,
-            "lang": f"en-{target_lang}",
+        url = "https://translate.api.cloud.yandex.net/translate/v2/translate"
+        headers = {"Authorization": f"Api-Key {api_key}"}
+        payload = {
+            "targetLanguageCode": target_lang,
+            "texts": [text],
+            "folderId": folder_id,
         }
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.post(url, json=payload, timeout=10, headers=headers)
         response.raise_for_status()
         data = response.json()
-        translated = " ".join(data.get("text", []))
-        return translated or text
+        translations = data.get("translations", [])
+        return translations[0].get("text", text) if translations else text
     except Exception:
         return text
 
