@@ -165,6 +165,8 @@ class Command(BaseCommand):
                 self.stderr.write(f"Could not download image for {r.get('title')}")
             for cat in r.get('dishTypes', []) + r.get('diets', []):
                 category, _ = Category.objects.get_or_create(name=cat)
+                if not category.name_ru or not category.name_uz:
+                    category.save()
                 recipe.categories.add(category)
             for ing in r.get('extendedIngredients', []):
                 Ingredient.objects.create(

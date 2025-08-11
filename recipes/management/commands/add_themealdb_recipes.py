@@ -187,6 +187,8 @@ class Command(BaseCommand):
                 categories.extend(tag_list)
             for cat in categories:
                 category, _ = Category.objects.get_or_create(name=cat)
+                if not category.name_ru or not category.name_uz:
+                    category.save()
                 recipe.categories.add(category)
 
             for ing_name, measure in ingredients:

@@ -477,6 +477,8 @@ class Command(BaseCommand):
                 categories = list(dict.fromkeys(categories))
                 for cat in categories:
                     category, _ = Category.objects.get_or_create(name=cat)
+                    if not category.name_ru or not category.name_uz:
+                        category.save()
                     recipe.categories.add(category)
 
                 ingredients_ok = True
