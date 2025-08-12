@@ -341,6 +341,330 @@ PHRASE_DICT: Dict[str, Dict[str, str]] = {
     },
 }
 
+# Comprehensive food-related translations used as a fallback when
+# external translation services are unavailable.  The keys are English
+# phrases, and each value provides Uzbek (uz) and Russian (ru)
+# translations.
+FOOD_TRANSLATIONS: Dict[str, Dict[str, str]] = {
+    # 🍖 Meat, poultry and fish (Protein)
+    "meat, poultry and fish": {
+        "uz": "Go‘sht, parranda va baliq",
+        "ru": "Мясо, птица и рыба",
+    },
+    "chicken meat (thigh, breast, whole)": {
+        "uz": "tovuq go‘shti (son, ko‘krak, butun)",
+        "ru": "куриное мясо (бедро, грудка, целая)",
+    },
+    "beef (ground, steak, liver, heart)": {
+        "uz": "mol go‘shti (qiyma, biftek, jigar, yurak)",
+        "ru": "говядина (фарш, стейк, печень, сердце)",
+    },
+    "lamb": {"uz": "qo‘y go‘shti", "ru": "баранина"},
+    "turkey": {"uz": "kurka go‘shti", "ru": "индейка"},
+    "fish (salmon, tuna, sardine, mackerel)": {
+        "uz": "baliq (losos, orkinos, sardina, skumbriya)",
+        "ru": "рыба (лосось, тунец, сардина, скумбрия)",
+    },
+    "seafood (shrimp, squid, mussels)": {
+        "uz": "dengiz mahsulotlari (karides, kalmar, midiya)",
+        "ru": "морепродукты (креветки, кальмары, мидии)",
+    },
+    "egg": {"uz": "tuxum", "ru": "яйцо"},
+    "egg white/yolk": {
+        "uz": "tuxum oqi/yolig‘i",
+        "ru": "яичный белок/желток",
+    },
+    "sausage, frankfurter, basturma": {
+        "uz": "kolbasa, sosiska, basturma",
+        "ru": "колбаса, сосиски, бастурма",
+    },
+
+    # 🧀 Milk and dairy products
+    "milk and dairy products": {
+        "uz": "Sut va sut mahsulotlari",
+        "ru": "Молоко и молочные продукты",
+    },
+    "milk (cow, soy, almond)": {
+        "uz": "sut (sigir, soya, bodom)",
+        "ru": "молоко (коровье, соевое, миндальное)",
+    },
+    "sour cream": {"uz": "smetana", "ru": "сметана"},
+    "cream": {"uz": "qaymoq", "ru": "сливки"},
+    "yogurt (plain, Greek)": {
+        "uz": "qatiq / yogurt (oddiy, grekcha)",
+        "ru": "йогурт (обычный, греческий)",
+    },
+    "cheese (hard, soft, mozzarella, feta)": {
+        "uz": "pishloq (qattiq, yumshoq, mozzarella, feta)",
+        "ru": "сыр (твёрдый, мягкий, моцарелла, фета)",
+    },
+    "cottage cheese / cheese balls": {
+        "uz": "tvorog / koptok pishloq",
+        "ru": "творог / творожные шарики",
+    },
+    "butter / margarine": {
+        "uz": "sariyog‘ / margarin",
+        "ru": "сливочное масло / маргарин",
+    },
+    "condensed milk": {
+        "uz": "kondenslangan sut",
+        "ru": "сгущённое молоко",
+    },
+
+    # 🌱 Vegetables
+    "vegetables": {
+        "uz": "Sabzavotlar",
+        "ru": "Овощи",
+    },
+    "potato / sweet potato": {
+        "uz": "kartoshka / batat (shirin kartoshka)",
+        "ru": "картофель / батат (сладкий картофель)",
+    },
+    "carrot": {"uz": "sabzi", "ru": "морковь"},
+    "onion (white, red, green)": {
+        "uz": "piyoz (oq, qizil, yashil)",
+        "ru": "лук (белый, красный, зелёный)",
+    },
+    "garlic": {"uz": "sarimsoq", "ru": "чеснок"},
+    "tomato (fresh, canned)": {
+        "uz": "pomidor (yangi, konservalangan)",
+        "ru": "помидор (свежий, консервированный)",
+    },
+    "cucumber": {"uz": "bodring", "ru": "огурец"},
+    "eggplant": {"uz": "baqlajon", "ru": "баклажан"},
+    "broccoli": {"uz": "brokkoli", "ru": "брокколи"},
+    "cabbage (white, red, napa)": {
+        "uz": "karam (oq, qizil, pekin)",
+        "ru": "капуста (белокочанная, краснокочанная, пекинская)",
+    },
+    "bell pepper (red, green, yellow)": {
+        "uz": "bulg‘or qalampiri (qizil, yashil, sariq)",
+        "ru": "болгарский перец (красный, зелёный, жёлтый)",
+    },
+    "pumpkin / zucchini": {
+        "uz": "qovoq / zucchini",
+        "ru": "тыква / кабачок",
+    },
+    "spinach": {"uz": "ismaloq", "ru": "шпинат"},
+    "parsley, dill, cilantro": {
+        "uz": "petrushka, ukrop, kashnich",
+        "ru": "петрушка, укроп, кинза",
+    },
+    "beetroot": {"uz": "lavlagi", "ru": "свёкла"},
+    "turnip": {"uz": "sholg‘om", "ru": "репа"},
+    "artichoke": {"uz": "artishok", "ru": "артишок"},
+    "mushrooms (champignon, portobello, oyster)": {
+        "uz": "qo‘ziqorin (champignon, portobello, oyster)",
+        "ru": "грибы (шампиньоны, портобелло, вешенки)",
+    },
+
+    # 🌾 Grains, cereals and flour products
+    "grains, cereals and flour products": {
+        "uz": "Don, yorma va un mahsulotlari",
+        "ru": "Зерновые, крупы и мучные изделия",
+    },
+    "wheat flour (regular, refined, whole)": {
+        "uz": "bug‘doy uni (oddiy, tozalangan, to‘liq)",
+        "ru": "пшеничная мука (обычная, очищенная, цельнозерновая)",
+    },
+    "rice (white, brown, mixed with lentils)": {
+        "uz": "guruch (oq, jigarrang, yasmiq bilan aralash)",
+        "ru": "рис (белый, коричневый, смешанный с чечевицей)",
+    },
+    "buckwheat": {"uz": "grechka", "ru": "гречка"},
+    "oatmeal": {"uz": "jo‘xori / oatmeal", "ru": "овсянка"},
+    "barley": {"uz": "arpa", "ru": "ячмень"},
+    "couscous / bulgur": {
+        "uz": "kuskus / bulgur",
+        "ru": "кускус / булгур",
+    },
+    "pasta (regular, whole grain, gluten-free)": {
+        "uz": "makaron (oddiy, to‘liq donli, gluten-free)",
+        "ru": "макароны (обычные, цельнозерновые, безглютеновые)",
+    },
+    "bread (white, rye, toast, baguette)": {
+        "uz": "non (oq, qora, tost, baget)",
+        "ru": "хлеб (белый, чёрный, тостовый, багет)",
+    },
+    "tortilla / lavash": {
+        "uz": "tortilla / lavash",
+        "ru": "тортилья / лаваш",
+    },
+    "yeast, baking powder": {
+        "uz": "non pishirish xamirturushlari: droja, razrixlitel",
+        "ru": "дрожжи, разрыхлитель",
+    },
+
+    # 🪶 Legumes
+    "legumes": {"uz": "Dukkaklilar", "ru": "Бобовые"},
+    "peas": {"uz": "no‘xat", "ru": "горох"},
+    "beans (red, white, black, green)": {
+        "uz": "loviya (qizil, oq, qora, yashil)",
+        "ru": "фасоль (красная, белая, чёрная, зелёная)",
+    },
+    "lentils (green, red)": {
+        "uz": "yasmiq (yashil, qizil)",
+        "ru": "чечевица (зелёная, красная)",
+    },
+    "soybeans": {"uz": "soya fasoli", "ru": "соевые бобы"},
+    "mung beans": {"uz": "mungbo‘", "ru": "мунг"},
+    "tofu": {"uz": "tofu (soya pishlog‘i)", "ru": "тофу"},
+
+    # 🍎 Fruits and berries
+    "fruits and berries": {
+        "uz": "Meva va rezavorlar",
+        "ru": "Фрукты и ягоды",
+    },
+    "apple": {"uz": "olma", "ru": "яблоко"},
+    "banana": {"uz": "banan", "ru": "банан"},
+    "orange / mandarin": {
+        "uz": "apelsin / mandarin",
+        "ru": "апельсин / мандарин",
+    },
+    "lemon / lime": {
+        "uz": "limon / laim",
+        "ru": "лимон / лайм",
+    },
+    "pomegranate": {"uz": "anor", "ru": "гранат"},
+    "grapes": {"uz": "uzum", "ru": "виноград"},
+    "strawberry / raspberry / blackberry": {
+        "uz": "qulupnay / malina / maymunjon",
+        "ru": "клубника / малина / ежевика",
+    },
+    "pear": {"uz": "nok", "ru": "груша"},
+    "peach": {"uz": "shaftoli", "ru": "персик"},
+    "mango": {"uz": "mango", "ru": "манго"},
+    "kiwi": {"uz": "kivi", "ru": "киви"},
+    "watermelon / melon": {
+        "uz": "tarvuz / qovun",
+        "ru": "арбуз / дыня",
+    },
+    "pineapple": {"uz": "ananas", "ru": "ананас"},
+
+    # 🍼 Spices, sauces and condiments
+    "spices, sauces and condiments": {
+        "uz": "Ziravorlar, souslar va qo‘shimchalar",
+        "ru": "Специи, соусы и добавки",
+    },
+    "salt": {"uz": "tuz", "ru": "соль"},
+    "black pepper": {
+        "uz": "qora murch",
+        "ru": "чёрный перец",
+    },
+    "paprika": {"uz": "paprika", "ru": "паприка"},
+    "cumin": {"uz": "zira / kimyon", "ru": "зира / кмин"},
+    "cinnamon": {"uz": "dolchin / koritsa", "ru": "корица"},
+    "chili powder / pepper": {
+        "uz": "chili kukuni / qalampir",
+        "ru": "чили порошок / перец",
+    },
+    "turmeric": {"uz": "kurkuma / zerdecho", "ru": "куркума"},
+    "vinegar (apple, grape, balsamic)": {
+        "uz": "sirka (olma, uzum, balsamik)",
+        "ru": "уксус (яблочный, винный, бальзамический)",
+    },
+    "soy sauce": {"uz": "soya sousi", "ru": "соевый соус"},
+    "ketchup": {"uz": "ketchup", "ru": "кетчуп"},
+    "mayonnaise": {"uz": "mayonez", "ru": "майонез"},
+    "mustard": {"uz": "xantal", "ru": "горчица"},
+    "olive oil / sunflower oil / coconut oil": {
+        "uz": "zaytun yog‘i / kungaboqar yog‘i / kokos yog‘i",
+        "ru": "оливковое масло / подсолнечное масло / кокосовое масло",
+    },
+
+    # 🍞 Sweets and baked goods
+    "sweets and baked goods": {
+        "uz": "Shirinliklar va nonvoylik mahsulotlari",
+        "ru": "Сладости и выпечка",
+    },
+    "sugar (white, brown)": {
+        "uz": "shakar (oq, jigarrang)",
+        "ru": "сахар (белый, коричневый)",
+    },
+    "honey": {"uz": "asal", "ru": "мёд"},
+    "cocoa powder": {"uz": "kakao kukuni", "ru": "какао-порошок"},
+    "chocolate (milk, dark, white)": {
+        "uz": "shokolad (sutli, qora, oq)",
+        "ru": "шоколад (молочный, тёмный, белый)",
+    },
+    "vanillin": {"uz": "vanilin", "ru": "ванилин"},
+    "baking powder, baking soda": {
+        "uz": "pishiriq kukuni (razrixlitel, soda)",
+        "ru": "разрыхлитель (порошок для выпечки), сода",
+    },
+    "shredded coconut": {
+        "uz": "kokos bo‘lagi",
+        "ru": "кокосовая стружка",
+    },
+    "nuts (almond, peanut, hazelnut, walnut)": {
+        "uz": "yong‘oq (bodom, yeryong‘oq, funduk, grek yong‘og‘i)",
+        "ru": "орехи (миндаль, арахис, фундук, грецкий орех)",
+    },
+    "sesame, chia seeds, flax seeds": {
+        "uz": "kunjut, chiyam, zig‘ir urug‘i",
+        "ru": "кунжут, семена чиа, льняные семена",
+    },
+    "nut butters (peanut butter, almond butter)": {
+        "uz": "yong‘oq yog‘lari (peanut butter, almond butter)",
+        "ru": "ореховые пасты (арахисовая, миндальная)",
+    },
+
+    # 🍲 Prepared and canned products
+    "prepared and canned products": {
+        "uz": "Tayyor va konservalangan mahsulotlar",
+        "ru": "Готовые и консервированные продукты",
+    },
+    "canned tomatoes": {
+        "uz": "konservalangan pomidor",
+        "ru": "консервированные помидоры",
+    },
+    "canned beans": {
+        "uz": "loviya konservalari",
+        "ru": "консервированная фасоль",
+    },
+    "canned fish (tuna, sardine)": {
+        "uz": "baliq konservalari (tunets, sardina)",
+        "ru": "рыбные консервы (тунец, сардина)",
+    },
+    "olives / capers": {
+        "uz": "zaytun / kapers",
+        "ru": "оливки / каперсы",
+    },
+    "pickled cucumbers": {
+        "uz": "tuzlangan bodring",
+        "ru": "маринованные огурцы",
+    },
+    "vegetable mixes (frozen or canned)": {
+        "uz": "sabzavotli aralashmalar (muzlatilgan yoki konservalangan)",
+        "ru": "овощные смеси (замороженные или консервированные)",
+    },
+
+    # ☕️ Drinks
+    "drinks (some)": {
+        "uz": "Ichimliklar (ba’zilariga)",
+        "ru": "Напитки (некоторые)",
+    },
+    "tea (green, black, herbal)": {
+        "uz": "choy (yashil, qora, o‘simlik)",
+        "ru": "чай (зелёный, чёрный, травяной)",
+    },
+    "coffee (ground, beans, instant)": {
+        "uz": "qahva (yerilgan, don, instant)",
+        "ru": "кофе (молотый, в зёрнах, растворимый)",
+    },
+    "cocoa drink": {"uz": "kakao ichimligi", "ru": "какао-напиток"},
+    "mineral water": {"uz": "mineral suv", "ru": "минеральная вода"},
+    "juices (orange, apple)": {
+        "uz": "sharbatlar (apelsin, olma)",
+        "ru": "соки (апельсиновый, яблочный)",
+    },
+}
+
+# Merge food translations into phrase dictionaries for quick lookup
+for phrase, translations in FOOD_TRANSLATIONS.items():
+    for lang, value in translations.items():
+        PHRASE_DICT.setdefault(lang, {})[phrase] = value
+
 
 def _openai_translate(text: str, dest: str, src: str) -> str:
     """Translate using OpenAI if available and configured."""
