@@ -48,6 +48,9 @@ class Recipe(models.Model):
     description_ru = models.TextField(blank=True, default="")
     description_uz = models.TextField(blank=True, default="")
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
+    image_url = models.URLField(blank=True, null=True)
+    source = models.CharField(max_length=50, blank=True, null=True)
+    source_id = models.CharField(max_length=255, blank=True, null=True)
     prep_time = models.PositiveIntegerField(help_text="in minutes")
     cook_time = models.PositiveIntegerField(help_text="in minutes")
     servings = models.PositiveIntegerField()
@@ -68,10 +71,13 @@ class Recipe(models.Model):
             self.healthy = False
 
         super().save(*args, **kwargs)
-    
+
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ("source", "source_id")
 
 # --- INGREDIENT ---
 class Ingredient(models.Model):
