@@ -302,6 +302,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
         data.pop('lang', None)

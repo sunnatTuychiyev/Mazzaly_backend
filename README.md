@@ -192,6 +192,9 @@ date, time and meal type by name. A recipe can be referenced with
 `recipe_id` or you may supply a short description with `custom_meal` when no
 recipe is selected:
 
+All meal plan endpoints accept an optional `lang` query parameter to select the
+response language (`en`, `uz` or `ru`). If omitted, English is used.
+
 Default meal types (**breakfast**, **lunch**, **dinner**) are created by the
 database migrations. If you provide a new meal type name it will be added
 automatically.
