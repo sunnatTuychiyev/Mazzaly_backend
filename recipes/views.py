@@ -302,6 +302,15 @@ class MealPlanViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data.pop('lang', None)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['lang'] = get_requested_lang(self.request)
@@ -346,8 +355,8 @@ class MealPlanViewSet(viewsets.ModelViewSet):
             )
             recipe_data = None
             if mp and mp.recipe:
-                title = getattr(mp.recipe, name_field, '') or mp.recipe.name
-                recipe_data = {'id': mp.recipe.id, 'title': title}
+                name = getattr(mp.recipe, name_field, '') or mp.recipe.name
+                recipe_data = {'id': mp.recipe.id, 'name': name}
             meals.append({
                 'type': meal_type.name,
                 'time': time,

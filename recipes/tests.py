@@ -349,8 +349,8 @@ class ShoppingListAddRecipeTests(APITestCase):
 
     def test_add_recipe_respects_language(self):
         self.client.force_authenticate(self.user)
-        url = reverse("shoppinglist-add-recipe-ingredients") + "?lang=uz"
-        data = {"recipe_id": self.recipe.id}
+        url = reverse("shoppinglist-add-recipe-ingredients")
+        data = {"recipe_id": self.recipe.id, "lang": "uz"}
         res = self.client.post(url, data, format="json")
         assert res.status_code == 200
         assert ShoppingListItem.objects.filter(
@@ -384,23 +384,24 @@ class MealPlanLanguageTests(APITestCase):
             scheduled_time=timezone.make_aware(datetime.datetime(2024, 1, 1, 7, 30)),
         )
 
-    def test_by_date_returns_translated_recipe_title(self):
+    def test_by_date_returns_translated_recipe_name(self):
         self.client.force_authenticate(self.user)
         url = reverse("mealplan-by-date", kwargs={"date": "2024-01-01"})
         res = self.client.get(url + "?lang=uz")
         assert res.status_code == 200
         meal = next(m for m in res.data["meals"] if m["recipe"])
-        assert meal["recipe"]["title"] == "Banan"
+        assert meal["recipe"]["name"] == "Banan"
 
     def test_create_returns_translated_recipe_name(self):
         self.client.force_authenticate(self.user)
-        url = reverse("mealplan-list") + "?lang=uz"
+        url = reverse("mealplan-list")
         data = {
             "date": "2025-08-15",
             "type": "Breakfast",
             "time": "19:00",
             "recipe_id": self.recipe.id,
             "custom_meal": None,
+            "lang": "uz",
         }
         res = self.client.post(url, data, format="json")
         assert res.status_code == 201
