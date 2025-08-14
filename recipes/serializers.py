@@ -224,6 +224,11 @@ class MealPlanSerializer(serializers.ModelSerializer):
             ).first()
             if not meal_type_obj:
                 meal_type_obj = MealType.objects.create(name=meal_type_name)
+        recipe_obj = validated_data.get('recipe')
+        lang = self.context.get('lang')
+        if recipe_obj and lang and lang != 'en':
+            from .translation_utils import apply_translations
+            apply_translations(recipe_obj)
         date = validated_data.pop('date')
         time = validated_data.pop('time')
         scheduled_time = datetime.datetime.combine(date, time)
@@ -240,11 +245,14 @@ class MealPlanSerializer(serializers.ModelSerializer):
         data['time'] = instance.scheduled_time.time().strftime('%H:%M')
         data['type'] = instance.meal_type.name if instance.meal_type else None
         lang = self.context.get('lang')
-        if lang and lang != 'en' and data['type']:
-            from .translation_utils import translate_text
-            trans = translate_text(data['type'], lang)
-            if trans:
-                data['type'] = trans
+        if lang and lang != 'en':
+            if data['type']:
+                from .translation_utils import translate_text
+                trans = translate_text(data['type'], lang)
+                if trans:
+                    data['type'] = trans
+            if instance.recipe:
+                data['recipe'] = RecipeSerializer(instance.recipe, context=self.context).data
         return data
 
 # SHOPPING LIST ITEM

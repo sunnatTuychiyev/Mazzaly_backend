@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
-from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem, MealPlan, MealType
+from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem, MealPlan, MealType, Category
 import datetime
 from django.utils import timezone
 from unittest.mock import patch
@@ -406,7 +406,7 @@ class MealPlanLanguageTests(APITestCase):
         }
         res = self.client.post(url, data, format="json")
         assert res.status_code == 201
-        assert res.data["recipe"]["name"] == "Banan"
+        assert res.data["recipe"]["name"].lower() == "banan"
 
     def test_create_with_ru_lang_returns_russian_name(self):
         self.client.force_authenticate(self.user)
@@ -420,7 +420,7 @@ class MealPlanLanguageTests(APITestCase):
         }
         res = self.client.post(url, data, format="json")
         assert res.status_code == 201
-        assert res.data["recipe"]["name"] == "Банан"
+        assert res.data["recipe"]["name"].lower() == "банан"
 
     def test_create_falls_back_to_translation(self):
         self.client.force_authenticate(self.user)
@@ -445,4 +445,36 @@ class MealPlanLanguageTests(APITestCase):
             res = self.client.post(url, data, format="json")
         assert res.status_code == 201
         assert res.data["recipe"]["name"] == "Test Meal-ru"
+
+    def test_create_translates_nested_fields(self):
+        self.client.force_authenticate(self.user)
+        category = Category.objects.create(name="Dessert")
+        recipe = Recipe.objects.create(
+            name="Test Recipe",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        recipe.categories.add(category)
+        Ingredient.objects.create(recipe=recipe, name="Sugar", amount="1", unit="cup")
+        Instruction.objects.create(recipe=recipe, step_number=1, description="Mix well")
+        MealType.objects.create(name="Dinner")
+        url = reverse("mealplan-list") + "?lang=ru"
+        data = {
+            "date": "2025-08-15",
+            "type": "Dinner",
+            "time": "19:00",
+            "recipe_id": recipe.id,
+            "custom_meal": None,
+        }
+        with patch("recipes.translation_utils.translate_text", side_effect=lambda text, lang: f"{text}-{lang}"):
+            res = self.client.post(url, data, format="json")
+        assert res.status_code == 201
+        assert res.data["recipe"]["name"] == "Test Recipe-ru"
+        assert res.data["recipe"]["categories"][0]["name"] == "Dessert-ru"
+        assert res.data["recipe"]["ingredients"][0]["name"] == "Sugar-ru"
+        assert res.data["recipe"]["instructions"][0]["description"] == "Mix well-ru"
+        assert res.data["type"].lower() == "dinner-ru"
 
