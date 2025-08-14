@@ -302,6 +302,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
         data.pop('lang', None)
@@ -355,10 +356,21 @@ class MealPlanViewSet(viewsets.ModelViewSet):
             )
             recipe_data = None
             if mp and mp.recipe:
-                name = getattr(mp.recipe, name_field, '') or mp.recipe.name
+                name = getattr(mp.recipe, name_field, '').strip()
+                if lang != 'en' and (not name or name.lower() == mp.recipe.name.lower()):
+                    from .translation_utils import translate_text
+                    name = translate_text(mp.recipe.name, lang) or mp.recipe.name
+                else:
+                    name = name or mp.recipe.name
                 recipe_data = {'id': mp.recipe.id, 'name': name}
+            meal_type_name = meal_type.name
+            if lang != 'en':
+                from .translation_utils import translate_text
+                trans = translate_text(meal_type_name, lang)
+                if trans:
+                    meal_type_name = trans
             meals.append({
-                'type': meal_type.name,
+                'type': meal_type_name,
                 'time': time,
                 'recipe': recipe_data,
                 'custom_meal': mp.custom_meal if mp else None,
@@ -401,7 +413,12 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
         lang = get_requested_lang(request)
         name_field = 'name' if lang == 'en' else f'name_{lang}'
         for ing in recipe.ingredients.all():
-            ing_name = getattr(ing, name_field, '') or ing.name
+            ing_name = getattr(ing, name_field, '').strip()
+            if lang != 'en' and (not ing_name or ing_name.lower() == ing.name.lower()):
+                from .translation_utils import translate_text
+                ing_name = translate_text(ing.name, lang) or ing.name
+            else:
+                ing_name = ing_name or ing.name
             item, created = ShoppingListItem.objects.get_or_create(
                 user=request.user,
                 name=ing_name,
