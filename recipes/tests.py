@@ -392,3 +392,17 @@ class MealPlanLanguageTests(APITestCase):
         meal = next(m for m in res.data["meals"] if m["recipe"])
         assert meal["recipe"]["title"] == "Banan"
 
+    def test_create_returns_translated_recipe_name(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("mealplan-list") + "?lang=uz"
+        data = {
+            "date": "2025-08-15",
+            "type": "Breakfast",
+            "time": "19:00",
+            "recipe_id": self.recipe.id,
+            "custom_meal": None,
+        }
+        res = self.client.post(url, data, format="json")
+        assert res.status_code == 201
+        assert res.data["recipe"]["name"] == "Banan"
+
