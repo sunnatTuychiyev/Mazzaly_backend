@@ -318,6 +318,16 @@ class MealPlanViewSet(viewsets.ModelViewSet):
         return context
 
     @swagger_auto_schema(manual_parameters=[LANG_PARAM])
+    def list(self, request, *args, **kwargs):  # pragma: no cover - docs only
+        """List meal plans with optional language selection."""
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
+    def retrieve(self, request, *args, **kwargs):  # pragma: no cover - docs only
+        """Retrieve a meal plan with optional language selection."""
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     @action(detail=False, methods=['get'], url_path='planned-dates')
     def planned_dates(self, request):  # pragma: no cover - simple aggregate
         dates = (self.get_queryset()
