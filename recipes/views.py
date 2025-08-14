@@ -41,7 +41,7 @@ from .serializers import (
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer,
     MealTypeSerializer
 )
-from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
+from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES, translate_text
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
 from account.models import Subscription
 
@@ -302,13 +302,30 @@ class MealPlanViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data.pop('lang', None)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = get_requested_lang(self.request)
+        return context
+
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     @action(detail=False, methods=['get'], url_path='planned-dates')
-    def planned_dates(self, request):
+    def planned_dates(self, request):  # pragma: no cover - simple aggregate
         dates = (self.get_queryset()
                  .values_list('scheduled_time', flat=True))
         unique_dates = sorted({dt.date().isoformat() for dt in dates})
         return Response({'planned_dates': unique_dates})
 
+    @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     @action(detail=False, methods=['get'], url_path='date/(?P<date>[^/]+)')
     def by_date(self, request, date=None):
         """Return the meal plan for a given date."""
@@ -328,6 +345,8 @@ class MealPlanViewSet(viewsets.ModelViewSet):
             'dinner': '19:00',
         }
 
+        lang = get_requested_lang(request)
+        name_field = 'name' if lang == 'en' else f'name_{lang}'
         meals = []
         for meal_type in MealType.objects.all():
             mp = plan_map.get(meal_type.id)
@@ -335,13 +354,18 @@ class MealPlanViewSet(viewsets.ModelViewSet):
                 mp.scheduled_time.time().strftime('%H:%M')
                 if mp else default_times.get(meal_type.name.lower())
             )
+            recipe_data = None
+            if mp and mp.recipe:
+                name = getattr(mp.recipe, name_field, '').strip()
+                if not name and lang != 'en':
+                    name = translate_text(mp.recipe.name, lang)
+                if not name:
+                    name = mp.recipe.name
+                recipe_data = {'id': mp.recipe.id, 'name': name}
             meals.append({
                 'type': meal_type.name,
                 'time': time,
-                'recipe': (
-                    {'id': mp.recipe.id, 'title': mp.recipe.name}
-                    if mp and mp.recipe else None
-                ),
+                'recipe': recipe_data,
                 'custom_meal': mp.custom_meal if mp else None,
             })
 
@@ -367,6 +391,7 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
             required=['recipe_id'],
             properties={'recipe_id': openapi.Schema(type=openapi.TYPE_INTEGER)}
         ),
+        manual_parameters=[LANG_PARAM],
         responses={200: 'Ingredients added'}
     )
     @action(detail=False, methods=['post'], url_path='add-recipe')
@@ -378,10 +403,17 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
             recipe = Recipe.objects.get(id=recipe_id)
         except Recipe.DoesNotExist:
             return Response({'error': 'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
+        lang = get_requested_lang(request)
+        name_field = 'name' if lang == 'en' else f'name_{lang}'
         for ing in recipe.ingredients.all():
+            ing_name = getattr(ing, name_field, '').strip()
+            if not ing_name and lang != 'en':
+                ing_name = translate_text(ing.name, lang)
+            if not ing_name:
+                ing_name = ing.name
             item, created = ShoppingListItem.objects.get_or_create(
                 user=request.user,
-                name=ing.name,
+                name=ing_name,
                 unit=ing.unit or "",
                 defaults={'amount': ing.amount, 'checked': False}
             )

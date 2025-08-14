@@ -6,6 +6,7 @@ from .models import (
     MealPlan, ShoppingListItem,
     RecipeRating
 )
+from .translation_utils import translate_text
 
 # CATEGORY
 class CategorySerializer(serializers.ModelSerializer):
@@ -102,7 +103,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         lang = self.context.get('lang')
         if lang and lang != 'en':
             for field in ['name', 'description']:
-                trans = getattr(instance, f'{field}_{lang}', '')
+                trans = getattr(instance, f'{field}_{lang}', '').strip()
+                if not trans:
+                    trans = translate_text(getattr(instance, field), lang)
                 if trans:
                     data[field] = trans
         return data
@@ -165,7 +168,9 @@ class RecipeCardSerializer(serializers.ModelSerializer):
         lang = self.context.get('lang')
         if lang and lang != 'en':
             for field in ['name', 'description']:
-                trans = getattr(instance, f'{field}_{lang}', '')
+                trans = getattr(instance, f'{field}_{lang}', '').strip()
+                if not trans:
+                    trans = translate_text(getattr(instance, field), lang)
                 if trans:
                     data[field] = trans
         return data
