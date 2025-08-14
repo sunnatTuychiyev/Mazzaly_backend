@@ -2,7 +2,9 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
-from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem
+from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem, MealPlan, MealType
+import datetime
+from django.utils import timezone
 
 class RecipeSubscriptionTests(APITestCase):
     def setUp(self):
@@ -270,7 +272,10 @@ class ShoppingListAddRecipeTests(APITestCase):
             subscription_plan=Subscription.PLAN_STANDARD,
         )
         Ingredient.objects.create(
-            recipe=self.recipe, name="very ripe banana", amount="1"
+            recipe=self.recipe,
+            name="very ripe banana",
+            name_uz="pishgan banan",
+            amount="1",
         )
 
         self.fraction_recipe = Recipe.objects.create(
@@ -341,4 +346,49 @@ class ShoppingListAddRecipeTests(APITestCase):
         assert res2.status_code == 200
         item.refresh_from_db()
         assert item.amount == "1"
+
+    def test_add_recipe_respects_language(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("shoppinglist-add-recipe-ingredients") + "?lang=uz"
+        data = {"recipe_id": self.recipe.id}
+        res = self.client.post(url, data, format="json")
+        assert res.status_code == 200
+        assert ShoppingListItem.objects.filter(
+            user=self.user, name="pishgan banan"
+        ).exists()
+
+
+class MealPlanLanguageTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="planner@example.com",
+            first_name="Planner",
+            last_name="User",
+            password="StrongPass1",
+        )
+        Subscription.objects.create(user=self.user, plan=Subscription.PLAN_PREMIUM)
+        self.recipe = Recipe.objects.create(
+            name="Banana",
+            name_uz="Banan",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        self.meal_type = MealType.objects.create(name="Breakfast")
+        MealPlan.objects.create(
+            user=self.user,
+            recipe=self.recipe,
+            meal_type=self.meal_type,
+            scheduled_time=timezone.make_aware(datetime.datetime(2024, 1, 1, 7, 30)),
+        )
+
+    def test_by_date_returns_translated_recipe_title(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("mealplan-by-date", kwargs={"date": "2024-01-01"})
+        res = self.client.get(url + "?lang=uz")
+        assert res.status_code == 200
+        meal = next(m for m in res.data["meals"] if m["recipe"])
+        assert meal["recipe"]["title"] == "Banan"
 
