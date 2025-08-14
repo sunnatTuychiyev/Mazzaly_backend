@@ -2,7 +2,9 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
-from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem
+from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem, MealPlan, MealType
+import datetime
+from django.utils import timezone
 
 class RecipeSubscriptionTests(APITestCase):
     def setUp(self):
@@ -270,7 +272,10 @@ class ShoppingListAddRecipeTests(APITestCase):
             subscription_plan=Subscription.PLAN_STANDARD,
         )
         Ingredient.objects.create(
-            recipe=self.recipe, name="very ripe banana", amount="1"
+            recipe=self.recipe,
+            name="very ripe banana",
+            name_uz="pishgan banan",
+            amount="1",
         )
 
         self.fraction_recipe = Recipe.objects.create(
@@ -341,4 +346,142 @@ class ShoppingListAddRecipeTests(APITestCase):
         assert res2.status_code == 200
         item.refresh_from_db()
         assert item.amount == "1"
+
+    def test_add_recipe_respects_language(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("shoppinglist-add-recipe-ingredients") + "?lang=uz"
+        data = {"recipe_id": self.recipe.id}
+        res = self.client.post(url, data, format="json")
+        assert res.status_code == 200
+        assert ShoppingListItem.objects.filter(
+            user=self.user, name="pishgan banan"
+        ).exists()
+
+    def test_add_recipe_translates_when_missing_name(self):
+        self.client.force_authenticate(self.user)
+        recipe = Recipe.objects.create(
+            name="Chicken",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        Ingredient.objects.create(recipe=recipe, name="onion", amount="1")
+        url = reverse("shoppinglist-add-recipe-ingredients") + "?lang=ru"
+        res = self.client.post(url, {"recipe_id": recipe.id}, format="json")
+        assert res.status_code == 200
+        assert ShoppingListItem.objects.filter(
+            user=self.user, name="лук"
+        ).exists()
+
+
+class MealPlanLanguageTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="planner@example.com",
+            first_name="Planner",
+            last_name="User",
+            password="StrongPass1",
+        )
+        Subscription.objects.create(user=self.user, plan=Subscription.PLAN_PREMIUM)
+        self.recipe = Recipe.objects.create(
+            name="Banana",
+            name_uz="Banan",
+            name_ru="Банан",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        self.meal_type = MealType.objects.create(name="Breakfast")
+        MealPlan.objects.create(
+            user=self.user,
+            recipe=self.recipe,
+            meal_type=self.meal_type,
+            scheduled_time=timezone.make_aware(datetime.datetime(2024, 1, 1, 7, 30)),
+        )
+
+    def test_by_date_returns_translated_recipe_name(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("mealplan-by-date", kwargs={"date": "2024-01-01"})
+        res = self.client.get(url + "?lang=uz")
+        assert res.status_code == 200
+        meal = next(m for m in res.data["meals"] if m["recipe"])
+        assert meal["recipe"]["name"] == "Banan"
+
+    def test_create_returns_translated_recipe_name(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("mealplan-list") + "?lang=uz"
+        data = {
+            "date": "2025-08-15",
+            "type": "Breakfast",
+            "time": "19:00",
+            "recipe_id": self.recipe.id,
+            "custom_meal": None,
+        }
+        res = self.client.post(url, data, format="json")
+        assert res.status_code == 201
+        assert res.data["recipe"]["name"] == "Banan"
+
+    def test_create_with_ru_lang_returns_russian_name(self):
+        self.client.force_authenticate(self.user)
+        url = reverse("mealplan-list") + "?lang=ru"
+        data = {
+            "date": "2025-08-15",
+            "type": "Breakfast",
+            "time": "19:00",
+            "recipe_id": self.recipe.id,
+            "custom_meal": None,
+        }
+        res = self.client.post(url, data, format="json")
+        assert res.status_code == 201
+        assert res.data["recipe"]["name"] == "Банан"
+
+    def test_create_translates_when_missing_name(self):
+        self.client.force_authenticate(self.user)
+        recipe = Recipe.objects.create(
+            name="Chicken",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        url = reverse("mealplan-list") + "?lang=ru"
+        data = {
+            "date": "2025-08-15",
+            "type": "Breakfast",
+            "time": "19:00",
+            "recipe_id": recipe.id,
+            "custom_meal": None,
+        }
+        res = self.client.post(url, data, format="json")
+        assert res.status_code == 201
+        assert res.data["recipe"]["name"] == "курица"
+
+    def test_by_date_translates_when_missing_name(self):
+        self.client.force_authenticate(self.user)
+        recipe = Recipe.objects.create(
+            name="Chicken",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        MealPlan.objects.create(
+            user=self.user,
+            recipe=recipe,
+            meal_type=self.meal_type,
+            scheduled_time=timezone.make_aware(
+                datetime.datetime(2024, 1, 2, 7, 30)
+            ),
+        )
+        url = reverse("mealplan-by-date", kwargs={"date": "2024-01-02"})
+        res = self.client.get(url + "?lang=ru")
+        assert res.status_code == 200
+        meal = next(m for m in res.data["meals"] if m["recipe"] and m["recipe"]["id"] == recipe.id)
+        assert meal["recipe"]["name"] == "курица"
 

@@ -23,10 +23,23 @@ LANG_NAMES = {
 }
 
 def get_requested_lang(request) -> str:
-    """Return a supported language code from the request query params."""
+    """Return a supported language code from query params, body or headers."""
     if not request:
         return 'en'
-    lang = request.query_params.get('lang', 'en')
+
+    lang = request.query_params.get('lang')
+
+    if not lang and hasattr(request, 'data'):
+        try:
+            lang = request.data.get('lang')
+        except Exception:  # pragma: no cover - non-dict data
+            lang = None
+
+    if not lang:
+        header = request.headers.get('Accept-Language', '')
+        if header:
+            lang = header.split(',')[0].split('-')[0]
+
     if lang not in SUPPORTED_LANGUAGES:
         return 'en'
     return lang
