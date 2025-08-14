@@ -5,6 +5,7 @@ from account.models import User, Subscription
 from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem, MealPlan, MealType
 import datetime
 from django.utils import timezone
+from unittest.mock import patch
 
 class RecipeSubscriptionTests(APITestCase):
     def setUp(self):
@@ -420,4 +421,28 @@ class MealPlanLanguageTests(APITestCase):
         res = self.client.post(url, data, format="json")
         assert res.status_code == 201
         assert res.data["recipe"]["name"] == "Банан"
+
+    def test_create_falls_back_to_translation(self):
+        self.client.force_authenticate(self.user)
+        recipe = Recipe.objects.create(
+            name="Test Meal",
+            description="desc",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        MealType.objects.create(name="Dinner")
+        url = reverse("mealplan-list") + "?lang=ru"
+        data = {
+            "date": "2025-08-15",
+            "type": "Dinner",
+            "time": "19:00",
+            "recipe_id": recipe.id,
+            "custom_meal": None,
+        }
+        with patch("recipes.translation_utils.translate_text", side_effect=lambda text, lang: f"{text}-{lang}"):
+            res = self.client.post(url, data, format="json")
+        assert res.status_code == 201
+        assert res.data["recipe"]["name"] == "Test Meal-ru"
 
