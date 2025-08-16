@@ -170,17 +170,19 @@ automatically using their Telegram ID.
 
 ## Telegram Recipe Submissions
 
-Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields `title`, `short_description`, `ingredients`, `steps`, `tags`, optional `images` (up to five files) and the `init_data` string from Telegram. Submitted `tags` are turned into recipe categories when staff approve the submission. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
+Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields like `name`, `name_uz`, `name_ru`, `description`, `description_uz`, `description_ru`, `prep_time`, `cook_time`, `servings`, `subscription_plan`, `healthy`, `calories`, `protein`, `fats`, `carbs`, `categories` (repeatable), structured `ingredients` and `steps` JSON strings, optional `images` (up to five files) and the `init_data` string from Telegram. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
 
 Example submission:
 
 ```bash
 curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
-  -F "title=My Salad" \
-  -F "short_description=Tasty" \
-  -F "ingredients=lettuce\nsalt" \
-  -F "steps=chop\nmix" \
-  -F "tags=salad,quick" \
+  -F "name=My Salad" \
+  -F "description=Tasty" \
+  -F "prep_time=5" \
+  -F "cook_time=0" \
+  -F "servings=2" \
+  -F 'ingredients=[{"name":"lettuce"}]' \
+  -F 'steps=[{"description":"chop"}]' \
   -F "init_data=<INIT_DATA>"
 ```
 

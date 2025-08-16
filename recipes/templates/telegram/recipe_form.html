@@ -4,24 +4,126 @@
     <meta charset="utf-8" />
     <title>Submit Recipe</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        th, td { border: 1px solid #ccc; padding: 4px; }
+        th { background: #f0f0f0; }
+        .remove-btn { color: red; cursor: pointer; }
+    </style>
 </head>
 <body>
 <h1>Submit Recipe</h1>
 <form id="recipe-form">
-    <div><input type="text" name="title" placeholder="Title" required></div>
-    <div><textarea name="short_description" placeholder="Short description"></textarea></div>
-    <div><textarea name="ingredients" placeholder="Ingredients (one per line)"></textarea></div>
-    <div><textarea name="steps" placeholder="Steps (one per line)"></textarea></div>
-    <div><input type="text" name="tags" placeholder="Tags"></div>
+    <div><input type="text" name="name" placeholder="Name" required></div>
+    <div><input type="text" name="name_uz" placeholder="Name uz"></div>
+    <div><input type="text" name="name_ru" placeholder="Name ru"></div>
+    <div><textarea name="description" placeholder="Description" required></textarea></div>
+    <div><textarea name="description_uz" placeholder="Description uz"></textarea></div>
+    <div><textarea name="description_ru" placeholder="Description ru"></textarea></div>
     <div><input type="file" name="images" multiple></div>
-    <button type="submit">Send</button>
+    <div><input type="number" name="prep_time" placeholder="Prep time" required></div>
+    <div><input type="number" name="cook_time" placeholder="Cook time" required></div>
+    <div><input type="number" name="servings" placeholder="Servings" required></div>
+    <div>
+        <select name="subscription_plan">
+            {% for val, label in plans %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div><label><input type="checkbox" name="healthy"> Healthy</label></div>
+    <div><input type="number" name="calories" placeholder="Calories"></div>
+    <div><input type="number" name="protein" placeholder="Protein"></div>
+    <div><input type="number" name="fats" placeholder="Fats"></div>
+    <div><input type="number" name="carbs" placeholder="Carbs"></div>
+    <div>
+        <select name="categories" multiple>
+            {% for c in categories %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <h3>Ingredients</h3>
+    <table id="ingredients-table">
+        <thead>
+            <tr><th>Name</th><th>Name uz</th><th>Name ru</th><th>Amount</th><th>Unit</th><th>Preparation</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button type="button" id="add-ingredient">Add Ingredient</button>
+    <h3>Instructions</h3>
+    <table id="steps-table">
+        <thead>
+            <tr><th>Description</th><th>Description uz</th><th>Description ru</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button type="button" id="add-step">Add Step</button>
+    <div style="margin-top:1rem;"><button type="submit">Send</button></div>
 </form>
 <script>
 const tg = window.Telegram.WebApp;
+function addIngredientRow() {
+    const tr = document.createElement('tr');
+    tr.classList.add('ingredient-row');
+    tr.innerHTML = `
+      <td><input name="ing_name"/></td>
+      <td><input name="ing_name_uz"/></td>
+      <td><input name="ing_name_ru"/></td>
+      <td><input name="ing_amount"/></td>
+      <td><input name="ing_unit"/></td>
+      <td><input name="ing_preparation"/></td>
+      <td><span class="remove-btn">✖</span></td>
+    `;
+    tr.querySelector('.remove-btn').onclick = () => tr.remove();
+    document.querySelector('#ingredients-table tbody').appendChild(tr);
+}
+function addStepRow() {
+    const tr = document.createElement('tr');
+    tr.classList.add('step-row');
+    tr.innerHTML = `
+      <td><input name="step_description"/></td>
+      <td><input name="step_description_uz"/></td>
+      <td><input name="step_description_ru"/></td>
+      <td><span class="remove-btn">✖</span></td>
+    `;
+    tr.querySelector('.remove-btn').onclick = () => tr.remove();
+    document.querySelector('#steps-table tbody').appendChild(tr);
+}
+addIngredientRow();
+addStepRow();
+
+document.getElementById('add-ingredient').onclick = addIngredientRow;
+document.getElementById('add-step').onclick = addStepRow;
 const form = document.getElementById('recipe-form');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(form);
+    const ingredients = [];
+    document.querySelectorAll('.ingredient-row').forEach(row => {
+        ingredients.push({
+            name: row.querySelector('[name="ing_name"]').value,
+            name_uz: row.querySelector('[name="ing_name_uz"]').value,
+            name_ru: row.querySelector('[name="ing_name_ru"]').value,
+            amount: row.querySelector('[name="ing_amount"]').value,
+            unit: row.querySelector('[name="ing_unit"]').value,
+            preparation: row.querySelector('[name="ing_preparation"]').value,
+        });
+    });
+    data.append('ingredients', JSON.stringify(ingredients));
+    const steps = [];
+    document.querySelectorAll('.step-row').forEach((row, idx) => {
+        steps.push({
+            step_number: idx + 1,
+            description: row.querySelector('[name="step_description"]').value,
+            description_uz: row.querySelector('[name="step_description_uz"]').value,
+            description_ru: row.querySelector('[name="step_description_ru"]').value,
+        });
+    });
+    data.append('steps', JSON.stringify(steps));
+    const categories = Array.from(form.querySelector('select[name="categories"]').selectedOptions).map(o => o.value);
+    categories.forEach(id => data.append('categories', id));
     data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
     const resp = await fetch('/api/telegram/recipe-submissions/', {method: 'POST', body: data});
     const json = await resp.json();

@@ -273,8 +273,8 @@ class RecipeSubmissionImageInline(admin.TabularInline):
 @admin.register(RecipeSubmission)
 class RecipeSubmissionAdmin(admin.ModelAdmin):
     inlines = [RecipeSubmissionImageInline]
-    list_display = ('title', 'user', 'status', 'created_at')
-    actions = ['approve_submissions', 'reject_submissions']
+    list_display = ("name", "user", "status", "created_at")
+    actions = ["approve_submissions", "reject_submissions"]
     action_form = SubmissionActionForm
 
     @admin.action(description='Approve selected submissions')

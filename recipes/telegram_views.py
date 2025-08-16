@@ -5,7 +5,9 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.views.generic import TemplateView
 
 from account.telegram import get_user_from_init_data, TelegramInitDataError
-from .models import RecipeSubmission, RecipeSubmissionImage
+import json
+
+from .models import RecipeSubmission, RecipeSubmissionImage, Category
 from .serializers import RecipeSubmissionSerializer
 
 
@@ -23,10 +25,16 @@ class TelegramRecipeSubmissionCreateView(APIView):
             return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         data = request.data.copy()
-        data.pop('init_data', None)
+        data.pop("init_data", None)
+        for key in ["ingredients", "steps"]:
+            if key in data and isinstance(data[key], str):
+                try:
+                    data[key] = json.loads(data[key])
+                except json.JSONDecodeError:
+                    return Response({"error": f"Invalid {key}"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = RecipeSubmissionSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        submission = RecipeSubmission.objects.create(user=user, **serializer.validated_data)
+        submission = serializer.save(user=user)
 
         images = request.FILES.getlist('images')
         if len(images) > 5:
@@ -55,4 +63,10 @@ class TelegramRecipeSubmissionMineView(APIView):
 
 
 class TelegramRecipeFormView(TemplateView):
-    template_name = 'telegram/recipe_form.html'
+    template_name = "telegram/recipe_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        context["plans"] = RecipeSubmission.PLAN_CHOICES
+        return context

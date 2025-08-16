@@ -496,19 +496,29 @@ class TestRecipeSubmissionApproval(APITestCase):
             last_name="Mitter",
             password="StrongPass1",
         )
+        self.category = Category.objects.create(name="Dessert")
 
-    def test_tags_become_categories_and_translations_copied(self):
+    def test_submission_copies_fields_and_categories(self):
         sub = RecipeSubmission.objects.create(
             user=self.user,
-            title="Cake",
-            short_description="tasty",
-            ingredients="flour",
-            steps="mix",
-            tags="Dessert, Sweet",
+            name="Cake",
+            name_ru="Торт",
+            name_uz="Tort",
+            description="tasty",
+            description_ru="вкусный",
+            description_uz="mazali",
+            prep_time=5,
+            cook_time=10,
+            servings=4,
+            subscription_plan=Subscription.PLAN_STANDARD,
+            ingredients=[{"name": "flour"}],
+            steps=[{"description": "mix"}],
         )
+        sub.categories.add(self.category)
         recipe = sub.approve()
-        names = set(recipe.categories.values_list("name", flat=True))
-        assert names == {"Dessert", "Sweet"}
-        assert recipe.name_ru == "Cake"
-        assert recipe.description_ru == "tasty"
+        assert recipe.name_ru == "Торт"
+        assert recipe.description_uz == "mazali"
+        assert list(recipe.categories.values_list("id", flat=True)) == [self.category.id]
+        assert recipe.ingredients.first().name == "flour"
+        assert recipe.instructions.first().description == "mix"
 
