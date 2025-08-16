@@ -4,6 +4,7 @@ from django.core.management import call_command
 from django.shortcuts import render, redirect
 from django.urls import path
 from django import forms
+from django.contrib.admin.helpers import ActionForm
 
 from .forms import EdamamImportForm, SpoonacularImportForm, TheMealDBImportForm
 from .models import (
@@ -260,7 +261,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 
-class SubmissionActionForm(forms.Form):
+class SubmissionActionForm(ActionForm):
     note = forms.CharField(required=False, label='Moderator note')
 
 
