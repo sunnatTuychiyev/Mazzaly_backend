@@ -2,7 +2,16 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
-from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem, MealPlan, MealType, Category
+from recipes.models import (
+    Recipe,
+    Ingredient,
+    Instruction,
+    ShoppingListItem,
+    MealPlan,
+    MealType,
+    Category,
+    RecipeSubmission,
+)
 import datetime
 from django.utils import timezone
 from unittest.mock import patch
@@ -477,4 +486,39 @@ class MealPlanLanguageTests(APITestCase):
         assert res.data["recipe"]["ingredients"][0]["name"] == "Sugar-ru"
         assert res.data["recipe"]["instructions"][0]["description"] == "Mix well-ru"
         assert res.data["type"].lower() == "dinner-ru"
+
+
+class TestRecipeSubmissionApproval(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="submitter@example.com",
+            first_name="Sub",
+            last_name="Mitter",
+            password="StrongPass1",
+        )
+        self.category = Category.objects.create(name="Dessert")
+
+    def test_submission_copies_fields_and_categories(self):
+        sub = RecipeSubmission.objects.create(
+            user=self.user,
+            name="Cake",
+            name_ru="Торт",
+            name_uz="Tort",
+            description="tasty",
+            description_ru="вкусный",
+            description_uz="mazali",
+            prep_time=5,
+            cook_time=10,
+            servings=4,
+            subscription_plan=Subscription.PLAN_STANDARD,
+            ingredients=[{"name": "flour"}],
+            steps=[{"description": "mix"}],
+        )
+        sub.categories.add(self.category)
+        recipe = sub.approve()
+        assert recipe.name_ru == "Торт"
+        assert recipe.description_uz == "mazali"
+        assert list(recipe.categories.values_list("id", flat=True)) == [self.category.id]
+        assert recipe.ingredients.first().name == "flour"
+        assert recipe.instructions.first().description == "mix"
 

@@ -4,7 +4,8 @@ from .models import (
     Category, MealType, Recipe,
     Ingredient, Instruction,
     MealPlan, ShoppingListItem,
-    RecipeRating
+    RecipeRating,
+    RecipeSubmission
 )
 
 # CATEGORY
@@ -270,3 +271,66 @@ class RecipeRatingSerializer(serializers.ModelSerializer):
         model = RecipeRating
         fields = ['id', 'user', 'recipe', 'rating', 'comment', 'created']
         read_only_fields = ['user', 'recipe', 'created']
+
+# RECIPE SUBMISSION
+class IngredientInputSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    name_ru = serializers.CharField(required=False, allow_blank=True, default="")
+    name_uz = serializers.CharField(required=False, allow_blank=True, default="")
+    amount = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    unit = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    preparation = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
+
+class StepInputSerializer(serializers.Serializer):
+    description = serializers.CharField()
+    description_ru = serializers.CharField(required=False, allow_blank=True, default="")
+    description_uz = serializers.CharField(required=False, allow_blank=True, default="")
+
+
+class RecipeSubmissionSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+    ingredients = IngredientInputSerializer(many=True)
+    steps = StepInputSerializer(many=True)
+    categories = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), many=True, required=False
+    )
+
+    class Meta:
+        model = RecipeSubmission
+        fields = [
+            "id",
+            "name",
+            "name_uz",
+            "name_ru",
+            "description",
+            "description_uz",
+            "description_ru",
+            "prep_time",
+            "cook_time",
+            "servings",
+            "subscription_plan",
+            "healthy",
+            "calories",
+            "protein",
+            "fats",
+            "carbs",
+            "categories",
+            "ingredients",
+            "steps",
+            "status",
+            "moderator_note",
+            "images",
+            "created_at",
+        ]
+        read_only_fields = ["status", "moderator_note", "images", "created_at"]
+
+    def get_images(self, obj):
+        return [img.image.url for img in obj.images.all()]
+
+    def create(self, validated_data):
+        categories = validated_data.pop("categories", [])
+        submission = RecipeSubmission.objects.create(**validated_data)
+        if categories:
+            submission.categories.set(categories)
+        return submission

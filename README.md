@@ -168,6 +168,46 @@ To use this backend from a Telegram Web App ("mini app"), configure the
 returns a JWT token. Users authenticated through Telegram are created
 automatically using their Telegram ID.
 
+## Telegram Recipe Submissions
+
+Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields like `name`, `name_uz`, `name_ru`, `description`, `description_uz`, `description_ru`, `prep_time`, `cook_time`, `servings`, `subscription_plan`, `healthy`, `calories`, `protein`, `fats`, `carbs`, `categories` (repeatable), structured `ingredients` and `steps` JSON strings, optional `images` (up to five files) and the `init_data` string from Telegram. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
+
+Example submission:
+
+```bash
+curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
+  -F "name=My Salad" \
+  -F "description=Tasty" \
+  -F "prep_time=5" \
+  -F "cook_time=0" \
+  -F "servings=2" \
+  -F 'ingredients=[{"name":"lettuce"}]' \
+  -F 'steps=[{"description":"chop"}]' \
+  -F "init_data=<INIT_DATA>"
+```
+
+List your submissions:
+
+```bash
+curl -G --data-urlencode "init_data=<INIT_DATA>" \
+  https://localhost:8000/api/telegram/recipe-submissions/mine/
+```
+
+### Try it with a bot
+
+This repository includes a minimal `python-telegram-bot` script that sends a
+WebApp button on `/start`. Configure the script with environment variables and
+run it locally:
+
+```bash
+pip install python-telegram-bot --quiet
+export TELEGRAM_BOT_TOKEN=<your bot token>
+export WEBAPP_URL=https://localhost:8000/telegram/recipes/
+python telegram_bot_example.py
+```
+
+After launching the script, send `/start` to your bot. Telegram should show a
+button that opens the recipe submission form.
 ## Authenticated Requests
 
 Include the JWT access token in the `Authorization` header. The token may be
