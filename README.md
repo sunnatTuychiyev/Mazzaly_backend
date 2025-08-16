@@ -168,6 +168,28 @@ To use this backend from a Telegram Web App ("mini app"), configure the
 returns a JWT token. Users authenticated through Telegram are created
 automatically using their Telegram ID.
 
+## Telegram Recipe Submissions
+
+Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields `title`, `short_description`, `ingredients`, `steps`, `tags`, optional `images` (up to five files) and the `init_data` string from Telegram. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
+
+Example submission:
+
+```bash
+curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
+  -F "title=My Salad" \
+  -F "short_description=Tasty" \
+  -F "ingredients=lettuce\nsalt" \
+  -F "steps=chop\nmix" \
+  -F "tags=salad,quick" \
+  -F "init_data=<INIT_DATA>"
+```
+
+List your submissions:
+
+```bash
+curl -G --data-urlencode "init_data=<INIT_DATA>" \
+  https://localhost:8000/api/telegram/recipe-submissions/mine/
+```
 ## Authenticated Requests
 
 Include the JWT access token in the `Authorization` header. The token may be

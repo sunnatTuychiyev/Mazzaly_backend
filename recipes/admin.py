@@ -3,6 +3,7 @@ from django.contrib import admin, messages
 from django.core.management import call_command
 from django.shortcuts import render, redirect
 from django.urls import path
+from django import forms
 
 from .forms import EdamamImportForm, SpoonacularImportForm, TheMealDBImportForm
 from .models import (
@@ -14,6 +15,8 @@ from .models import (
     MealPlan,
     ShoppingListItem,
     RecipeRating,
+    RecipeSubmission,
+    RecipeSubmissionImage,
 )
 
 # Category va MealType’ni admin panelga qo‘shish
@@ -255,6 +258,36 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 
+
+
+class SubmissionActionForm(forms.Form):
+    note = forms.CharField(required=False, label='Moderator note')
+
+
+class RecipeSubmissionImageInline(admin.TabularInline):
+    model = RecipeSubmissionImage
+    extra = 0
+
+
+@admin.register(RecipeSubmission)
+class RecipeSubmissionAdmin(admin.ModelAdmin):
+    inlines = [RecipeSubmissionImageInline]
+    list_display = ('title', 'user', 'status', 'created_at')
+    actions = ['approve_submissions', 'reject_submissions']
+    action_form = SubmissionActionForm
+
+    @admin.action(description='Approve selected submissions')
+    def approve_submissions(self, request, queryset):
+        for sub in queryset:
+            sub.approve()
+        self.message_user(request, 'Selected submissions approved.')
+
+    @admin.action(description='Reject selected submissions')
+    def reject_submissions(self, request, queryset):
+        note = request.POST.get('note', '')
+        for sub in queryset:
+            sub.reject(note)
+        self.message_user(request, 'Selected submissions rejected.')
 
 admin.site.register(MealPlan)
 admin.site.register(ShoppingListItem)

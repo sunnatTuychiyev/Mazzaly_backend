@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Submit Recipe</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<h1>Submit Recipe</h1>
+<form id="recipe-form">
+    <div><input type="text" name="title" placeholder="Title" required></div>
+    <div><textarea name="short_description" placeholder="Short description"></textarea></div>
+    <div><textarea name="ingredients" placeholder="Ingredients (one per line)"></textarea></div>
+    <div><textarea name="steps" placeholder="Steps (one per line)"></textarea></div>
+    <div><input type="text" name="tags" placeholder="Tags"></div>
+    <div><input type="file" name="images" multiple></div>
+    <button type="submit">Send</button>
+</form>
+<script>
+const tg = window.Telegram.WebApp;
+const form = document.getElementById('recipe-form');
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
+    const resp = await fetch('/api/telegram/recipe-submissions/', {method: 'POST', body: data});
+    const json = await resp.json();
+    alert(JSON.stringify(json));
+});
+if (tg.expand) { tg.expand(); }
+</script>
+</body>
+</html>

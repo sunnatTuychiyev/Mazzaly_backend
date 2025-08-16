@@ -4,7 +4,8 @@ from .models import (
     Category, MealType, Recipe,
     Ingredient, Instruction,
     MealPlan, ShoppingListItem,
-    RecipeRating
+    RecipeRating,
+    RecipeSubmission
 )
 
 # CATEGORY
@@ -270,3 +271,18 @@ class RecipeRatingSerializer(serializers.ModelSerializer):
         model = RecipeRating
         fields = ['id', 'user', 'recipe', 'rating', 'comment', 'created']
         read_only_fields = ['user', 'recipe', 'created']
+
+# RECIPE SUBMISSION
+class RecipeSubmissionSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RecipeSubmission
+        fields = [
+            'id', 'title', 'short_description', 'ingredients', 'steps', 'tags',
+            'status', 'moderator_note', 'images', 'created_at'
+        ]
+        read_only_fields = ['status', 'moderator_note', 'images', 'created_at']
+
+    def get_images(self, obj):
+        return [img.image.url for img in obj.images.all()]

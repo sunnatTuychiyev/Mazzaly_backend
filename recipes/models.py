@@ -136,3 +136,68 @@ class RecipeRating(models.Model):
 
     def __str__(self):
         return f"{self.user} rated {self.recipe} as {self.rating}"
+
+# --- USER RECIPE SUBMISSION ---
+class RecipeSubmission(models.Model):
+    STATUS_PENDING = 'pending'
+    STATUS_APPROVED = 'approved'
+    STATUS_REJECTED = 'rejected'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'pending'),
+        (STATUS_APPROVED, 'approved'),
+        (STATUS_REJECTED, 'rejected'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='recipe_submissions')
+    title = models.CharField(max_length=255)
+    short_description = models.TextField(blank=True)
+    ingredients = models.TextField(help_text='One ingredient per line')
+    steps = models.TextField(help_text='One step per line')
+    tags = models.CharField(max_length=255, blank=True, help_text='Comma-separated tags')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    moderator_note = models.TextField(blank=True)
+    recipe = models.ForeignKey(Recipe, null=True, blank=True, on_delete=models.SET_NULL, related_name='submissions')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.status})"
+
+    def approve(self):
+        
+        if self.status == self.STATUS_APPROVED:
+            return self.recipe
+        recipe = Recipe.objects.create(
+            name=self.title,
+            description=self.short_description or '',
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+        )
+        for line in self.ingredients.splitlines():
+            line = line.strip()
+            if line:
+                Ingredient.objects.create(recipe=recipe, name=line)
+        for idx, line in enumerate(self.steps.splitlines(), start=1):
+            line = line.strip()
+            if line:
+                Instruction.objects.create(recipe=recipe, step_number=idx, description=line)
+        first_image = self.images.first()
+        if first_image:
+            recipe.image.save(first_image.image.name, first_image.image.file, save=True)
+        self.status = self.STATUS_APPROVED
+        self.recipe = recipe
+        self.save()
+        return recipe
+
+    def reject(self, note=''):
+        self.status = self.STATUS_REJECTED
+        if note:
+            self.moderator_note = note
+        self.save()
+
+class RecipeSubmissionImage(models.Model):
+    submission = models.ForeignKey(RecipeSubmission, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='recipe_submissions/')
+
+    def __str__(self):
+        return f"Image for {self.submission_id}"
