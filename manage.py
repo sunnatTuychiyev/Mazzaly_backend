@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import threading
 
 
 def main():
@@ -15,6 +16,14 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+
+    if "runserver" in sys.argv and (
+        os.environ.get("RUN_MAIN") == "true" or os.environ.get("RUN_MAIN") is None
+    ):
+        from telegram_bot_example import main as telegram_bot_main
+
+        threading.Thread(target=telegram_bot_main, daemon=True).start()
+
     execute_from_command_line(sys.argv)
 
 
