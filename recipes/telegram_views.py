@@ -66,7 +66,7 @@ class TelegramRecipeSubmissionMineView(APIView):
 class TelegramRecipeFormView(TemplateView):
     template_name = "telegram/recipe_form.html"
 
-     def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         """Allow access only when opened inside Telegram."""
         user_agent = request.META.get("HTTP_USER_AGENT", "")
         tg_platform = request.GET.get("tgWebAppPlatform") or request.GET.get("tgwebappplatform")
