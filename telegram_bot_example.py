@@ -13,13 +13,14 @@ if TOKEN is None:
     raise RuntimeError("Set the TELEGRAM_BOT_TOKEN environment variable before running this script.")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a WebApp button that opens the recipe submission form."""
+    """Respond to /start with a greeting and a WebApp button."""
     button = InlineKeyboardButton(
-        text="🍳 Yangi retsept",
+        text="Retsept qo'shish",
         web_app=WebAppInfo(url=WEBAPP_URL),
     )
     await update.message.reply_text(
-        "Retsept yuborish uchun tugmani bosing:",
+        "Assalomu alaykum! Mazzaly saytiga retsept qo'shmoqchi bo'lsangiz, "
+        "ushbu tugmani bosing:",
         reply_markup=InlineKeyboardMarkup([[button]]),
     )
 
