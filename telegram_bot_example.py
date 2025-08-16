@@ -8,7 +8,6 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 # Read configuration from environment variables for convenience
 WEBAPP_URL = config("WEBAPP_URL", default="https://localhost:8000/telegram/recipes/")
-TOKEN = config("TELEGRAM_BOT_TOKEN", default=None)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Respond to /start with a greeting and a WebApp button."""
@@ -23,13 +22,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 def main() -> None:
-    if TOKEN is None:
-        raise RuntimeError(
-            "Set the TELEGRAM_BOT_TOKEN environment variable before running this script."
-        )
+    """Start the Telegram bot if a token is configured."""
+    token = config("TELEGRAM_BOT_TOKEN", default=None)
+    if not token:
+        return
 
     async def run_bot() -> None:
-        app = Application.builder().token(TOKEN).build()
+        app = Application.builder().token(token).build()
         app.add_handler(CommandHandler("start", start))
 
         await app.initialize()
