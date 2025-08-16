@@ -1,5 +1,7 @@
 """Minimal Telegram bot that sends a WebApp button on /start."""
 
+import asyncio
+
 from decouple import config
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
@@ -27,6 +29,9 @@ def main() -> None:
         )
     application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     application.run_polling()
 
 if __name__ == "__main__":
