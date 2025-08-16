@@ -1,6 +1,7 @@
 from django.contrib import admin
 from analytics import admin as analytics_admin
 from django.urls import path, include
+from recipes.telegram_views import TelegramRecipeFormView
 
 admin.site.site_header = "Mazzaly Administration"
 admin.site.site_title = "Mazzaly Admin Portal"
@@ -36,6 +37,7 @@ path('admin/', admin.site.urls),
     path('api/', include('recipes.urls')),     # Recipes, ingredients, meal plan va h.k.
     path('analytics/', include('analytics.urls')),
     path('social/', include('social_django.urls', namespace='social')),  # Google Auth
+    path('telegram/recipes/', TelegramRecipeFormView.as_view(), name='telegram-recipe-form'),
 ] + swagger_urls
 
 # Media uchun:

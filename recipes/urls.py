@@ -4,6 +4,10 @@ from .views import (
     MealPlanViewSet, ShoppingListItemViewSet,
     IngredientListView, CategoryViewSet, MealTypeViewSet,
 )
+from .telegram_views import (
+    TelegramRecipeSubmissionCreateView, TelegramRecipeSubmissionMineView
+)
+
 
 router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet, basename='recipe')
@@ -12,11 +16,12 @@ router.register(r'meal-plan', MealPlanViewSet, basename='mealplan')
 router.register(r'shopping-list', ShoppingListItemViewSet, basename='shoppinglist')
 router.register(r'categories', CategoryViewSet, basename='category')
 router.register(r'mealtypes', MealTypeViewSet, basename='mealtype')
-
 urlpatterns = router.urls
 
 # Ingredient qidiruv/avto-complete uchun
 from django.urls import path
 urlpatterns += [
     path('ingredients/', IngredientListView.as_view(), name='ingredient-list'),
+    path('telegram/recipe-submissions/', TelegramRecipeSubmissionCreateView.as_view(), name='telegram-recipe-submission-create'),
+    path('telegram/recipe-submissions/mine/', TelegramRecipeSubmissionMineView.as_view(), name='telegram-recipe-submission-mine'),
 ]

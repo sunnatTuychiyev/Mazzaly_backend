@@ -30,11 +30,7 @@ except Exception:  # pragma: no cover - drf_yasg optional
 
         TYPE_OBJECT = TYPE_STRING = None
 from social_django.utils import psa
-from urllib.parse import parse_qsl
-import json
-import hashlib
-import hmac
-import time
+from .telegram import get_user_from_init_data, TelegramInitDataError
 
 def get_tokens_for_user(user):
     """Return refresh and access tokens for the given user."""
@@ -211,31 +207,10 @@ class TelegramAuthView(APIView):
     def post(self, request):
         serializer = TelegramAuthSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        init_data = serializer.validated_data['init_data']
-        params = dict(parse_qsl(init_data, keep_blank_values=True))
-        hash_value = params.pop('hash', None)
-        if not hash_value:
-            return Response({'error': 'Missing hash'}, status=status.HTTP_400_BAD_REQUEST)
-        data_check_string = '\n'.join(f"{k}={v}" for k, v in sorted(params.items()))
-        secret_key = hashlib.sha256(settings.TELEGRAM_BOT_TOKEN.encode()).digest()
-        calc_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
-        if calc_hash != hash_value:
-            return Response({'error': 'Invalid hash'}, status=status.HTTP_400_BAD_REQUEST)
-        auth_date = int(params.get('auth_date', '0'))
-        if time.time() - auth_date > 86400:
-            return Response({'error': 'Auth date expired'}, status=status.HTTP_400_BAD_REQUEST)
-        user_data = json.loads(params.get('user', '{}'))
-        telegram_id = str(user_data.get('id')) if user_data else None
-        if not telegram_id:
-            return Response({'error': 'Invalid user data'}, status=status.HTTP_400_BAD_REQUEST)
-        user, _ = User.objects.get_or_create(
-            telegram_id=telegram_id,
-            defaults={
-                'email': f'tg_{telegram_id}@example.com',
-                'first_name': user_data.get('first_name', ''),
-                'last_name': user_data.get('last_name', ''),
-                'is_email_verified': True,
-            },
-        )
+        init_data = serializer.validated_data["init_data"]
+        try:
+            user = get_user_from_init_data(init_data)
+        except TelegramInitDataError as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         token = RefreshToken.for_user(user)
-        return Response({'user': UserSerializer(user).data, 'token': str(token.access_token)})
+        return Response({"user": UserSerializer(user).data, "token": str(token.access_token)})
