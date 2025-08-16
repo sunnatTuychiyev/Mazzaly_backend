@@ -170,7 +170,7 @@ automatically using their Telegram ID.
 
 ## Telegram Recipe Submissions
 
-Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields `title`, `short_description`, `ingredients`, `steps`, `tags`, optional `images` (up to five files) and the `init_data` string from Telegram. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
+Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields `title`, `short_description`, `ingredients`, `steps`, `tags`, optional `images` (up to five files) and the `init_data` string from Telegram. Submitted `tags` are turned into recipe categories when staff approve the submission. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
 
 Example submission:
 

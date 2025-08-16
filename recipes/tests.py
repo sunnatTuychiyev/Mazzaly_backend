@@ -2,7 +2,16 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from account.models import User, Subscription
-from recipes.models import Recipe, Ingredient, Instruction, ShoppingListItem, MealPlan, MealType, Category
+from recipes.models import (
+    Recipe,
+    Ingredient,
+    Instruction,
+    ShoppingListItem,
+    MealPlan,
+    MealType,
+    Category,
+    RecipeSubmission,
+)
 import datetime
 from django.utils import timezone
 from unittest.mock import patch
@@ -477,4 +486,29 @@ class MealPlanLanguageTests(APITestCase):
         assert res.data["recipe"]["ingredients"][0]["name"] == "Sugar-ru"
         assert res.data["recipe"]["instructions"][0]["description"] == "Mix well-ru"
         assert res.data["type"].lower() == "dinner-ru"
+
+
+class TestRecipeSubmissionApproval(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="submitter@example.com",
+            first_name="Sub",
+            last_name="Mitter",
+            password="StrongPass1",
+        )
+
+    def test_tags_become_categories_and_translations_copied(self):
+        sub = RecipeSubmission.objects.create(
+            user=self.user,
+            title="Cake",
+            short_description="tasty",
+            ingredients="flour",
+            steps="mix",
+            tags="Dessert, Sweet",
+        )
+        recipe = sub.approve()
+        names = set(recipe.categories.values_list("name", flat=True))
+        assert names == {"Dessert", "Sweet"}
+        assert recipe.name_ru == "Cake"
+        assert recipe.description_ru == "tasty"
 

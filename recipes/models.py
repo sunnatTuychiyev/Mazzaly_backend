@@ -163,12 +163,16 @@ class RecipeSubmission(models.Model):
         return f"{self.title} ({self.status})"
 
     def approve(self):
-        
+
         if self.status == self.STATUS_APPROVED:
             return self.recipe
         recipe = Recipe.objects.create(
             name=self.title,
+            name_ru=self.title,
+            name_uz=self.title,
             description=self.short_description or '',
+            description_ru=self.short_description or '',
+            description_uz=self.short_description or '',
             prep_time=1,
             cook_time=1,
             servings=1,
@@ -181,6 +185,13 @@ class RecipeSubmission(models.Model):
             line = line.strip()
             if line:
                 Instruction.objects.create(recipe=recipe, step_number=idx, description=line)
+        tag_list = [t.strip() for t in self.tags.split(',') if t.strip()]
+        if tag_list:
+            categories = []
+            for tag in tag_list:
+                category, _ = Category.objects.get_or_create(name=tag)
+                categories.append(category)
+            recipe.categories.add(*categories)
         first_image = self.images.first()
         if first_image:
             recipe.image.save(first_image.image.name, first_image.image.file, save=True)
