@@ -32,7 +32,8 @@ def main() -> None:
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    application.run_polling()
+    # Disable signal handlers since we're running in a background thread
+    application.run_polling(stop_signals=None)
 
 if __name__ == "__main__":
     main()
