@@ -1,8 +1,16 @@
+"""Minimal Telegram bot that sends a WebApp button on /start."""
+
+import os
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-# URL of the mini app hosted by this Django project
-WEBAPP_URL = "https://<your-domain>/telegram/recipes/"
+# Read configuration from environment variables for convenience
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://localhost:8000/telegram/recipes/")
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
+if TOKEN is None:
+    raise RuntimeError("Set the TELEGRAM_BOT_TOKEN environment variable before running this script.")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a WebApp button that opens the recipe submission form."""
@@ -16,7 +24,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 def main() -> None:
-    application = Application.builder().token("<TELEGRAM_BOT_TOKEN>").build()
+    application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.run_polling()
 

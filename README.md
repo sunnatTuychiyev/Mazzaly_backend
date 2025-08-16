@@ -190,6 +190,22 @@ List your submissions:
 curl -G --data-urlencode "init_data=<INIT_DATA>" \
   https://localhost:8000/api/telegram/recipe-submissions/mine/
 ```
+
+### Try it with a bot
+
+This repository includes a minimal `python-telegram-bot` script that sends a
+WebApp button on `/start`. Configure the script with environment variables and
+run it locally:
+
+```bash
+pip install python-telegram-bot --quiet
+export TELEGRAM_BOT_TOKEN=<your bot token>
+export WEBAPP_URL=https://localhost:8000/telegram/recipes/
+python telegram_bot_example.py
+```
+
+After launching the script, send `/start` to your bot. Telegram should show a
+button that opens the recipe submission form.
 ## Authenticated Requests
 
 Include the JWT access token in the `Authorization` header. The token may be
