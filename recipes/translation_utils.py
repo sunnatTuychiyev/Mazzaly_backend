@@ -679,6 +679,52 @@ for phrase, translations in FOOD_TRANSLATIONS.items():
         PHRASE_DICT.setdefault(lang, {})[phrase] = value
 
 
+def _tahrirchi_translate(text: str, dest: str, src: str) -> str:
+    """Translate using Tahrirchi's ``translate-v2`` API if configured.
+
+    Expects ``TAHRIRCHI_API_KEY`` environment variable to be set. Optional
+    ``TAHRIRCHI_API_URL`` and ``TAHRIRCHI_MODEL`` environment variables can
+    override the default endpoint and model ("tilmoch" or "sayqalchi").
+    """
+    api_key = os.getenv("TAHRIRCHI_API_KEY")
+    if not api_key:
+        return ""
+
+    url = os.getenv(
+        "TAHRIRCHI_API_URL", "https://websocket.tahrirchi.uz/translate-v2"
+    )
+    model = os.getenv("TAHRIRCHI_MODEL", "tilmoch")
+
+    # Map our language codes to Tahrirchi's expectations
+    lang_map = {
+        "en": "eng_Latn",
+        "uz": "uzn_Latn",
+        "ru": "rus_Cyrl",
+    }
+    src_code = lang_map.get(src)
+    dest_code = lang_map.get(dest)
+    if not src_code or not dest_code:
+        return ""
+
+    try:  # pragma: no cover - network
+        resp = requests.post(
+            url,
+            json={
+                "text": text,
+                "source_lang": src_code,
+                "target_lang": dest_code,
+                "model": model,
+            },
+            headers={"Authorization": api_key, "Content-Type": "application/json"},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return data.get("translated_text", "")
+    except Exception:
+        return ""
+
+
 def _openai_translate(text: str, dest: str, src: str) -> str:
     """Translate using OpenAI if available and configured."""
     if not openai or not os.getenv("OPENAI_API_KEY"):
@@ -745,8 +791,9 @@ except Exception:  # If initialization fails, fall back to manual dictionary
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language.
 
-    Tries OpenAI's API first when configured, then googletrans, and finally
-    a small built-in dictionary as a last resort.
+    Tries the Tahrirchi API first when configured, then OpenAI, googletrans,
+    Google's web endpoint, and finally a small built-in dictionary as a
+    last resort.
     """
     if not text:
         return ''
@@ -759,6 +806,11 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
         manual = _manual_translate(text, dest)
         if manual.lower() != text.lower():
             return manual
+
+    result = _tahrirchi_translate(text, dest, src)
+    if result:
+        return result
+
     result = _openai_translate(text, dest, src)
     if result:
         return result
