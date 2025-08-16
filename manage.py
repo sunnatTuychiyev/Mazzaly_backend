@@ -17,8 +17,10 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
 
-    if "runserver" in sys.argv and (
-        os.environ.get("RUN_MAIN") == "true" or os.environ.get("RUN_MAIN") is None
+    run_main = os.environ.get("RUN_MAIN")
+    if (
+        any(cmd in sys.argv for cmd in ("runserver", "runserver_plus"))
+        and run_main in (None, "true", "True")
     ):
         from telegram_bot_example import main as telegram_bot_main
 
