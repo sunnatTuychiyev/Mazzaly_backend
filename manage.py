@@ -3,6 +3,7 @@
 import os
 import sys
 import threading
+from decouple import config
 
 
 def main():
@@ -21,6 +22,7 @@ def main():
     if (
         any(cmd in sys.argv for cmd in ("runserver", "runserver_plus"))
         and run_main in (None, "true", "True")
+        and config("TELEGRAM_BOT_TOKEN", default=None)
     ):
         from telegram_bot_example import main as telegram_bot_main
 

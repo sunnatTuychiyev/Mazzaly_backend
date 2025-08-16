@@ -1,16 +1,12 @@
 """Minimal Telegram bot that sends a WebApp button on /start."""
 
-import os
-
+from decouple import config
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # Read configuration from environment variables for convenience
-WEBAPP_URL = os.getenv("WEBAPP_URL", "https://localhost:8000/telegram/recipes/")
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-
-if TOKEN is None:
-    raise RuntimeError("Set the TELEGRAM_BOT_TOKEN environment variable before running this script.")
+WEBAPP_URL = config("WEBAPP_URL", default="https://localhost:8000/telegram/recipes/")
+TOKEN = config("TELEGRAM_BOT_TOKEN", default=None)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Respond to /start with a greeting and a WebApp button."""
@@ -25,6 +21,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 def main() -> None:
+    if TOKEN is None:
+        raise RuntimeError(
+            "Set the TELEGRAM_BOT_TOKEN environment variable before running this script."
+        )
     application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.run_polling()
