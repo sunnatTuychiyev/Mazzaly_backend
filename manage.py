@@ -19,10 +19,15 @@ def main():
         ) from exc
 
     run_main = os.environ.get("RUN_MAIN")
+    werkzeug_run_main = os.environ.get("WERKZEUG_RUN_MAIN")
     if (
         any(cmd in sys.argv for cmd in ("runserver", "runserver_plus"))
-        and run_main in (None, "true", "True")
         and config("TELEGRAM_BOT_TOKEN", default=None)
+        and (
+            run_main == "true"
+            or werkzeug_run_main == "true"
+            or "--noreload" in sys.argv
+        )
     ):
         from telegram_bot_example import main as telegram_bot_main
 
