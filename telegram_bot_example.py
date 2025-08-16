@@ -3,7 +3,7 @@
 import asyncio
 
 from decouple import config
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # Read configuration from environment variables for convenience
@@ -27,13 +27,17 @@ def main() -> None:
         raise RuntimeError(
             "Set the TELEGRAM_BOT_TOKEN environment variable before running this script."
         )
-    application = Application.builder().token(TOKEN).build()
-    application.add_handler(CommandHandler("start", start))
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    # Disable signal handlers since we're running in a background thread
-    application.run_polling(stop_signals=None)
+    async def run_bot() -> None:
+        app = Application.builder().token(TOKEN).build()
+        app.add_handler(CommandHandler("start", start))
+
+        await app.initialize()
+        await app.start()
+        await app.updater.start_polling(drop_pending_updates=True)
+        await app.updater.idle()
+
+    asyncio.run(run_bot())
 
 if __name__ == "__main__":
     main()
