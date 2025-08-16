@@ -211,6 +211,11 @@ python telegram_bot_example.py
 
 After launching the script, send `/start` to your bot. Telegram should show a
 button that opens the recipe submission form.
+
+The recipe form endpoint (`/telegram/recipes/`) checks the `User-Agent` header
+and refuses requests that do not originate from Telegram. Opening the URL in a
+regular browser returns HTTP 403, so access it through a WebApp button or a
+`t.me/<bot>?startapp=recipes` link.
 ## Authenticated Requests
 
 Include the JWT access token in the `Authorization` header. The token may be
