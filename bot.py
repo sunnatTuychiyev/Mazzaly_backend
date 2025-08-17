@@ -1,6 +1,9 @@
 import os, re, sys
+from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
+
+load_dotenv()
 
 TOKEN = (os.getenv("TELEGRAM_BOT_TOKEN") or "").strip()
 WEBAPP_URL = (os.getenv("WEBAPP_URL") or "").strip()
@@ -9,7 +12,7 @@ def valid_token(t):
     return bool(re.fullmatch(r"\d{6,12}:[A-Za-z0-9_-]{30,}", t))
 
 if not valid_token(TOKEN):
-    sys.exit("TELEGRAM_BOT_TOKEN missing/invalid.")
+    sys.exit("TELEGRAM_BOT_TOKEN missing/invalid. Set TELEGRAM_BOT_TOKEN in your environment or .env file.")
 if not WEBAPP_URL.startswith("https://"):
     sys.exit("WEBAPP_URL must be public HTTPS.")
 

@@ -239,7 +239,9 @@ curl -G --data-urlencode "init_data=<INIT_DATA>" \
 ### Try it with a bot
 
 A minimal `python-telegram-bot` script is provided in `bot.py`.
-After configuring the environment variables, start it with:
+The script loads a `.env` file automatically, so set `TELEGRAM_BOT_TOKEN` and
+`WEBAPP_URL` there or export them in your shell. After configuring the
+environment variables, start it with:
 
 ```bash
 python bot.py
