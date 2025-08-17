@@ -4,17 +4,18 @@ import json
 import time
 from urllib.parse import parse_qsl
 
-from django.conf import settings
-
 
 class TelegramInitDataError(Exception):
     """Raised when Telegram init data is invalid."""
 
 
-def verify_init_data(init_data: str) -> dict:
+def verify_init_data(init_data: str, bot_token: str, max_age: int = 86400) -> dict:
     """Validate Telegram init data according to Telegram Mini App docs.
 
-    Returns the parsed parameters (without the hash) on success.
+    ``bot_token`` is the Telegram bot token used to derive the secret key.
+    ``max_age`` specifies the maximum allowed age (in seconds) for ``auth_date``.
+    Returns a dictionary containing the parsed key/value pairs (without the
+    ``hash``) and a decoded ``user`` object if present.
     """
     params = dict(parse_qsl(init_data, keep_blank_values=True))
     hash_value = params.pop('hash', None)
@@ -22,13 +23,15 @@ def verify_init_data(init_data: str) -> dict:
         raise TelegramInitDataError('Missing hash')
 
     data_check_string = '\n'.join(f"{k}={v}" for k, v in sorted(params.items()))
-    secret_key = hmac.new(b'WebAppData', settings.TELEGRAM_BOT_TOKEN.encode(), hashlib.sha256).digest()
+    secret_key = hmac.new(b'WebAppData', bot_token.encode(), hashlib.sha256).digest()
     calc_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(calc_hash, hash_value):
         raise TelegramInitDataError('Invalid hash')
 
     auth_date = int(params.get('auth_date', '0'))
-    if time.time() - auth_date > 86400:
+    if time.time() - auth_date > max_age:
         raise TelegramInitDataError('Auth date expired')
 
-    return params
+    user_json = params.get('user')
+    user = json.loads(user_json) if user_json else None
+    return {"data": params, "user": user}
