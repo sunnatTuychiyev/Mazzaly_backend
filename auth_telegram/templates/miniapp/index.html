@@ -10,15 +10,17 @@
 <div id="app"></div>
 <script>
 (function(){
-  const tg = window.Telegram?.WebApp;
   const app = document.getElementById('app');
-  if(!tg?.initDataUnsafe?.user){
+  app.innerHTML = '<p>Loading...</p>';
+
+  const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+  if(!tg || !tg.initData){
     app.innerHTML = '<h2>This page is only available via Telegram</h2>';
     return;
   }
-  tg.ready();
-  tg.expand();
-  const initData = tg.initData || '';
+  if(tg.ready) tg.ready();
+  if(tg.expand) tg.expand();
+  const initData = tg.initData;
   fetch('/api/auth/telegram/login/', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
@@ -26,8 +28,8 @@
   }).then(r=>r.json()).then(res=>{
     if(res.access){
       localStorage.setItem('access', res.access);
-      window.location.href = '/telegram/recipes/';
-    }else{
+      window.location.href = '/telegram/recipe-form/';
+    } else {
       app.innerHTML = '<h3>Auth error</h3>';
     }
   }).catch(()=>{
