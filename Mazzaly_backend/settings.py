@@ -1,19 +1,32 @@
 from pathlib import Path
-from decouple import config, Csv
+from decouple import config
 from datetime import timedelta
+import re
 
 # === Paths ===
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# === Required environment variables ===
+TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()
+WEBAPP_URL = config("WEBAPP_URL", default="").strip()
+BACKEND_ORIGIN = config("BACKEND_ORIGIN", default="").strip()
+SECRET_KEY = config("SECRET_KEY", default="").strip()
+
+if not re.fullmatch(r"\d{6,12}:[A-Za-z0-9_-]{30,}", TELEGRAM_BOT_TOKEN):
+    raise SystemExit(
+        "TELEGRAM_BOT_TOKEN missing/invalid. Set TELEGRAM_BOT_TOKEN in .env or environment"
+    )
+if not WEBAPP_URL.startswith("https://"):
+    raise SystemExit("WEBAPP_URL must start with https://")
+if not BACKEND_ORIGIN.startswith("https://"):
+    raise SystemExit("BACKEND_ORIGIN must start with https://")
+if not SECRET_KEY:
+    raise SystemExit("SECRET_KEY missing. Set it in .env or environment")
+
 # === Security ===
-SECRET_KEY = config('SECRET_KEY', default='your-dev-secret-key')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
-# Optional HTTPS settings (enabled via environment variables)
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
-SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
-CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
 
 # === Installed apps ===
 INSTALLED_APPS = [
@@ -246,21 +259,15 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 
 
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
-TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
-BACKEND_ORIGIN = config('BACKEND_ORIGIN', default='https://localhost:8000')
 EDAMAM_APP_ID = config('EDAMAM_APP_ID', default='')
 EDAMAM_APP_KEY = config('EDAMAM_APP_KEY', default='')
 EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
 EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    cast=Csv(),
-    default=BACKEND_ORIGIN,
-)
+CORS_ALLOWED_ORIGINS = [BACKEND_ORIGIN]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = list({BACKEND_ORIGIN}.union(CORS_ALLOWED_ORIGINS))
+CSRF_TRUSTED_ORIGINS = [BACKEND_ORIGIN]
 
 # === HTTPS / Security Settings ===
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
