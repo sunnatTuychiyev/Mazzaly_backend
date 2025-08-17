@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'account',
     'recipes',
     'analytics',
+    'auth_telegram',
     'django_filters',         # to‘g‘ri
     'django_extensions',      # to‘g‘ri
 ]
@@ -246,20 +247,16 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 
 SPOONACULAR_API_KEY = config('SPOONACULAR_API_KEY', default='')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN', default='')
+BACKEND_ORIGIN = config('BACKEND_ORIGIN', default='https://localhost:8000')
 EDAMAM_APP_ID = config('EDAMAM_APP_ID', default='')
 EDAMAM_APP_KEY = config('EDAMAM_APP_KEY', default='')
 EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
 EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
 # CORS settings
-# Do not use wildcard when credentials are included. Instead specify
-# allowed origins and enable credentials.
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    # Default to localhost for development and the production domain
-    default='http://localhost:8080,https://mazzaly.uz',
-).split(',')
+CORS_ALLOWED_ORIGINS = [BACKEND_ORIGIN]
 CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [BACKEND_ORIGIN]
 
 # === HTTPS / Security Settings ===
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)

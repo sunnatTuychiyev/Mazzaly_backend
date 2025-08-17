@@ -160,13 +160,45 @@ Ingredient, category, recipe and instruction forms expose additional fields
 for Uzbek and Russian translations so text can be entered in all three
 supported languages.
 
-## Telegram Mini App Authentication
+## Telegram Mini App Example
 
-To use this backend from a Telegram Web App ("mini app"), configure the
-`TELEGRAM_BOT_TOKEN` variable in your `.env` file. The endpoint
-`/api/telegram-auth/` accepts the `initData` string provided by Telegram and
-returns a JWT token. Users authenticated through Telegram are created
-automatically using their Telegram ID.
+Create a `.env` file with:
+
+```env
+TELEGRAM_BOT_TOKEN="<PUT_YOUR_TOKEN_HERE>"
+WEBAPP_URL="https://<your-public-domain>/telegram/recipes/"
+BACKEND_ORIGIN="https://<your-public-domain>"
+```
+
+Expose your local HTTPS server when testing:
+
+```bash
+# ngrok
+ngrok http https://localhost:8000
+# or cloudflared
+cloudflared tunnel --url https://localhost:8000
+```
+
+Configure the URL in @BotFather → **Bot Settings → Configure Mini App** and
+run the demo bot:
+
+```bash
+python bot.py
+```
+
+Opening the WebApp button posts Telegram's `initData` to
+`/api/auth/telegram/login/`, automatically creating or signing in the user and
+setting a JWT token cookie. The token can be used to access `/api/me/`.
+
+Test the login endpoint manually:
+
+```bash
+curl -X POST $BACKEND_ORIGIN/api/auth/telegram/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"init_data":"<INIT_DATA>"}'
+```
+
+If the page is opened outside Telegram it shows "This page is only available via Telegram".
 
 ## Telegram Recipe Submissions
 
@@ -195,19 +227,14 @@ curl -G --data-urlencode "init_data=<INIT_DATA>" \
 
 ### Try it with a bot
 
-This repository includes a minimal `python-telegram-bot` script that sends a
-WebApp button on `/start`. Configure the script with environment variables and
-run it locally:
+A minimal `python-telegram-bot` script is provided in `bot.py`.
+After configuring the environment variables, start it with:
 
 ```bash
-pip install python-telegram-bot --quiet
-export TELEGRAM_BOT_TOKEN=<your bot token>
-export WEBAPP_URL=https://localhost:8000/telegram/recipes/
-python telegram_bot_example.py
+python bot.py
 ```
 
-After launching the script, send `/start` to your bot. Telegram should show a
-button that opens the recipe submission form.
+Send `/start` to your bot and Telegram will show a button that opens the mini app.
 ## Authenticated Requests
 
 Include the JWT access token in the `Authorization` header. The token may be
