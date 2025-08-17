@@ -290,8 +290,8 @@ class StepInputSerializer(serializers.Serializer):
 
 class RecipeSubmissionSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
-    ingredients = IngredientInputSerializer(many=True)
-    steps = StepInputSerializer(many=True)
+    ingredients = IngredientInputSerializer(many=True, required=False, default=list)
+    steps = StepInputSerializer(many=True, required=False, default=list)
     categories = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), many=True, required=False
     )
