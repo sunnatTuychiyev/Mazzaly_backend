@@ -55,13 +55,13 @@ Create a `.env` file in the project root or export the variables in your shell:
 TELEGRAM_BOT_TOKEN="<PUT_YOUR_TOKEN_HERE>"
 WEBAPP_URL="https://<your-public-domain>/telegram/recipes/"
 BACKEND_ORIGIN="https://<your-public-domain>"
-DJANGO_SECRET_KEY="change-me"
+SECRET_KEY="change-me"
 
 # Alternatively
 export TELEGRAM_BOT_TOKEN="123456:ABCDEF..."
 export WEBAPP_URL="https://example.com/telegram/recipes/"
 export BACKEND_ORIGIN="https://example.com"
-export DJANGO_SECRET_KEY="change-me"
+export SECRET_KEY="change-me"
 ```
 
 ### Expose HTTPS locally
@@ -233,7 +233,7 @@ Copy `.env.example` to `.env` and set:
 TELEGRAM_BOT_TOKEN="<PUT_YOUR_TOKEN_HERE>"
 WEBAPP_URL="https://<your-public-domain>/telegram/recipes/"
 BACKEND_ORIGIN="https://<your-public-domain>"
-DJANGO_SECRET_KEY="change-me"
+SECRET_KEY="change-me"
 ```
 
 Replace the placeholders and ensure these variables are exported (or present in a `.env` file) before running `bot.py`; the bot will exit if they are missing.
