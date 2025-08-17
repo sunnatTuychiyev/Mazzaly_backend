@@ -170,6 +170,8 @@ WEBAPP_URL="https://<your-public-domain>/telegram/recipes/"
 BACKEND_ORIGIN="https://<your-public-domain>"
 ```
 
+Replace the placeholders and ensure these variables are exported (or present in a `.env` file) before running `bot.py`; the bot will exit if they are missing.
+
 Expose your local HTTPS server when testing:
 
 ```bash

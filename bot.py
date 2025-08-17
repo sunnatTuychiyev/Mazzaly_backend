@@ -1,9 +1,17 @@
+import os
+from dotenv import load_dotenv, find_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
-import os
+
+load_dotenv(find_dotenv(), override=True)
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 WEBAPP_URL = os.getenv("WEBAPP_URL")
+
+if not TOKEN or TOKEN.startswith("<"):
+    raise RuntimeError("TELEGRAM_BOT_TOKEN env var is missing or invalid")
+if not WEBAPP_URL or WEBAPP_URL.startswith("https://<"):
+    raise RuntimeError("WEBAPP_URL env var is missing or invalid")
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
