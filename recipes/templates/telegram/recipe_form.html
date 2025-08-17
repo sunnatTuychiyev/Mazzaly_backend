@@ -64,6 +64,21 @@
 </form>
 <script>
 const tg = window.Telegram.WebApp;
+
+(async () => {
+    const initData = tg.initData || tg.initDataUnsafe?.raw || '';
+    if (initData) {
+        try {
+            await fetch('/api/telegram-auth/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ init_data: initData }),
+            });
+        } catch (err) {
+            console.error('Auto sign-up failed', err);
+        }
+    }
+})();
 function addIngredientRow() {
     const tr = document.createElement('tr');
     tr.classList.add('ingredient-row');

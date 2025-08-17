@@ -69,8 +69,8 @@ class TelegramRecipeFormView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         """Allow access only when opened inside Telegram."""
         user_agent = request.META.get("HTTP_USER_AGENT", "")
-        tg_platform = request.GET.get("tgWebAppPlatform") or request.GET.get("tgwebappplatform")
-        if "telegram" not in user_agent.lower() and not tg_platform:
+        referer = request.META.get("HTTP_REFERER", "")
+        if "telegram" not in user_agent.lower() and "t.me" not in referer.lower():
             return HttpResponseForbidden("This page is only available via Telegram")
         return super().dispatch(request, *args, **kwargs)
 
