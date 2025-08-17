@@ -198,6 +198,8 @@ python bot.py
 Opening the WebApp button posts Telegram's `initData` to
 `/api/auth/telegram/login/`, automatically creating or signing in the user and
 setting a JWT token cookie. The token can be used to access `/api/me/`.
+If you open the same URL outside of Telegram, a guard message will be shown
+instead of the app.
 
 Test the login endpoint manually:
 
