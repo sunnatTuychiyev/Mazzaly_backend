@@ -19,3 +19,5 @@ django-geoip==0.5.2.1
 weasyprint==66.0
 beautifulsoup4==4.12.3
 openai>=0.28.0
+python-telegram-bot==21.1
+httpx==0.27.0
