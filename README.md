@@ -47,6 +47,71 @@ Set `CORS_ALLOWED_ORIGINS` to the URLs of any frontend applications that should
 be allowed to make authenticated requests, e.g.
 `http://localhost:8080,https://mazzaly.uz`.
 
+## Telegram Mini App Setup
+
+Create a `.env` file in the project root or export the variables in your shell:
+
+```bash
+TELEGRAM_BOT_TOKEN="<PUT_YOUR_TOKEN_HERE>"
+WEBAPP_URL="https://<your-public-domain>/telegram/recipes/"
+BACKEND_ORIGIN="https://<your-public-domain>"
+DJANGO_SECRET_KEY="change-me"
+
+# Alternatively
+export TELEGRAM_BOT_TOKEN="123456:ABCDEF..."
+export WEBAPP_URL="https://example.com/telegram/recipes/"
+export BACKEND_ORIGIN="https://example.com"
+export DJANGO_SECRET_KEY="change-me"
+```
+
+### Expose HTTPS locally
+
+```bash
+# ngrok
+ngrok http https://localhost:8000
+# or cloudflared
+cloudflared tunnel --url https://localhost:8000
+
+# Configure the Mini App URL in @BotFather:
+#   Bot Settings → Configure Mini App → set WEBAPP_URL (your public https URL)
+Run Django:
+python manage.py runserver
+Start the demo bot in another shell:
+python bot.py
+Send /start to your bot; Telegram will show the WebApp button.
+Opening the WebApp posts Telegram’s initData to /api/auth/telegram/login/, creating/signing-in the user and setting a JWT cookie (or returning a token).
+Access a protected probe endpoint:
+curl -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  $BACKEND_ORIGIN/api/me/
+```
+
+### Manual tests
+
+```bash
+# Test login endpoint with a captured init_data
+curl -X POST $BACKEND_ORIGIN/api/auth/telegram/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"init_data":"<INIT_DATA>"}'
+
+# If opened outside Telegram, the page must show the guard text:
+# “This page is only available via Telegram”.
+
+# Test recipe submission
+curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
+  -F "name=My Salad" \
+  -F "description=Tasty" \
+  -F "prep_time=5" \
+  -F "cook_time=0" \
+  -F "servings=2" \
+  -F 'ingredients=[{"name":"lettuce"}]' \
+  -F 'steps=[{"description":"chop"}]' \
+  -F "init_data=<INIT_DATA>"
+
+# List your submissions
+curl -G --data-urlencode "init_data=<INIT_DATA>" \
+  https://localhost:8000/api/telegram/recipe-submissions/mine/
+```
+
 ### Importing Recipes
 
 Recipes can be populated automatically using the Spoonacular API. Set
@@ -162,12 +227,13 @@ supported languages.
 
 ## Telegram Mini App Example
 
-Create a `.env` file with:
+Copy `.env.example` to `.env` and set:
 
 ```env
 TELEGRAM_BOT_TOKEN="<PUT_YOUR_TOKEN_HERE>"
 WEBAPP_URL="https://<your-public-domain>/telegram/recipes/"
 BACKEND_ORIGIN="https://<your-public-domain>"
+DJANGO_SECRET_KEY="change-me"
 ```
 
 Replace the placeholders and ensure these variables are exported (or present in a `.env` file) before running `bot.py`; the bot will exit if they are missing.

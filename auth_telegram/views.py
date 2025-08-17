@@ -2,6 +2,7 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from django.http import HttpResponseForbidden
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -14,6 +15,13 @@ from .utils import verify_init_data, TelegramInitDataError
 
 class MiniAppIndexView(TemplateView):
     template_name = 'miniapp/index.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        ua = request.META.get("HTTP_USER_AGENT", "").lower()
+        ref = request.META.get("HTTP_REFERER", "").lower()
+        if "telegram" not in ua and "t.me" not in ref:
+            return HttpResponseForbidden("This page is only available via Telegram")
+        return super().dispatch(request, *args, **kwargs)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
