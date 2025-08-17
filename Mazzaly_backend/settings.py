@@ -1,5 +1,5 @@
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 from datetime import timedelta
 
 # === Paths ===
@@ -254,9 +254,13 @@ EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
 EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = [BACKEND_ORIGIN]
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    cast=Csv(),
+    default=BACKEND_ORIGIN,
+)
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [BACKEND_ORIGIN]
+CSRF_TRUSTED_ORIGINS = list({BACKEND_ORIGIN}.union(CORS_ALLOWED_ORIGINS))
 
 # === HTTPS / Security Settings ===
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
