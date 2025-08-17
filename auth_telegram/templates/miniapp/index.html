@@ -24,13 +24,9 @@
   window.addEventListener('error', e=>showError(e.message || 'Error'));
   window.addEventListener('unhandledrejection', e=>showError(e.reason?.message || e.reason || 'Error'));
 
-  if(!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user){
-    app.innerHTML = '<h2>This page is only available via Telegram</h2>';
-    return;
-  }
-  if(tg.ready) tg.ready();
-  if(tg.expand) tg.expand();
-  const initData = tg.initData || '';
+  if(tg && tg.ready) tg.ready();
+  if(tg && tg.expand) tg.expand();
+  const initData = (tg && tg.initData) ? tg.initData : '';
   fetch('/api/auth/telegram/login/', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},

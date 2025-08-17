@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.views.generic import TemplateView
-from django.http import HttpResponseForbidden
 
 from account.telegram import get_user_from_init_data, TelegramInitDataError
 import json
@@ -65,14 +64,6 @@ class TelegramRecipeSubmissionMineView(APIView):
 
 class TelegramRecipeFormView(TemplateView):
     template_name = "telegram/recipe_form.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        """Allow access only when opened inside Telegram."""
-        user_agent = request.META.get("HTTP_USER_AGENT", "")
-        referer = request.META.get("HTTP_REFERER", "")
-        if "telegram" not in user_agent.lower() and "t.me" not in referer.lower():
-            return HttpResponseForbidden("This page is only available via Telegram")
-        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

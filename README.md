@@ -93,8 +93,7 @@ curl -X POST $BACKEND_ORIGIN/api/auth/telegram/login/ \
   -H "Content-Type: application/json" \
   -d '{"init_data":"<INIT_DATA>"}'
 
-# If opened outside Telegram, the page must show the guard text:
-# “This page is only available via Telegram”.
+# If opened outside Telegram, the page will still load, but authentication may fail because no Telegram data is available.
 
 # Test recipe submission
 curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
@@ -275,7 +274,7 @@ curl -X POST $BACKEND_ORIGIN/api/auth/telegram/login/ \
   -d '{"init_data":"<INIT_DATA>"}'
 ```
 
-If the page is opened outside Telegram it shows "This page is only available via Telegram".
+If the page is opened outside Telegram it will attempt to load, though authentication may fail without Telegram context.
 
 ## Telegram Recipe Submissions
 
