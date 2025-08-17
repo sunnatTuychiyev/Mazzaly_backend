@@ -179,8 +179,15 @@ ngrok http https://localhost:8000
 cloudflared tunnel --url https://localhost:8000
 ```
 
-Configure the URL in @BotFather → **Bot Settings → Configure Mini App** and
-run the demo bot:
+Configure the URL in @BotFather → **Bot Settings → Configure Mini App**. Run
+your Django server as usual:
+
+```bash
+python manage.py runserver
+```
+
+Start the demo bot in a separate shell so the WebApp button appears when you
+send `/start`:
 
 ```bash
 python bot.py
