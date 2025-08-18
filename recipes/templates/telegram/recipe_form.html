@@ -5,21 +5,27 @@
     <title>Submit Recipe</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; margin: 0; padding: 1rem; background: #f9f9f9; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 1rem; background: linear-gradient(135deg,#e3f2fd,#fff); }
         h1 { text-align: center; }
-        form { max-width: 900px; margin: auto; background: #fff; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        form { max-width: 900px; margin: auto; background: #fff; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); animation: fadeIn .6s ease; }
         .form-group { margin-bottom: 0.75rem; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 0.25rem; }
-        input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+        input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.5rem; border: 1px solid #ccd; border-radius: 6px; }
         textarea { min-height: 60px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
         th, td { border: 1px solid #ccc; padding: 4px; }
-        th { background: #f0f0f0; }
-        .remove-btn { color: red; cursor: pointer; }
+        th { background: #dfe9f3; }
+        .remove-btn { color: #e53935; cursor: pointer; }
+        .btn { background: #0088cc; color: #fff; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; transition: background .3s, transform .2s; }
+        .btn:hover { background: #007ab8; }
+        .btn:active { transform: scale(0.97); }
         .categories-container { display: flex; gap: 0.5rem; align-items: center; }
         .categories-container select { width: 200px; height: 120px; }
         .categories-buttons { display: flex; flex-direction: column; gap: 0.25rem; }
         .categories-buttons button { width: 120px; }
+        .fade-row { animation: rowFade .3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes rowFade { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -56,10 +62,10 @@
                 {% endfor %}
             </select>
             <div class="categories-buttons">
-                <button type="button" id="choose-all">Choose all</button>
-                <button type="button" id="choose-selected">Choose selected</button>
-                <button type="button" id="remove-selected">Remove selected</button>
-                <button type="button" id="remove-all">Remove all</button>
+                <button class="btn" type="button" id="choose-all">Choose all</button>
+                <button class="btn" type="button" id="choose-selected">Choose selected</button>
+                <button class="btn" type="button" id="remove-selected">Remove selected</button>
+                <button class="btn" type="button" id="remove-all">Remove all</button>
             </div>
             <select id="chosen-categories" multiple></select>
         </div>
@@ -72,7 +78,7 @@
         </thead>
         <tbody></tbody>
     </table>
-    <button type="button" id="add-ingredient">Add another Ingredient</button>
+    <button class="btn" type="button" id="add-ingredient">Add another Ingredient</button>
     <h3>Instructions</h3>
     <table id="steps-table">
         <thead>
@@ -80,8 +86,8 @@
         </thead>
         <tbody></tbody>
     </table>
-    <button type="button" id="add-step">Add another Instruction</button>
-    <div style="margin-top:1rem;"><button type="submit">Send</button></div>
+    <button class="btn" type="button" id="add-step">Add another Instruction</button>
+    <div style="margin-top:1rem;"><button class="btn" type="submit">Send</button></div>
 </form>
 <script>
 const tg = window.Telegram.WebApp;
@@ -103,7 +109,7 @@ const tg = window.Telegram.WebApp;
 
 function addIngredientRow() {
     const tr = document.createElement('tr');
-    tr.classList.add('ingredient-row');
+    tr.classList.add('ingredient-row', 'fade-row');
     tr.innerHTML = `
       <td><input name="ing_name"/></td>
       <td><input name="ing_name_uz"/></td>
@@ -125,7 +131,7 @@ function updateStepNumbers() {
 
 function addStepRow() {
     const tr = document.createElement('tr');
-    tr.classList.add('step-row');
+    tr.classList.add('step-row', 'fade-row');
     tr.innerHTML = `
       <td class="step-number"></td>
       <td><input name="step_description"/></td>
@@ -187,7 +193,9 @@ form.addEventListener('submit', async (e) => {
     data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
     const resp = await fetch('/api/telegram/recipe-submissions/', {method: 'POST', body: data});
     const json = await resp.json();
-    alert(JSON.stringify(json));
+    const summary = `Ingredients:\n${ingredients.map(i=>`- ${i.name} ${i.amount} ${i.unit}`.trim()).join('\n')}\n\nInstructions:\n${steps.map((s,i)=>`${i+1}. ${s.description}`).join('\n')}`;
+    if (tg.showAlert) { tg.showAlert(summary); } else { alert(summary); }
+    if (tg.sendData) { tg.sendData(JSON.stringify({response: json, ingredients, steps})); }
 });
 if (tg.expand) { tg.expand(); }
 </script>
