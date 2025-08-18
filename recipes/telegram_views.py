@@ -24,17 +24,17 @@ class TelegramRecipeSubmissionCreateView(APIView):
         except TelegramInitDataError as exc:
             return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Convert incoming data to a standard dict while preserving multi-value
-        # fields such as ``categories``. ``request.data`` is a ``QueryDict`` when
-        # using ``MultiPartParser`` and calling ``.pop()`` on it would return a
-        # list which breaks ``json.loads``. ``lists()`` gives us all values for a
-        # key so we can keep multi-value items as lists and single values as
-        # scalars.
-        data = {
-            key: values if len(values) > 1 else values[0]
-            for key, values in request.data.lists()
-        }
-        data.pop("init_data", None)
+        # ``request.data`` is a ``QueryDict`` when using ``MultiPartParser``.
+        # Calling ``dict()`` or ``pop()`` on it would coerce multi-value fields
+        # like ``categories`` into scalars and also includes uploaded files such
+        # as ``images``.  Iterate over ``lists()`` instead so we can decide which
+        # keys should remain lists and skip file fields that are handled
+        # separately below.
+        data = {}
+        for key, values in request.data.lists():
+            if key in {"init_data", "images"}:
+                continue
+            data[key] = values if key == "categories" else values[0]
 
         for src, dest in [
             ("ingredients", "ingredients"),
