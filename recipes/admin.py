@@ -274,6 +274,28 @@ class RecipeSubmissionImageInline(admin.TabularInline):
 class RecipeSubmissionAdmin(admin.ModelAdmin):
     inlines = [RecipeSubmissionImageInline]
     list_display = ("name", "user", "status", "created_at")
+    fields = [
+        "user",
+        "name",
+        "name_uz",
+        "name_ru",
+        "description",
+        "description_uz",
+        "description_ru",
+        "prep_time",
+        "cook_time",
+        "servings",
+        "subscription_plan",
+        "healthy",
+        "calories",
+        "protein",
+        "fats",
+        "carbs",
+        "categories",
+        "ingredients",
+        "steps",
+    ]
+    filter_horizontal = ["categories"]
     actions = ["approve_submissions", "reject_submissions"]
     action_form = SubmissionActionForm
 
