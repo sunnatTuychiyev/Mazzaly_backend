@@ -296,7 +296,6 @@ class RecipeSubmissionAdmin(admin.ModelAdmin):
     inlines = [RecipeSubmissionImageInline]
     form = RecipeSubmissionAdminForm
     list_display = ("name", "user", "status", "created_at")
-    readonly_fields = ["user"]
     fields = [
         "user",
         "name",
@@ -321,6 +320,12 @@ class RecipeSubmissionAdmin(admin.ModelAdmin):
     filter_horizontal = ["categories"]
     actions = ["approve_submissions", "reject_submissions"]
     action_form = SubmissionActionForm
+
+    def get_readonly_fields(self, request, obj=None):
+        base = super().get_readonly_fields(request, obj)
+        if obj:
+            return base + ("user",)
+        return base
 
     @admin.action(description='Approve selected submissions')
     def approve_submissions(self, request, queryset):
