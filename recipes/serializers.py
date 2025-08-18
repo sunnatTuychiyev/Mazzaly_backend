@@ -282,16 +282,19 @@ class IngredientInputSerializer(serializers.Serializer):
     preparation = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
 
-class StepInputSerializer(serializers.Serializer):
+class InstructionInputSerializer(serializers.Serializer):
+    step_number = serializers.IntegerField()
     description = serializers.CharField()
     description_ru = serializers.CharField(required=False, allow_blank=True, default="")
     description_uz = serializers.CharField(required=False, allow_blank=True, default="")
 
 
 class RecipeSubmissionSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     ingredients = IngredientInputSerializer(many=True, required=False, default=list)
-    steps = StepInputSerializer(many=True, required=False, default=list)
+    instructions = InstructionInputSerializer(
+        many=True, required=False, default=list, source="steps"
+    )
     categories = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), many=True, required=False
     )
@@ -317,16 +320,17 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
             "carbs",
             "categories",
             "ingredients",
-            "steps",
+            "instructions",
             "status",
             "moderator_note",
-            "images",
+            "image",
             "created_at",
         ]
-        read_only_fields = ["status", "moderator_note", "images", "created_at"]
+        read_only_fields = ["status", "moderator_note", "image", "created_at"]
 
-    def get_images(self, obj):
-        return [img.image.url for img in obj.images.all()]
+    def get_image(self, obj):
+        first = obj.images.first()
+        return first.image.url if first else None
 
     def create(self, validated_data):
         categories = validated_data.pop("categories", [])

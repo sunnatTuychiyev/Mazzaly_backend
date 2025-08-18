@@ -233,10 +233,10 @@ class RecipeSubmission(models.Model):
                 unit=item.get("unit"),
                 preparation=item.get("preparation"),
             )
-        for idx, step in enumerate(self.steps, start=1):
+        for idx, step in enumerate(sorted(self.steps, key=lambda s: s.get("step_number", 0)), start=1):
             Instruction.objects.create(
                 recipe=recipe,
-                step_number=idx,
+                step_number=step.get("step_number", idx),
                 description=step.get("description", ""),
                 description_ru=step.get("description_ru", ""),
                 description_uz=step.get("description_uz", ""),

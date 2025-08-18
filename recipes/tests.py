@@ -512,7 +512,7 @@ class TestRecipeSubmissionApproval(APITestCase):
             servings=4,
             subscription_plan=Subscription.PLAN_STANDARD,
             ingredients=[{"name": "flour"}],
-            steps=[{"description": "mix"}],
+            steps=[{"step_number": 1, "description": "mix"}],
         )
         sub.categories.add(self.category)
         recipe = sub.approve()

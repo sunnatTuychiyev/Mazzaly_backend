@@ -103,7 +103,7 @@ curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
   -F "cook_time=0" \
   -F "servings=2" \
   -F 'ingredients=[{"name":"lettuce"}]' \
-  -F 'steps=[{"description":"chop"}]' \
+  -F 'instructions=[{"step_number":1,"description":"chop"}]' \
   -F "init_data=<INIT_DATA>"
 
 # List your submissions
@@ -278,7 +278,7 @@ If the page is opened outside Telegram it will attempt to load, though authentic
 
 ## Telegram Recipe Submissions
 
-Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields like `name`, `name_uz`, `name_ru`, `description`, `description_uz`, `description_ru`, `prep_time`, `cook_time`, `servings`, `subscription_plan`, `healthy`, `calories`, `protein`, `fats`, `carbs`, `categories` (repeatable), structured `ingredients` and `steps` JSON strings, optional `images` (up to five files) and the `init_data` string from Telegram. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
+Telegram Mini App users can send new recipes for moderation. `POST /api/telegram/recipe-submissions/` accepts multipart form data with fields like `name`, `name_uz`, `name_ru`, `description`, `description_uz`, `description_ru`, `prep_time`, `cook_time`, `servings`, `subscription_plan`, `healthy`, `calories`, `protein`, `fats`, `carbs`, `categories` (repeatable), structured `ingredients` and `instructions` JSON strings, optional `images` (up to five files) and the `init_data` string from Telegram. To view your own submissions, call `GET /api/telegram/recipe-submissions/mine/` with the same `init_data` as a query parameter.
 
 Example submission:
 
@@ -290,7 +290,7 @@ curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
   -F "cook_time=0" \
   -F "servings=2" \
   -F 'ingredients=[{"name":"lettuce"}]' \
-  -F 'steps=[{"description":"chop"}]' \
+  -F 'instructions=[{"step_number":1,"description":"chop"}]' \
   -F "init_data=<INIT_DATA>"
 ```
 

@@ -80,13 +80,13 @@
     </table>
     <button class="btn" type="button" id="add-ingredient">Add another Ingredient</button>
     <h3>Instructions</h3>
-    <table id="steps-table">
+    <table id="instructions-table">
         <thead>
             <tr><th>STEP NUMBER</th><th>DESCRIPTION</th><th>DESCRIPTION UZ</th><th>DESCRIPTION RU</th><th>DELETE?</th></tr>
         </thead>
         <tbody></tbody>
     </table>
-    <button class="btn" type="button" id="add-step">Add another Instruction</button>
+    <button class="btn" type="button" id="add-instruction">Add another Instruction</button>
     <div style="margin-top:1rem;"><button class="btn" type="submit">Send</button></div>
 </form>
 <script>
@@ -123,15 +123,15 @@ function addIngredientRow() {
     document.querySelector('#ingredients-table tbody').appendChild(tr);
 }
 
-function updateStepNumbers() {
-    document.querySelectorAll('#steps-table tbody tr').forEach((row, idx) => {
+function updateInstructionNumbers() {
+    document.querySelectorAll('#instructions-table tbody tr').forEach((row, idx) => {
         row.querySelector('.step-number').textContent = idx + 1;
     });
 }
 
-function addStepRow() {
+function addInstructionRow() {
     const tr = document.createElement('tr');
-    tr.classList.add('step-row', 'fade-row');
+    tr.classList.add('instruction-row', 'fade-row');
     tr.innerHTML = `
       <td class="step-number"></td>
       <td><input name="step_description"/></td>
@@ -139,9 +139,9 @@ function addStepRow() {
       <td><input name="step_description_ru"/></td>
       <td><span class="remove-btn">✖</span></td>
     `;
-    tr.querySelector('.remove-btn').onclick = () => { tr.remove(); updateStepNumbers(); };
-    document.querySelector('#steps-table tbody').appendChild(tr);
-    updateStepNumbers();
+    tr.querySelector('.remove-btn').onclick = () => { tr.remove(); updateInstructionNumbers(); };
+    document.querySelector('#instructions-table tbody').appendChild(tr);
+    updateInstructionNumbers();
 }
 
 function moveSelected(src, dest) {
@@ -159,10 +159,10 @@ document.getElementById('remove-all').onclick = () => {
 };
 
 addIngredientRow();
-addStepRow();
+addInstructionRow();
 
 document.getElementById('add-ingredient').onclick = addIngredientRow;
-document.getElementById('add-step').onclick = addStepRow;
+document.getElementById('add-instruction').onclick = addInstructionRow;
 const form = document.getElementById('recipe-form');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -179,23 +179,23 @@ form.addEventListener('submit', async (e) => {
         });
     });
     data.append('ingredients', JSON.stringify(ingredients));
-    const steps = [];
-    document.querySelectorAll('.step-row').forEach((row, idx) => {
-        steps.push({
+    const instructions = [];
+    document.querySelectorAll('.instruction-row').forEach((row, idx) => {
+        instructions.push({
             step_number: idx + 1,
             description: row.querySelector('[name="step_description"]').value,
             description_uz: row.querySelector('[name="step_description_uz"]').value,
             description_ru: row.querySelector('[name="step_description_ru"]').value,
         });
     });
-    data.append('steps', JSON.stringify(steps));
+    data.append('instructions', JSON.stringify(instructions));
     document.querySelectorAll('#chosen-categories option').forEach(o => data.append('categories', o.value));
     data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
     const resp = await fetch('/api/telegram/recipe-submissions/', {method: 'POST', body: data});
     const json = await resp.json();
-    const summary = `Ingredients:\n${ingredients.map(i=>`- ${i.name} ${i.amount} ${i.unit}`.trim()).join('\n')}\n\nInstructions:\n${steps.map((s,i)=>`${i+1}. ${s.description}`).join('\n')}`;
+    const summary = `Ingredients:\n${ingredients.map(i=>`- ${i.name} ${i.amount} ${i.unit}`.trim()).join('\n')}\n\nInstructions:\n${instructions.map((s,i)=>`${i+1}. ${s.description}`).join('\n')}`;
     if (tg.showAlert) { tg.showAlert(summary); } else { alert(summary); }
-    if (tg.sendData) { tg.sendData(JSON.stringify({response: json, ingredients, steps})); }
+    if (tg.sendData) { tg.sendData(JSON.stringify({response: json, ingredients, instructions})); }
 });
 if (tg.expand) { tg.expand(); }
 </script>

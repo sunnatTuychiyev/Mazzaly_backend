@@ -5,7 +5,7 @@ from recipes.serializers import RecipeSubmissionSerializer
 
 
 class RecipeSubmissionSerializerTests(TestCase):
-    def test_ingredients_and_steps_are_optional(self):
+    def test_ingredients_and_instructions_are_optional(self):
         user_model = get_user_model()
         user = user_model.objects.create_user(username="user", password="pass")
 
