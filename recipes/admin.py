@@ -267,13 +267,36 @@ class SubmissionActionForm(ActionForm):
 
 class RecipeSubmissionImageInline(admin.TabularInline):
     model = RecipeSubmissionImage
-    extra = 0
+    extra = 1
+
+
+class RecipeSubmissionAdminForm(forms.ModelForm):
+    instructions = forms.JSONField(required=False, label="Instructions")
+
+    class Meta:
+        model = RecipeSubmission
+        exclude = ("steps",)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields["instructions"].initial = self.instance.steps
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.steps = self.cleaned_data.get("instructions", [])
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
 
 
 @admin.register(RecipeSubmission)
 class RecipeSubmissionAdmin(admin.ModelAdmin):
     inlines = [RecipeSubmissionImageInline]
+    form = RecipeSubmissionAdminForm
     list_display = ("name", "user", "status", "created_at")
+    readonly_fields = ["user"]
     fields = [
         "user",
         "name",
@@ -293,7 +316,7 @@ class RecipeSubmissionAdmin(admin.ModelAdmin):
         "carbs",
         "categories",
         "ingredients",
-        "steps",
+        "instructions",
     ]
     filter_horizontal = ["categories"]
     actions = ["approve_submissions", "reject_submissions"]

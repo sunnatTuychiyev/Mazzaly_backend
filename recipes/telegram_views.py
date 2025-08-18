@@ -26,12 +26,12 @@ class TelegramRecipeSubmissionCreateView(APIView):
 
         data = request.data.copy()
         data.pop("init_data", None)
-        for key in ["ingredients", "steps"]:
-            if key in data and isinstance(data[key], str):
+        for src, dest in [("ingredients", "ingredients"), ("instructions", "instructions"), ("steps", "instructions")]:
+            if src in data and isinstance(data[src], str):
                 try:
-                    data[key] = json.loads(data[key])
+                    data[dest] = json.loads(data.pop(src))
                 except json.JSONDecodeError:
-                    return Response({"error": f"Invalid {key}"}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"error": f"Invalid {src}"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = RecipeSubmissionSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         submission = serializer.save(user=user)
