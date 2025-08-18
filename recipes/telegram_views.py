@@ -24,12 +24,27 @@ class TelegramRecipeSubmissionCreateView(APIView):
         except TelegramInitDataError as exc:
             return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-        data = request.data.copy()
+        # Convert incoming data to a standard dict while preserving multi-value
+        # fields such as ``categories``. ``request.data`` is a ``QueryDict`` when
+        # using ``MultiPartParser`` and calling ``.pop()`` on it would return a
+        # list which breaks ``json.loads``. ``lists()`` gives us all values for a
+        # key so we can keep multi-value items as lists and single values as
+        # scalars.
+        data = {
+            key: values if len(values) > 1 else values[0]
+            for key, values in request.data.lists()
+        }
         data.pop("init_data", None)
-        for src, dest in [("ingredients", "ingredients"), ("instructions", "instructions"), ("steps", "instructions")]:
+
+        for src, dest in [
+            ("ingredients", "ingredients"),
+            ("instructions", "instructions"),
+            ("steps", "instructions"),
+        ]:
             if src in data and isinstance(data[src], str):
                 try:
-                    data[dest] = json.loads(data.pop(src))
+                    value = data.pop(src)
+                    data[dest] = json.loads(value)
                 except json.JSONDecodeError:
                     return Response({"error": f"Invalid {src}"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = RecipeSubmissionSerializer(data=data)
