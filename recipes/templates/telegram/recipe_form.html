@@ -5,61 +5,82 @@
     <title>Submit Recipe</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 1rem; }
+        body { font-family: sans-serif; margin: 0; padding: 1rem; background: #f9f9f9; }
+        h1 { text-align: center; }
+        form { max-width: 900px; margin: auto; background: #fff; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 0.75rem; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 0.25rem; }
+        input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+        textarea { min-height: 60px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
         th, td { border: 1px solid #ccc; padding: 4px; }
         th { background: #f0f0f0; }
         .remove-btn { color: red; cursor: pointer; }
+        .categories-container { display: flex; gap: 0.5rem; align-items: center; }
+        .categories-container select { width: 200px; height: 120px; }
+        .categories-buttons { display: flex; flex-direction: column; gap: 0.25rem; }
+        .categories-buttons button { width: 120px; }
     </style>
 </head>
 <body>
 <h1>Submit Recipe</h1>
 <form id="recipe-form">
-    <div><input type="text" name="name" placeholder="Name" required></div>
-    <div><input type="text" name="name_uz" placeholder="Name uz"></div>
-    <div><input type="text" name="name_ru" placeholder="Name ru"></div>
-    <div><textarea name="description" placeholder="Description" required></textarea></div>
-    <div><textarea name="description_uz" placeholder="Description uz"></textarea></div>
-    <div><textarea name="description_ru" placeholder="Description ru"></textarea></div>
-    <div><input type="file" name="images" multiple></div>
-    <div><input type="number" name="prep_time" placeholder="Prep time" required></div>
-    <div><input type="number" name="cook_time" placeholder="Cook time" required></div>
-    <div><input type="number" name="servings" placeholder="Servings" required></div>
-    <div>
+    <div class="form-group"><label>Name:</label><input type="text" name="name" required></div>
+    <div class="form-group"><label>Name uz:</label><input type="text" name="name_uz"></div>
+    <div class="form-group"><label>Name ru:</label><input type="text" name="name_ru"></div>
+    <div class="form-group"><label>Description:</label><textarea name="description" required></textarea></div>
+    <div class="form-group"><label>Description uz:</label><textarea name="description_uz"></textarea></div>
+    <div class="form-group"><label>Description ru:</label><textarea name="description_ru"></textarea></div>
+    <div class="form-group"><label>Image:</label><input type="file" name="images" multiple></div>
+    <div class="form-group"><label>Prep time:</label><input type="number" name="prep_time" min="0" required><small> in minutes</small></div>
+    <div class="form-group"><label>Cook time:</label><input type="number" name="cook_time" min="0" required><small> in minutes</small></div>
+    <div class="form-group"><label>Servings:</label><input type="number" name="servings" min="1" required></div>
+    <div class="form-group"><label>Subscription plan:</label>
         <select name="subscription_plan">
             {% for val, label in plans %}
             <option value="{{ val }}">{{ label }}</option>
             {% endfor %}
         </select>
+        <small>Required subscription tier</small>
     </div>
-    <div><label><input type="checkbox" name="healthy"> Healthy</label></div>
-    <div><input type="number" name="calories" placeholder="Calories"></div>
-    <div><input type="number" name="protein" placeholder="Protein"></div>
-    <div><input type="number" name="fats" placeholder="Fats"></div>
-    <div><input type="number" name="carbs" placeholder="Carbs"></div>
-    <div>
-        <select name="categories" multiple>
-            {% for c in categories %}
-            <option value="{{ c.id }}">{{ c.name }}</option>
-            {% endfor %}
-        </select>
+    <div class="form-group"><label><input type="checkbox" name="healthy"> Healthy</label><small> Show as Healthy Recipe</small></div>
+    <div class="form-group"><label>Calories:</label><input type="number" name="calories" min="0"><small> Calories in kcal (optional)</small></div>
+    <div class="form-group"><label>Protein:</label><input type="number" name="protein" min="0"><small> Protein in grams (optional)</small></div>
+    <div class="form-group"><label>Fats:</label><input type="number" name="fats" min="0"><small> Fats in grams (optional)</small></div>
+    <div class="form-group"><label>Carbs:</label><input type="number" name="carbs" min="0"><small> Carbs in grams (optional)</small></div>
+    <div class="form-group"><label>Categories:</label>
+        <div class="categories-container">
+            <select id="available-categories" multiple>
+                {% for c in categories %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+            </select>
+            <div class="categories-buttons">
+                <button type="button" id="choose-all">Choose all</button>
+                <button type="button" id="choose-selected">Choose selected</button>
+                <button type="button" id="remove-selected">Remove selected</button>
+                <button type="button" id="remove-all">Remove all</button>
+            </div>
+            <select id="chosen-categories" multiple></select>
+        </div>
+        <p class="helptext">Hold down “Control”, or “Command” on a Mac, to select more than one.</p>
     </div>
     <h3>Ingredients</h3>
     <table id="ingredients-table">
         <thead>
-            <tr><th>Name</th><th>Name uz</th><th>Name ru</th><th>Amount</th><th>Unit</th><th>Preparation</th><th></th></tr>
+            <tr><th>NAME</th><th>NAME UZ</th><th>NAME RU</th><th>AMOUNT</th><th>UNIT</th><th>PREPARATION <span style="font-weight:normal;">(Optional: large, grated, cubed, etc.)</span></th><th>DELETE?</th></tr>
         </thead>
         <tbody></tbody>
     </table>
-    <button type="button" id="add-ingredient">Add Ingredient</button>
+    <button type="button" id="add-ingredient">Add another Ingredient</button>
     <h3>Instructions</h3>
     <table id="steps-table">
         <thead>
-            <tr><th>Description</th><th>Description uz</th><th>Description ru</th><th></th></tr>
+            <tr><th>STEP NUMBER</th><th>DESCRIPTION</th><th>DESCRIPTION UZ</th><th>DESCRIPTION RU</th><th>DELETE?</th></tr>
         </thead>
         <tbody></tbody>
     </table>
-    <button type="button" id="add-step">Add Step</button>
+    <button type="button" id="add-step">Add another Instruction</button>
     <div style="margin-top:1rem;"><button type="submit">Send</button></div>
 </form>
 <script>
@@ -79,6 +100,7 @@ const tg = window.Telegram.WebApp;
         }
     }
 })();
+
 function addIngredientRow() {
     const tr = document.createElement('tr');
     tr.classList.add('ingredient-row');
@@ -88,24 +110,48 @@ function addIngredientRow() {
       <td><input name="ing_name_ru"/></td>
       <td><input name="ing_amount"/></td>
       <td><input name="ing_unit"/></td>
-      <td><input name="ing_preparation"/></td>
+      <td><input name="ing_preparation" placeholder="large, grated, cubed, etc."/></td>
       <td><span class="remove-btn">✖</span></td>
     `;
     tr.querySelector('.remove-btn').onclick = () => tr.remove();
     document.querySelector('#ingredients-table tbody').appendChild(tr);
 }
+
+function updateStepNumbers() {
+    document.querySelectorAll('#steps-table tbody tr').forEach((row, idx) => {
+        row.querySelector('.step-number').textContent = idx + 1;
+    });
+}
+
 function addStepRow() {
     const tr = document.createElement('tr');
     tr.classList.add('step-row');
     tr.innerHTML = `
+      <td class="step-number"></td>
       <td><input name="step_description"/></td>
       <td><input name="step_description_uz"/></td>
       <td><input name="step_description_ru"/></td>
       <td><span class="remove-btn">✖</span></td>
     `;
-    tr.querySelector('.remove-btn').onclick = () => tr.remove();
+    tr.querySelector('.remove-btn').onclick = () => { tr.remove(); updateStepNumbers(); };
     document.querySelector('#steps-table tbody').appendChild(tr);
+    updateStepNumbers();
 }
+
+function moveSelected(src, dest) {
+    Array.from(src.selectedOptions).forEach(opt => dest.appendChild(opt));
+}
+document.getElementById('choose-selected').onclick = () => moveSelected(document.getElementById('available-categories'), document.getElementById('chosen-categories'));
+document.getElementById('remove-selected').onclick = () => moveSelected(document.getElementById('chosen-categories'), document.getElementById('available-categories'));
+document.getElementById('choose-all').onclick = () => {
+    const src = document.getElementById('available-categories');
+    Array.from(src.options).forEach(opt => document.getElementById('chosen-categories').appendChild(opt));
+};
+document.getElementById('remove-all').onclick = () => {
+    const src = document.getElementById('chosen-categories');
+    Array.from(src.options).forEach(opt => document.getElementById('available-categories').appendChild(opt));
+};
+
 addIngredientRow();
 addStepRow();
 
@@ -137,8 +183,7 @@ form.addEventListener('submit', async (e) => {
         });
     });
     data.append('steps', JSON.stringify(steps));
-    const categories = Array.from(form.querySelector('select[name="categories"]').selectedOptions).map(o => o.value);
-    categories.forEach(id => data.append('categories', id));
+    document.querySelectorAll('#chosen-categories option').forEach(o => data.append('categories', o.value));
     data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
     const resp = await fetch('/api/telegram/recipe-submissions/', {method: 'POST', body: data});
     const json = await resp.json();
