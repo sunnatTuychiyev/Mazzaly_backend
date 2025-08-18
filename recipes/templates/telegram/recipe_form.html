@@ -163,6 +163,16 @@ addInstructionRow();
 
 document.getElementById('add-ingredient').onclick = addIngredientRow;
 document.getElementById('add-instruction').onclick = addInstructionRow;
+const showMessage = (msg) => {
+    if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.2') && tg.showPopup) {
+        tg.showPopup({ message: msg });
+    } else if (tg.showAlert) {
+        tg.showAlert(msg);
+    } else {
+        alert(msg);
+    }
+};
+
 const form = document.getElementById('recipe-form');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -191,12 +201,22 @@ form.addEventListener('submit', async (e) => {
     data.append('instructions', JSON.stringify(instructions));
     document.querySelectorAll('#chosen-categories option').forEach(o => data.append('categories', o.value));
     data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
-    const resp = await fetch('/api/telegram/recipe-submissions/', {method: 'POST', body: data});
+
+    const resp = await fetch('/api/telegram/recipe-submissions/', { method: 'POST', body: data });
     const json = await resp.json();
+
+    if (!resp.ok) {
+        showMessage(json.error || 'Submission failed');
+        return;
+    }
+
     const summary = `Ingredients:\n${ingredients.map(i=>`- ${i.name} ${i.amount} ${i.unit}`.trim()).join('\n')}\n\nInstructions:\n${instructions.map((s,i)=>`${i+1}. ${s.description}`).join('\n')}`;
-    if (tg.showAlert) { tg.showAlert(summary); } else { alert(summary); }
-    if (tg.sendData) { tg.sendData(JSON.stringify({response: json, ingredients, instructions})); }
+    showMessage(summary);
+    if (tg.sendData) {
+        tg.sendData(JSON.stringify({ response: json, ingredients, instructions }));
+    }
 });
+
 if (tg.expand) { tg.expand(); }
 </script>
 </body>
