@@ -15,7 +15,7 @@ def _get_frontend_url(recipe_id: int) -> str:
 def _get_public_recipe_url(recipe_id: int) -> str:
     origin = getattr(settings, "FRONTEND_ORIGIN", settings.BACKEND_ORIGIN)
     origin = origin.rstrip("/")
-    return f"{origin}/recipes/{recipe_id}"
+    return f"{origin}/recipe/{recipe_id}"
 
 
 @receiver(pre_save, sender=UserRecipe)
