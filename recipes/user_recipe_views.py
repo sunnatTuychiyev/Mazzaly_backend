@@ -8,7 +8,12 @@ class MyRecipeListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return UserRecipe.objects.filter(owner=self.request.user).order_by('-created_at')
+        if getattr(self, "swagger_fake_view", False):
+            return UserRecipe.objects.none()
+        user = self.request.user
+        if not user.is_authenticated:
+            return UserRecipe.objects.none()
+        return UserRecipe.objects.filter(owner=user).order_by("-created_at")
 
 
 class RecipeSubmitView(generics.CreateAPIView):
@@ -17,7 +22,12 @@ class RecipeSubmitView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        serializer.save(owner=user, telegram_user_id=user.telegram_id)
+        telegram_id = None
+        try:
+            telegram_id = int(user.telegram_id) if user.telegram_id else None
+        except (TypeError, ValueError):
+            telegram_id = None
+        serializer.save(owner=user, telegram_user_id=telegram_id)
 
 
 class MyRecipeDetailView(generics.RetrieveDestroyAPIView):
@@ -25,4 +35,9 @@ class MyRecipeDetailView(generics.RetrieveDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return UserRecipe.objects.filter(owner=self.request.user)
+        if getattr(self, "swagger_fake_view", False):
+            return UserRecipe.objects.none()
+        user = self.request.user
+        if not user.is_authenticated:
+            return UserRecipe.objects.none()
+        return UserRecipe.objects.filter(owner=user)
