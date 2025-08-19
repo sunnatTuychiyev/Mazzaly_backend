@@ -261,3 +261,29 @@ class RecipeSubmissionImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.submission_id}"
+
+
+# --- SIMPLE USER RECIPE FOR TELEGRAM MINI APP ---
+class UserRecipe(models.Model):
+    STATUS_PENDING = "pending"
+    STATUS_APPROVED = "approved"
+    STATUS_REJECTED = "rejected"
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "pending"),
+        (STATUS_APPROVED, "approved"),
+        (STATUS_REJECTED, "rejected"),
+    ]
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_recipes"
+    )
+    title = models.CharField(max_length=200)
+    image = models.URLField(blank=True, null=True)
+    status = models.CharField(
+        max_length=16, choices=STATUS_CHOICES, default=STATUS_PENDING
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    telegram_user_id = models.BigIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title

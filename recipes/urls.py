@@ -7,6 +7,9 @@ from .views import (
 from .telegram_views import (
     TelegramRecipeSubmissionCreateView, TelegramRecipeSubmissionMineView
 )
+from .user_recipe_views import (
+    MyRecipeListView, RecipeSubmitView, MyRecipeDetailView,
+)
 
 
 router = DefaultRouter()
@@ -24,4 +27,7 @@ urlpatterns += [
     path('ingredients/', IngredientListView.as_view(), name='ingredient-list'),
     path('telegram/recipe-submissions/', TelegramRecipeSubmissionCreateView.as_view(), name='telegram-recipe-submission-create'),
     path('telegram/recipe-submissions/mine/', TelegramRecipeSubmissionMineView.as_view(), name='telegram-recipe-submission-mine'),
+    path('recipes/my/', MyRecipeListView.as_view(), name='my-recipe-list'),
+    path('recipes/submit/', RecipeSubmitView.as_view(), name='recipe-submit'),
+    path('recipes/my/<int:pk>/', MyRecipeDetailView.as_view(), name='my-recipe-detail'),
 ]

@@ -5,7 +5,8 @@ from .models import (
     Ingredient, Instruction,
     MealPlan, ShoppingListItem,
     RecipeRating,
-    RecipeSubmission
+    RecipeSubmission,
+    UserRecipe,
 )
 
 # CATEGORY
@@ -338,3 +339,11 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
         if categories:
             submission.categories.set(categories)
         return submission
+
+
+# SIMPLE USER RECIPE SERIALIZER
+class UserRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserRecipe
+        fields = ["id", "title", "image", "status", "created_at"]
+        read_only_fields = ["id", "status", "created_at"]

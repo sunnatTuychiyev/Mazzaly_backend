@@ -18,6 +18,7 @@ from .models import (
     RecipeRating,
     RecipeSubmission,
     RecipeSubmissionImage,
+    UserRecipe,
 )
 
 # Category va MealType’ni admin panelga qo‘shish
@@ -343,3 +344,10 @@ class RecipeSubmissionAdmin(admin.ModelAdmin):
 admin.site.register(MealPlan)
 admin.site.register(ShoppingListItem)
 admin.site.register(RecipeRating)
+
+
+@admin.register(UserRecipe)
+class UserRecipeAdmin(admin.ModelAdmin):
+    list_display = ("title", "owner", "status", "created_at")
+    list_filter = ("status",)
+    search_fields = ("title", "owner__email")

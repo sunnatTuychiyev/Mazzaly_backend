@@ -10,6 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()
 WEBAPP_URL = config("WEBAPP_URL", default="").strip()
 BACKEND_ORIGIN = config("BACKEND_ORIGIN", default="").strip()
+FRONTEND_ORIGIN = config("FRONTEND_ORIGIN", default=BACKEND_ORIGIN).strip()
 SECRET_KEY = config("SECRET_KEY", default="").strip()
 
 if not re.fullmatch(r"\d{6,12}:[A-Za-z0-9_-]{30,}", TELEGRAM_BOT_TOKEN):
@@ -20,6 +21,8 @@ if not WEBAPP_URL.startswith("https://"):
     raise SystemExit("WEBAPP_URL must start with https://")
 if not BACKEND_ORIGIN.startswith("https://"):
     raise SystemExit("BACKEND_ORIGIN must start with https://")
+if not FRONTEND_ORIGIN.startswith("https://"):
+    raise SystemExit("FRONTEND_ORIGIN must start with https://")
 if not SECRET_KEY:
     raise SystemExit("SECRET_KEY missing. Set it in .env or environment")
 
