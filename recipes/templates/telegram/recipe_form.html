@@ -167,9 +167,7 @@ addInstructionRow();
 document.getElementById('add-ingredient').onclick = addIngredientRow;
 document.getElementById('add-instruction').onclick = addInstructionRow;
 const showMessage = (msg) => {
-    if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.2') && tg.showPopup) {
-        tg.showPopup({ message: msg });
-    } else if (tg.showAlert) {
+    if (tg.showAlert) {
         tg.showAlert(msg);
     } else {
         alert(msg);
