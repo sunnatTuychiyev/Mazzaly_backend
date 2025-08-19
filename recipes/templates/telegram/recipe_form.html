@@ -87,7 +87,10 @@
         <tbody></tbody>
     </table>
     <button class="btn" type="button" id="add-instruction">Add another Instruction</button>
-    <div style="margin-top:1rem;"><button class="btn" type="submit">Send</button></div>
+    <div style="margin-top:1rem; display:flex; gap:0.5rem;">
+        <button class="btn" type="button" id="preview-btn">Preview on Site</button>
+        <button class="btn" type="submit">Send</button>
+    </div>
 </form>
 <script>
 const tg = window.Telegram.WebApp;
@@ -174,6 +177,17 @@ const showMessage = (msg) => {
 };
 
 const form = document.getElementById('recipe-form');
+document.getElementById('preview-btn').onclick = () => {
+    const name = form.querySelector('[name="name"]').value.trim();
+    if (!name) {
+        showMessage('Please enter name first');
+        return;
+    }
+    const slug = name.toLowerCase()
+        .replace(/[^a-z0-9Ѐ-ӿ]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    window.open(`https://mazzaly.uz/recipes/${slug}/`, '_blank');
+};
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(form);
