@@ -55,6 +55,9 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     #tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags like 'healthy,vegetarian'")
 
+    class Meta:
+        ordering = ['-created_at']
+
     def save(self, *args, **kwargs):
         """Ensure flag fields follow the selected subscription tier."""
         if self.subscription_plan == self.PLAN_PREMIUM:
