@@ -265,9 +265,12 @@ EDAMAM_USER_ID = config('EDAMAM_USER_ID', default='')
 EDAMAM_ACCOUNT_USER = config('EDAMAM_ACCOUNT_USER', default=EDAMAM_USER_ID)
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = [BACKEND_ORIGIN]
+# Allow specifying additional origins via the CORS_ALLOWED_ORIGINS env var.
+# Comma separated values are supported, e.g. "http://localhost:8080,https://mazzaly.uz".
+cors_origins = config('CORS_ALLOWED_ORIGINS', default=BACKEND_ORIGIN)
+CORS_ALLOWED_ORIGINS = [o.strip() for o in cors_origins.split(',') if o.strip()]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [BACKEND_ORIGIN]
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 # === HTTPS / Security Settings ===
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
