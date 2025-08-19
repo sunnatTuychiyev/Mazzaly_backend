@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900">
+    <div class="max-w-md mx-auto p-4 space-y-4">
+        <h1 id="title" class="text-2xl font-bold"></h1>
+        <img id="image" class="w-full rounded-md hidden" />
+        <p id="description" class="text-gray-700"></p>
+        <div>
+            <h2 class="text-xl font-semibold mb-2">Ingredients</h2>
+            <ul id="ingredients" class="list-disc pl-6 space-y-1 text-sm"></ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold mb-2">Instructions</h2>
+            <ol id="instructions" class="list-decimal pl-6 space-y-1 text-sm"></ol>
+        </div>
+    </div>
+    <script>
+        const data = JSON.parse(sessionStorage.getItem('previewData') || '{}');
+        document.getElementById('title').textContent = data.name || '';
+        document.getElementById('description').textContent = data.description || '';
+        if (data.imageUrl) {
+            const img = document.getElementById('image');
+            img.src = data.imageUrl;
+            img.classList.remove('hidden');
+        }
+        const ingList = document.getElementById('ingredients');
+        (data.ingredients || []).forEach(ing => {
+            const li = document.createElement('li');
+            li.textContent = `${ing.amount || ''} ${ing.unit || ''} ${ing.name || ''}`.trim();
+            ingList.appendChild(li);
+        });
+        const instrList = document.getElementById('instructions');
+        (data.instructions || []).forEach(step => {
+            const li = document.createElement('li');
+            li.textContent = step.description || '';
+            instrList.appendChild(li);
+        });
+    </script>
+</body>
+</html>

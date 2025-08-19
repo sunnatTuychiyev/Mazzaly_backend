@@ -2,7 +2,7 @@ from django.contrib import admin
 from analytics import admin as analytics_admin
 from django.urls import path, include
 from auth_telegram.views import MiniAppIndexView
-from recipes.telegram_views import TelegramRecipeFormView
+from recipes.telegram_views import TelegramRecipeFormView, TelegramRecipePreviewView
 
 admin.site.site_header = "Mazzaly Administration"
 admin.site.site_title = "Mazzaly Admin Portal"
@@ -41,6 +41,7 @@ urlpatterns = [
     path('social/', include('social_django.urls', namespace='social')),  # Google Auth
     path('telegram/recipes/', MiniAppIndexView.as_view(), name='telegram-miniapp'),
     path('telegram/recipe-form/', TelegramRecipeFormView.as_view(), name='telegram-recipe-form'),
+    path('telegram/recipe-preview/', TelegramRecipePreviewView.as_view(), name='telegram-recipe-preview'),
 ] + swagger_urls
 
 # Media uchun:
