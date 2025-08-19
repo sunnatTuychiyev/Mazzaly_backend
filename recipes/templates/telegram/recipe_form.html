@@ -210,11 +210,21 @@ form.addEventListener('submit', async (e) => {
         return;
     }
 
-    const summary = `Ingredients:\n${ingredients.map(i=>`- ${i.name} ${i.amount} ${i.unit}`.trim()).join('\n')}\n\nInstructions:\n${instructions.map((s,i)=>`${i+1}. ${s.description}`).join('\n')}`;
-    showMessage(summary);
+    showMessage('✅ Retsept qo\'shishga so\'rovingiz yuborildi');
     if (tg.sendData) {
         tg.sendData(JSON.stringify({ response: json, ingredients, instructions }));
     }
+
+    form.reset();
+    document.querySelector('#ingredients-table tbody').innerHTML = '';
+    document.querySelector('#instructions-table tbody').innerHTML = '';
+    const chosen = document.getElementById('chosen-categories');
+    const available = document.getElementById('available-categories');
+    while (chosen.options.length) {
+        available.appendChild(chosen.options[0]);
+    }
+    addIngredientRow();
+    addInstructionRow();
 });
 
 if (tg.expand) { tg.expand(); }
