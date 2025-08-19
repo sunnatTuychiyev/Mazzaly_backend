@@ -3,9 +3,9 @@ import re
 from typing import Dict, List
 
 try:
-    from googletrans import Translator
+    from deep_translator import GoogleTranslator
 except Exception:  # pragma: no cover - library may be missing
-    Translator = None
+    GoogleTranslator = None
 import requests
 
 try:  # pragma: no cover - optional dependency
@@ -735,18 +735,16 @@ def _direct_google_translate(text: str, dest: str, src: str) -> str:
     except Exception:
         return ""
 
-# Instantiate translator with a short timeout so network issues fail fast
-try:  # pragma: no cover - network usage not exercised in tests
-    _translator = Translator(timeout=5) if Translator else None
-except Exception:  # If initialization fails, fall back to manual dictionary
-    _translator = None
+# Instantiate translator class from deep-translator
+_translator = GoogleTranslator if GoogleTranslator else None
 
 
 def translate_text(text: str, dest: str, src: str = 'en') -> str:
     """Translate text to the destination language.
 
-    Tries OpenAI's API first when configured, then googletrans, and finally
-    a small built-in dictionary as a last resort.
+    Tries OpenAI's API first when configured, then Google's translate service
+    via deep-translator, and finally a small built-in dictionary as a last
+    resort.
     """
     if not text:
         return ''
@@ -765,7 +763,7 @@ def translate_text(text: str, dest: str, src: str = 'en') -> str:
 
     if _translator:
         try:  # pragma: no cover - network
-            result = _translator.translate(text, src=src, dest=dest).text
+            result = _translator(source=src, target=dest).translate(text)
             if result and result.lower() != text.lower():
                 return result
         except Exception:
