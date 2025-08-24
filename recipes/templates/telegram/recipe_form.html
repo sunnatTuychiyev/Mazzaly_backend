@@ -87,7 +87,10 @@
         <tbody></tbody>
     </table>
     <button class="btn" type="button" id="add-instruction">Add another Instruction</button>
-    <div style="margin-top:1rem;"><button class="btn" type="submit">Send</button></div>
+    <div style="margin-top:1rem; display:flex; gap:0.5rem;">
+        <button class="btn" type="button" id="preview-btn">Preview on Site</button>
+        <button class="btn" type="submit">Send</button>
+    </div>
 </form>
 <script>
 const tg = window.Telegram.WebApp;
@@ -164,9 +167,7 @@ addInstructionRow();
 document.getElementById('add-ingredient').onclick = addIngredientRow;
 document.getElementById('add-instruction').onclick = addInstructionRow;
 const showMessage = (msg) => {
-    if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.2') && tg.showPopup) {
-        tg.showPopup({ message: msg });
-    } else if (tg.showAlert) {
+    if (tg.showAlert) {
         tg.showAlert(msg);
     } else {
         alert(msg);
@@ -174,6 +175,36 @@ const showMessage = (msg) => {
 };
 
 const form = document.getElementById('recipe-form');
+document.getElementById('preview-btn').onclick = () => {
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    const name = (data.name || '').trim();
+    if (!name) {
+        showMessage('Please enter name first');
+        return;
+    }
+    data.name = name;
+    data.ingredients = [];
+    document.querySelectorAll('.ingredient-row').forEach(row => {
+        data.ingredients.push({
+            name: row.querySelector('[name="ing_name"]').value,
+            amount: row.querySelector('[name="ing_amount"]').value,
+            unit: row.querySelector('[name="ing_unit"]').value,
+        });
+    });
+    data.instructions = [];
+    document.querySelectorAll('.instruction-row').forEach(row => {
+        data.instructions.push({
+            description: row.querySelector('[name="step_description"]').value,
+        });
+    });
+    const fileInput = form.querySelector('input[name="images"]');
+    if (fileInput.files.length) {
+        data.imageUrl = URL.createObjectURL(fileInput.files[0]);
+    }
+    sessionStorage.setItem('previewData', JSON.stringify(data));
+    window.open('/telegram/recipe-preview/', '_blank');
+};
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(form);

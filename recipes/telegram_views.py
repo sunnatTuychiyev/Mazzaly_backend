@@ -85,3 +85,7 @@ class TelegramRecipeFormView(TemplateView):
         context["categories"] = Category.objects.all()
         context["plans"] = RecipeSubmission.PLAN_CHOICES
         return context
+
+
+class TelegramRecipePreviewView(TemplateView):
+    template_name = "telegram/preview.html"
