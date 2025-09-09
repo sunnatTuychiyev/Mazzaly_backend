@@ -189,7 +189,9 @@ HTTP status code and response body to help debug invalid credentials.
 Imported recipes are stored in Uzbek or Russian. Ingredient and category names
 are translated as well. When adding recipes through the API, supply Uzbek and
 Russian fields (`name_uz`/`name_ru`, `description_uz`/`description_ru` and
-translations for ingredients and instructions). Use the `lang` query parameter on the `/api/recipes/`,
+translations for ingredients and instructions). The Django admin only exposes
+these Uzbek and Russian fields; English values are filled automatically from the
+Uzbek text. Use the `lang` query parameter on the `/api/recipes/`,
 `/api/categories/` and ingredient search endpoints to retrieve data in a
 specific language. The simplified `/api/recipe-cards/` endpoint accepts the same
 parameter. Valid values are `uz` or `ru`; any other value defaults to Uzbek:

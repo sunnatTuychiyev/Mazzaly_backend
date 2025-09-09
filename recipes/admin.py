@@ -23,6 +23,7 @@ from .models import (
 
 # Category va MealType’ni admin panelga qo‘shish
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "name_uz", "name_ru"]
@@ -31,41 +32,106 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(MealType)
 
-# Ingredient va Instruction inlines
+
+# Ingredient va Instruction inlines faqat uzbek va rus tilida
+class IngredientForm(forms.ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = ["name_uz", "name_ru", "amount", "unit_uz", "unit_ru", "preparation"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["name_uz"].required = True
+        self.fields["name_ru"].required = True
+
+    def save(self, commit=True):
+        obj = super().save(commit=False)
+        obj.name = self.cleaned_data.get("name_uz", "")
+        obj.unit = self.cleaned_data.get("unit_uz") or ""
+        if commit:
+            obj.save()
+        return obj
+
+
 class IngredientInline(admin.TabularInline):
     model = Ingredient
+    form = IngredientForm
     extra = 1
-    fields = [
-        "name",
-        "name_uz",
-        "name_ru",
-        "amount",
-        "unit",
-        "unit_uz",
-        "unit_ru",
-        "preparation",
-    ]
-    
+    fields = ["name_uz", "name_ru", "amount", "unit_uz", "unit_ru", "preparation"]
+
+
+class InstructionForm(forms.ModelForm):
+    class Meta:
+        model = Instruction
+        fields = ["step_number", "description_uz", "description_ru"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["description_uz"].required = True
+        self.fields["description_ru"].required = True
+
+    def save(self, commit=True):
+        obj = super().save(commit=False)
+        obj.description = self.cleaned_data.get("description_uz", "")
+        if commit:
+            obj.save()
+        return obj
+
+
 class InstructionInline(admin.TabularInline):
     model = Instruction
+    form = InstructionForm
     extra = 1
-    fields = [
-        "step_number",
-        "description",
-        "description_uz",
-        "description_ru",
-    ]
+    fields = ["step_number", "description_uz", "description_ru"]
+
+
+class RecipeAdminForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = [
+            "name_uz",
+            "name_ru",
+            "description_uz",
+            "description_ru",
+            "image",
+            "prep_time",
+            "cook_time",
+            "servings",
+            "subscription_plan",
+            "healthy",
+            "calories",
+            "protein",
+            "fats",
+            "carbs",
+            "categories",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["name_uz"].required = True
+        self.fields["name_ru"].required = True
+        self.fields["description_uz"].required = True
+        self.fields["description_ru"].required = True
+
+    def save(self, commit=True):
+        obj = super().save(commit=False)
+        obj.name = self.cleaned_data.get("name_uz", "")
+        obj.description = self.cleaned_data.get("description_uz", "")
+        if commit:
+            obj.save()
+            self.save_m2m()
+        return obj
+
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    form = RecipeAdminForm
     inlines = [IngredientInline, InstructionInline]
-    list_display = ["name", "name_uz", "name_ru", "subscription_plan", "get_categories"]
+    list_display = ["name_uz", "name_ru", "subscription_plan", "get_categories"]
     list_filter = ["subscription_plan"]
     fields = [
-        "name",
         "name_uz",
         "name_ru",
-        "description",
         "description_uz",
         "description_ru",
         "image",
@@ -80,12 +146,12 @@ class RecipeAdmin(admin.ModelAdmin):
         "carbs",
         "categories",
     ]
-    filter_horizontal = ['categories']
+    filter_horizontal = ["categories"]
 
     def get_categories(self, obj):
         return ", ".join([cat.name for cat in obj.categories.all()])
 
-    get_categories.short_description = 'Categories'
+    get_categories.short_description = "Categories"
 
     def get_urls(self):  # pragma: no cover - admin registration
         urls = super().get_urls()
@@ -138,7 +204,9 @@ class RecipeAdmin(admin.ModelAdmin):
                     return redirect("..")
                 output = out.getvalue().splitlines()
                 added = [
-                    line.replace("Added ", "") for line in output if line.startswith("Added ")
+                    line.replace("Added ", "")
+                    for line in output
+                    if line.startswith("Added ")
                 ]
                 recipes = Recipe.objects.filter(name__in=added)
                 context = {
@@ -146,9 +214,7 @@ class RecipeAdmin(admin.ModelAdmin):
                     "output": output,
                     "opts": self.model._meta,
                 }
-                return render(
-                    request, "admin/recipes/import_result.html", context
-                )
+                return render(request, "admin/recipes/import_result.html", context)
         else:
             form = EdamamImportForm()
         context = {
@@ -188,7 +254,9 @@ class RecipeAdmin(admin.ModelAdmin):
                     return redirect("..")
                 output = out.getvalue().splitlines()
                 added = [
-                    line.replace("Added ", "") for line in output if line.startswith("Added ")
+                    line.replace("Added ", "")
+                    for line in output
+                    if line.startswith("Added ")
                 ]
                 recipes = Recipe.objects.filter(name__in=added)
                 context = {
@@ -196,9 +264,7 @@ class RecipeAdmin(admin.ModelAdmin):
                     "output": output,
                     "opts": self.model._meta,
                 }
-                return render(
-                    request, "admin/recipes/import_result.html", context
-                )
+                return render(request, "admin/recipes/import_result.html", context)
         else:
             form = SpoonacularImportForm()
         context = {
@@ -240,7 +306,9 @@ class RecipeAdmin(admin.ModelAdmin):
                     return redirect("..")
                 output = out.getvalue().splitlines()
                 added = [
-                    line.replace("Added ", "") for line in output if line.startswith("Added ")
+                    line.replace("Added ", "")
+                    for line in output
+                    if line.startswith("Added ")
                 ]
                 recipes = Recipe.objects.filter(name__in=added)
                 context = {
@@ -248,9 +316,7 @@ class RecipeAdmin(admin.ModelAdmin):
                     "output": output,
                     "opts": self.model._meta,
                 }
-                return render(
-                    request, "admin/recipes/import_result.html", context
-                )
+                return render(request, "admin/recipes/import_result.html", context)
         else:
             form = TheMealDBImportForm()
         context = {
@@ -261,11 +327,8 @@ class RecipeAdmin(admin.ModelAdmin):
         return render(request, "admin/recipes/import_form.html", context)
 
 
-
-
-
 class SubmissionActionForm(ActionForm):
-    note = forms.CharField(required=False, label='Moderator note')
+    note = forms.CharField(required=False, label="Moderator note")
 
 
 class RecipeSubmissionImageInline(admin.TabularInline):
@@ -330,18 +393,19 @@ class RecipeSubmissionAdmin(admin.ModelAdmin):
             return base + ("user",)
         return base
 
-    @admin.action(description='Approve selected submissions')
+    @admin.action(description="Approve selected submissions")
     def approve_submissions(self, request, queryset):
         for sub in queryset:
             sub.approve()
-        self.message_user(request, 'Selected submissions approved.')
+        self.message_user(request, "Selected submissions approved.")
 
-    @admin.action(description='Reject selected submissions')
+    @admin.action(description="Reject selected submissions")
     def reject_submissions(self, request, queryset):
-        note = request.POST.get('note', '')
+        note = request.POST.get("note", "")
         for sub in queryset:
             sub.reject(note)
-        self.message_user(request, 'Selected submissions rejected.')
+        self.message_user(request, "Selected submissions rejected.")
+
 
 admin.site.register(MealPlan)
 admin.site.register(ShoppingListItem)
