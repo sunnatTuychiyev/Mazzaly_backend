@@ -14,10 +14,9 @@ except Exception:  # pragma: no cover
     openai = None
 
 # Supported languages for translations and API responses
-SUPPORTED_LANGUAGES = ['en', 'uz', 'ru']
+SUPPORTED_LANGUAGES = ['uz', 'ru']
 
 LANG_NAMES = {
-    'en': 'English',
     'uz': 'Uzbek',
     'ru': 'Russian',
 }
@@ -25,7 +24,7 @@ LANG_NAMES = {
 def get_requested_lang(request) -> str:
     """Return a supported language code from query params, body or headers."""
     if not request:
-        return 'en'
+        return 'uz'
 
     lang = request.query_params.get('lang')
 
@@ -41,7 +40,7 @@ def get_requested_lang(request) -> str:
             lang = header.split(',')[0].split('-')[0]
 
     if lang not in SUPPORTED_LANGUAGES:
-        return 'en'
+        return 'uz'
     return lang
 
 

@@ -297,7 +297,10 @@ class ShoppingListAddRecipeTests(APITestCase):
             subscription_plan=Subscription.PLAN_STANDARD,
         )
         Ingredient.objects.create(
-            recipe=self.fraction_recipe, name="very ripe banana", amount="1/2"
+            recipe=self.fraction_recipe,
+            name="very ripe banana",
+            name_uz="pishgan banan",
+            amount="1/2",
         )
 
         self.decimal_recipe = Recipe.objects.create(
@@ -309,7 +312,10 @@ class ShoppingListAddRecipeTests(APITestCase):
             subscription_plan=Subscription.PLAN_STANDARD,
         )
         Ingredient.objects.create(
-            recipe=self.decimal_recipe, name="very ripe banana", amount="0,5"
+            recipe=self.decimal_recipe,
+            name="very ripe banana",
+            name_uz="pishgan banan",
+            amount="0,5",
         )
 
     def test_duplicate_add_accumulates_amount(self):
@@ -319,7 +325,7 @@ class ShoppingListAddRecipeTests(APITestCase):
         res1 = self.client.post(url, data, format="json")
         assert res1.status_code == 200
         item = ShoppingListItem.objects.get(
-            user=self.user, name="very ripe banana"
+            user=self.user, name="pishgan banan"
         )
         assert item.amount == "1"
         res2 = self.client.post(url, data, format="json")
@@ -334,7 +340,7 @@ class ShoppingListAddRecipeTests(APITestCase):
         res1 = self.client.post(url, data, format="json")
         assert res1.status_code == 200
         item = ShoppingListItem.objects.get(
-            user=self.user, name="very ripe banana"
+            user=self.user, name="pishgan banan"
         )
         assert item.amount == "1/2"
         res2 = self.client.post(url, data, format="json")
@@ -349,7 +355,7 @@ class ShoppingListAddRecipeTests(APITestCase):
         res1 = self.client.post(url, data, format="json")
         assert res1.status_code == 200
         item = ShoppingListItem.objects.get(
-            user=self.user, name="very ripe banana",
+            user=self.user, name="pishgan banan",
         )
         assert item.amount == "0,5"
         res2 = self.client.post(url, data, format="json")

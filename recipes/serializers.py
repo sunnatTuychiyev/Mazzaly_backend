@@ -18,7 +18,7 @@ class CategorySerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang and lang != 'en':
+        if lang:
             trans = getattr(instance, f'name_{lang}', '').strip()
             if not trans or trans.lower() == instance.name.lower():
                 from .translation_utils import translate_text
@@ -46,7 +46,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang and lang != 'en':
+        if lang:
             for field in ['name', 'unit']:
                 original = getattr(instance, field) or ''
                 trans = getattr(instance, f'{field}_{lang}', '').strip()
@@ -69,7 +69,7 @@ class IngredientNameSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang and lang != 'en':
+        if lang:
             trans = getattr(instance, f'name_{lang}', '').strip()
             if not trans or trans.lower() == instance.name.lower():
                 from .translation_utils import translate_text
@@ -87,7 +87,7 @@ class InstructionSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang and lang != 'en':
+        if lang:
             trans = getattr(instance, f'description_{lang}', '').strip()
             if not trans or trans.lower() == instance.description.lower():
                 from .translation_utils import translate_text
@@ -120,7 +120,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang and lang != 'en':
+        if lang:
             for field in ['name', 'description']:
                 trans = getattr(instance, f'{field}_{lang}', '').strip()
                 if not trans or trans.lower() == getattr(instance, field).lower():
@@ -186,7 +186,7 @@ class RecipeCardSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang and lang != 'en':
+        if lang:
             for field in ['name', 'description']:
                 trans = getattr(instance, f'{field}_{lang}', '')
                 if trans:
@@ -237,7 +237,7 @@ class MealPlanSerializer(serializers.ModelSerializer):
                 meal_type_obj = MealType.objects.create(name=meal_type_name)
         recipe_obj = validated_data.get('recipe')
         lang = self.context.get('lang')
-        if recipe_obj and lang and lang != 'en':
+        if recipe_obj and lang:
             from .translation_utils import apply_translations
             apply_translations(recipe_obj)
         date = validated_data.pop('date')
@@ -256,7 +256,7 @@ class MealPlanSerializer(serializers.ModelSerializer):
         data['time'] = instance.scheduled_time.time().strftime('%H:%M')
         data['type'] = instance.meal_type.name if instance.meal_type else None
         lang = self.context.get('lang')
-        if lang and lang != 'en':
+        if lang:
             if data['type']:
                 from .translation_utils import translate_text
                 trans = translate_text(data['type'], lang)

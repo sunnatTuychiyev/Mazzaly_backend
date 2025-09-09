@@ -84,7 +84,7 @@ LANG_PARAM = openapi.Parameter(
     description='Response language',
     type=openapi.TYPE_STRING,
     enum=SUPPORTED_LANGUAGES,
-    default='en'
+    default='uz'
 )
 
 # --- Category CRUD ---
@@ -356,7 +356,7 @@ class MealPlanViewSet(viewsets.ModelViewSet):
         }
 
         lang = get_requested_lang(request)
-        name_field = 'name' if lang == 'en' else f'name_{lang}'
+        name_field = f'name_{lang}'
         meals = []
         for meal_type in MealType.objects.all():
             mp = plan_map.get(meal_type.id)
@@ -367,18 +367,17 @@ class MealPlanViewSet(viewsets.ModelViewSet):
             recipe_data = None
             if mp and mp.recipe:
                 name = getattr(mp.recipe, name_field, '').strip()
-                if lang != 'en' and (not name or name.lower() == mp.recipe.name.lower()):
+                if not name or name.lower() == mp.recipe.name.lower():
                     from .translation_utils import translate_text
                     name = translate_text(mp.recipe.name, lang) or mp.recipe.name
                 else:
                     name = name or mp.recipe.name
                 recipe_data = {'id': mp.recipe.id, 'name': name}
             meal_type_name = meal_type.name
-            if lang != 'en':
-                from .translation_utils import translate_text
-                trans = translate_text(meal_type_name, lang)
-                if trans:
-                    meal_type_name = trans
+            from .translation_utils import translate_text
+            trans = translate_text(meal_type_name, lang)
+            if trans:
+                meal_type_name = trans
             meals.append({
                 'type': meal_type_name,
                 'time': time,
@@ -421,10 +420,10 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
         except Recipe.DoesNotExist:
             return Response({'error': 'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
         lang = get_requested_lang(request)
-        name_field = 'name' if lang == 'en' else f'name_{lang}'
+        name_field = f'name_{lang}'
         for ing in recipe.ingredients.all():
             ing_name = getattr(ing, name_field, '').strip()
-            if lang != 'en' and (not ing_name or ing_name.lower() == ing.name.lower()):
+            if not ing_name or ing_name.lower() == ing.name.lower():
                 from .translation_utils import translate_text
                 ing_name = translate_text(ing.name, lang) or ing.name
             else:
