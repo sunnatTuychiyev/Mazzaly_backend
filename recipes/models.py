@@ -236,6 +236,8 @@ class RecipeSubmission(models.Model):
                 name_uz=item.get("name_uz", ""),
                 amount=item.get("amount"),
                 unit=item.get("unit"),
+                unit_ru=item.get("unit_ru", ""),
+                unit_uz=item.get("unit_uz", ""),
                 preparation=item.get("preparation"),
             )
         for idx, step in enumerate(sorted(self.steps, key=lambda s: s.get("step_number", 0)), start=1):

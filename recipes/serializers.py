@@ -289,6 +289,8 @@ class IngredientInputSerializer(serializers.Serializer):
     name_uz = serializers.CharField(required=False, allow_blank=True, default="")
     amount = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     unit = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    unit_ru = serializers.CharField(required=False, allow_blank=True, default="")
+    unit_uz = serializers.CharField(required=False, allow_blank=True, default="")
     preparation = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
 
