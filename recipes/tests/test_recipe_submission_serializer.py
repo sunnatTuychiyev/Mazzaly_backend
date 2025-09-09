@@ -23,3 +23,31 @@ class RecipeSubmissionSerializerTests(TestCase):
         submission = serializer.save(user=user)
         self.assertEqual(submission.ingredients, [])
         self.assertEqual(submission.steps, [])
+
+    def test_accepts_unit_translations(self):
+        user_model = get_user_model()
+        user = user_model.objects.create_user(username="user2", password="pass")
+
+        data = {
+            "name": "Test recipe",
+            "description": "Desc",
+            "prep_time": 5,
+            "cook_time": 10,
+            "servings": 2,
+            "subscription_plan": "standard",
+            "ingredients": [
+                {
+                    "name": "Sugar",
+                    "unit": "g",
+                    "unit_ru": "г",
+                    "unit_uz": "g",
+                    "amount": "100",
+                }
+            ],
+        }
+
+        serializer = RecipeSubmissionSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        submission = serializer.save(user=user)
+        self.assertEqual(submission.ingredients[0]["unit_ru"], "г")
+        self.assertEqual(submission.ingredients[0]["unit_uz"], "g")

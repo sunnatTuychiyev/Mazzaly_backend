@@ -511,7 +511,7 @@ class TestRecipeSubmissionApproval(APITestCase):
             cook_time=10,
             servings=4,
             subscription_plan=Subscription.PLAN_STANDARD,
-            ingredients=[{"name": "flour"}],
+            ingredients=[{"name": "flour", "unit": "g", "unit_ru": "г", "unit_uz": "g"}],
             steps=[{"step_number": 1, "description": "mix"}],
         )
         sub.categories.add(self.category)
@@ -519,6 +519,10 @@ class TestRecipeSubmissionApproval(APITestCase):
         assert recipe.name_ru == "Торт"
         assert recipe.description_uz == "mazali"
         assert list(recipe.categories.values_list("id", flat=True)) == [self.category.id]
-        assert recipe.ingredients.first().name == "flour"
+        ingredient = recipe.ingredients.first()
+        assert ingredient.name == "flour"
+        assert ingredient.unit == "g"
+        assert ingredient.unit_ru == "г"
+        assert ingredient.unit_uz == "g"
         assert recipe.instructions.first().description == "mix"
 
