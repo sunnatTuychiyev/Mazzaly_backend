@@ -187,7 +187,9 @@ HTTP status code and response body to help debug invalid credentials.
 ### Recipe Translations
 
 Imported recipes are stored in Uzbek or Russian. Ingredient and category names
-are translated as well. Use the `lang` query parameter on the `/api/recipes/`,
+are translated as well. When adding recipes through the API, supply Uzbek and
+Russian fields (`name_uz`/`name_ru`, `description_uz`/`description_ru` and
+translations for ingredients and instructions). Use the `lang` query parameter on the `/api/recipes/`,
 `/api/categories/` and ingredient search endpoints to retrieve data in a
 specific language. The simplified `/api/recipe-cards/` endpoint accepts the same
 parameter. Valid values are `uz` or `ru`; any other value defaults to Uzbek:
@@ -220,8 +222,8 @@ credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
 
 Ingredient, category, recipe and instruction forms expose additional fields
-for Uzbek and Russian translations so text can be entered in all three
-supported languages.
+for Uzbek and Russian translations so text can be entered in both supported
+languages.
 
 ## Telegram Mini App Example
 

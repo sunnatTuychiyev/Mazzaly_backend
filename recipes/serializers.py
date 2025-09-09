@@ -18,13 +18,10 @@ class CategorySerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang:
-            trans = getattr(instance, f'name_{lang}', '').strip()
-            if not trans or trans.lower() == instance.name.lower():
-                from .translation_utils import translate_text
-                trans = translate_text(instance.name, lang)
-            if trans:
-                data['name'] = trans
+        if lang == 'ru':
+            data['name'] = instance.name_ru or instance.name
+        else:
+            data['name'] = instance.name_uz or instance.name
         return data
 
 # MEAL TYPE
@@ -37,8 +34,10 @@ class MealTypeSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id', 'name', 'amount', 'unit', 'unit_uz', 'unit_ru', 'preparation']
+        fields = ['id', 'name', 'name_uz', 'name_ru', 'amount', 'unit', 'unit_uz', 'unit_ru', 'preparation']
         extra_kwargs = {
+            'name_uz': {'write_only': True, 'required': True},
+            'name_ru': {'write_only': True, 'required': True},
             'unit_uz': {'write_only': True, 'required': False, 'allow_blank': True},
             'unit_ru': {'write_only': True, 'required': False, 'allow_blank': True},
         }
@@ -46,18 +45,17 @@ class IngredientSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang:
-            for field in ['name', 'unit']:
-                original = getattr(instance, field) or ''
-                trans = getattr(instance, f'{field}_{lang}', '').strip()
-                if original and (not trans or trans.lower() == original.lower()):
-                    from .translation_utils import translate_text
-                    trans = translate_text(original, lang)
-                if trans:
-                    data[field] = trans
+        if lang == 'ru':
+            data['name'] = instance.name_ru or instance.name
+            data['unit'] = instance.unit_ru or instance.unit
+        else:
+            data['name'] = instance.name_uz or instance.name
+            data['unit'] = instance.unit_uz or instance.unit
         # remove write-only translation fields from output
         data.pop('unit_uz', None)
         data.pop('unit_ru', None)
+        data.pop('name_uz', None)
+        data.pop('name_ru', None)
         return data
 
 # Faqat name va id uchun (autocomplete/search API uchun)
@@ -69,31 +67,31 @@ class IngredientNameSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang:
-            trans = getattr(instance, f'name_{lang}', '').strip()
-            if not trans or trans.lower() == instance.name.lower():
-                from .translation_utils import translate_text
-                trans = translate_text(instance.name, lang)
-            if trans:
-                data['name'] = trans
+        if lang == 'ru':
+            data['name'] = instance.name_ru or instance.name
+        else:
+            data['name'] = instance.name_uz or instance.name
         return data
 
 # INSTRUCTION
 class InstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instruction
-        fields = ['id', 'step_number', 'description']
+        fields = ['id', 'step_number', 'description', 'description_uz', 'description_ru']
+        extra_kwargs = {
+            'description_uz': {'write_only': True, 'required': True},
+            'description_ru': {'write_only': True, 'required': True},
+        }
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang:
-            trans = getattr(instance, f'description_{lang}', '').strip()
-            if not trans or trans.lower() == instance.description.lower():
-                from .translation_utils import translate_text
-                trans = translate_text(instance.description, lang)
-            if trans:
-                data['description'] = trans
+        if lang == 'ru':
+            data['description'] = instance.description_ru or instance.description
+        else:
+            data['description'] = instance.description_uz or instance.description
+        data.pop('description_uz', None)
+        data.pop('description_ru', None)
         return data
 
 # RECIPE
@@ -111,23 +109,31 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = [
-            'id', 'name', 'categories', 'category_ids', 'description', 'image',
+            'id', 'name', 'name_uz', 'name_ru', 'categories', 'category_ids', 'description', 'description_uz', 'description_ru', 'image',
             'prep_time', 'cook_time', 'servings', 'subscription_plan', 'healthy',
             'premium', 'calories', 'protein', 'fats', 'carbs',
             'ingredients', 'instructions'
         ]
+        extra_kwargs = {
+            'name_uz': {'write_only': True, 'required': True},
+            'name_ru': {'write_only': True, 'required': True},
+            'description_uz': {'write_only': True, 'required': True},
+            'description_ru': {'write_only': True, 'required': True},
+        }
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang:
-            for field in ['name', 'description']:
-                trans = getattr(instance, f'{field}_{lang}', '').strip()
-                if not trans or trans.lower() == getattr(instance, field).lower():
-                    from .translation_utils import translate_text
-                    trans = translate_text(getattr(instance, field), lang)
-                if trans:
-                    data[field] = trans
+        if lang == 'ru':
+            data['name'] = instance.name_ru or instance.name
+            data['description'] = instance.description_ru or instance.description
+        else:
+            data['name'] = instance.name_uz or instance.name
+            data['description'] = instance.description_uz or instance.description
+        data.pop('name_uz', None)
+        data.pop('name_ru', None)
+        data.pop('description_uz', None)
+        data.pop('description_ru', None)
         return data
 
     def create(self, validated_data):
@@ -186,11 +192,12 @@ class RecipeCardSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
-        if lang:
-            for field in ['name', 'description']:
-                trans = getattr(instance, f'{field}_{lang}', '')
-                if trans:
-                    data[field] = trans
+        if lang == 'ru':
+            data['name'] = instance.name_ru or instance.name
+            data['description'] = instance.description_ru or instance.description
+        else:
+            data['name'] = instance.name_uz or instance.name
+            data['description'] = instance.description_uz or instance.description
         return data
 
 # MEAL PLAN
@@ -236,10 +243,6 @@ class MealPlanSerializer(serializers.ModelSerializer):
             if not meal_type_obj:
                 meal_type_obj = MealType.objects.create(name=meal_type_name)
         recipe_obj = validated_data.get('recipe')
-        lang = self.context.get('lang')
-        if recipe_obj and lang:
-            from .translation_utils import apply_translations
-            apply_translations(recipe_obj)
         date = validated_data.pop('date')
         time = validated_data.pop('time')
         scheduled_time = datetime.datetime.combine(date, time)
