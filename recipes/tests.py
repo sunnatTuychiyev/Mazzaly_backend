@@ -14,6 +14,7 @@ from recipes.models import (
 )
 import datetime
 from django.utils import timezone
+from unittest.mock import patch
 
 class RecipeSubscriptionTests(APITestCase):
     def setUp(self):
@@ -524,4 +525,70 @@ class TestRecipeSubmissionApproval(APITestCase):
         assert ingredient.unit_ru == "г"
         assert ingredient.unit_uz == "g"
         assert recipe.instructions.first().description == "mix"
+
+
+class CategoryTranslationTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="cat@example.com",
+            first_name="Cat",
+            last_name="User",
+            password="StrongPass1",
+        )
+        Subscription.objects.create(user=self.user, plan=Subscription.PLAN_STANDARD)
+
+    def _create_recipe_with_category(self, category):
+        recipe = Recipe.objects.create(
+            name="R",
+            name_uz="R uz",
+            name_ru="R ru",
+            description="d",
+            description_uz="d uz",
+            description_ru="d ru",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        recipe.categories.add(category)
+        Ingredient.objects.create(
+            recipe=recipe,
+            name="i",
+            name_uz="i uz",
+            name_ru="i ru",
+            amount="1",
+            unit="u",
+            unit_uz="u uz",
+            unit_ru="u ru",
+        )
+        Instruction.objects.create(
+            recipe=recipe,
+            step_number=1,
+            description="s",
+            description_uz="s uz",
+            description_ru="s ru",
+        )
+        return recipe
+
+    def test_uz_category_translates_to_ru(self):
+        category = Category.objects.create(name="Shirinlik", name_uz="Shirinlik", name_ru="")
+        recipe = self._create_recipe_with_category(category)
+        with patch("recipes.translation_utils.translate_text", return_value="Десерт") as mock_trans:
+            self.client.force_authenticate(self.user)
+            url = reverse("recipe-detail", args=[recipe.id]) + "?lang=ru"
+            res = self.client.get(url)
+            assert res.status_code == 200
+            assert res.data["categories"][0]["name"] == "Десерт"
+            mock_trans.assert_called_once_with("Shirinlik", "ru", "uz")
+
+    def test_ru_category_translates_to_uz(self):
+        category = Category.objects.create(name="Десерт", name_ru="Десерт", name_uz="")
+        recipe = self._create_recipe_with_category(category)
+        with patch("recipes.translation_utils.translate_text", return_value="Shirinlik") as mock_trans:
+            self.client.force_authenticate(self.user)
+            url = reverse("recipe-detail", args=[recipe.id]) + "?lang=uz"
+            res = self.client.get(url)
+            assert res.status_code == 200
+            assert res.data["categories"][0]["name"] == "Shirinlik"
+            mock_trans.assert_called_once_with("Десерт", "uz", "ru")
 

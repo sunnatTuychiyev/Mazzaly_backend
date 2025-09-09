@@ -19,9 +19,23 @@ class CategorySerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
         if lang == 'ru':
-            data['name'] = instance.name_ru or instance.name
+            if instance.name_ru:
+                data['name'] = instance.name_ru
+            elif instance.name_uz:
+                from .translation_utils import translate_text
+                trans = translate_text(instance.name_uz, 'ru', 'uz')
+                data['name'] = trans or instance.name_uz or instance.name
+            else:
+                data['name'] = instance.name
         else:
-            data['name'] = instance.name_uz or instance.name
+            if instance.name_uz:
+                data['name'] = instance.name_uz
+            elif instance.name_ru:
+                from .translation_utils import translate_text
+                trans = translate_text(instance.name_ru, 'uz', 'ru')
+                data['name'] = trans or instance.name_ru or instance.name
+            else:
+                data['name'] = instance.name
         return data
 
 # MEAL TYPE
