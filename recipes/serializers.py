@@ -37,18 +37,27 @@ class MealTypeSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id', 'name', 'amount', 'unit', 'preparation']
+        fields = ['id', 'name', 'amount', 'unit', 'unit_uz', 'unit_ru', 'preparation']
+        extra_kwargs = {
+            'unit_uz': {'write_only': True, 'required': False, 'allow_blank': True},
+            'unit_ru': {'write_only': True, 'required': False, 'allow_blank': True},
+        }
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
         if lang and lang != 'en':
-            trans = getattr(instance, f'name_{lang}', '').strip()
-            if not trans or trans.lower() == instance.name.lower():
-                from .translation_utils import translate_text
-                trans = translate_text(instance.name, lang)
-            if trans:
-                data['name'] = trans
+            for field in ['name', 'unit']:
+                original = getattr(instance, field) or ''
+                trans = getattr(instance, f'{field}_{lang}', '').strip()
+                if original and (not trans or trans.lower() == original.lower()):
+                    from .translation_utils import translate_text
+                    trans = translate_text(original, lang)
+                if trans:
+                    data[field] = trans
+        # remove write-only translation fields from output
+        data.pop('unit_uz', None)
+        data.pop('unit_ru', None)
         return data
 
 # Faqat name va id uchun (autocomplete/search API uchun)
