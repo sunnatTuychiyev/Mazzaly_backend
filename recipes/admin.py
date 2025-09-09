@@ -41,6 +41,8 @@ class IngredientInline(admin.TabularInline):
         "name_ru",
         "amount",
         "unit",
+        "unit_uz",
+        "unit_ru",
         "preparation",
     ]
     

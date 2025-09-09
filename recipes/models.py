@@ -84,6 +84,8 @@ class Ingredient(models.Model):
     name_uz = models.CharField(max_length=255, blank=True, default="")
     amount = models.CharField(max_length=100, blank=True, null=True)
     unit = models.CharField(max_length=50, blank=True, null=True)
+    unit_ru = models.CharField(max_length=50, blank=True, default="")
+    unit_uz = models.CharField(max_length=50, blank=True, default="")
     preparation = models.CharField(max_length=100, blank=True, null=True, help_text="Optional: large, grated, cubed, etc.")
 
     def __str__(self):

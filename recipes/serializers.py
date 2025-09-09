@@ -37,18 +37,20 @@ class MealTypeSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id', 'name', 'amount', 'unit', 'preparation']
+        fields = ['id', 'name', 'amount', 'unit', 'unit_uz', 'unit_ru', 'preparation']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
         if lang and lang != 'en':
-            trans = getattr(instance, f'name_{lang}', '').strip()
-            if not trans or trans.lower() == instance.name.lower():
-                from .translation_utils import translate_text
-                trans = translate_text(instance.name, lang)
-            if trans:
-                data['name'] = trans
+            for field in ['name', 'unit']:
+                original = getattr(instance, field) or ''
+                trans = getattr(instance, f'{field}_{lang}', '').strip()
+                if original and (not trans or trans.lower() == original.lower()):
+                    from .translation_utils import translate_text
+                    trans = translate_text(original, lang)
+                if trans:
+                    data[field] = trans
         return data
 
 # Faqat name va id uchun (autocomplete/search API uchun)
