@@ -38,6 +38,10 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ['id', 'name', 'amount', 'unit', 'unit_uz', 'unit_ru', 'preparation']
+        extra_kwargs = {
+            'unit_uz': {'write_only': True, 'required': False, 'allow_blank': True},
+            'unit_ru': {'write_only': True, 'required': False, 'allow_blank': True},
+        }
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -51,6 +55,9 @@ class IngredientSerializer(serializers.ModelSerializer):
                     trans = translate_text(original, lang)
                 if trans:
                     data[field] = trans
+        # remove write-only translation fields from output
+        data.pop('unit_uz', None)
+        data.pop('unit_ru', None)
         return data
 
 # Faqat name va id uchun (autocomplete/search API uchun)

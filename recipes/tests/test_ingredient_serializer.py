@@ -26,14 +26,18 @@ class IngredientSerializerTests(TestCase):
 
         data_en = IngredientSerializer(ingredient).data
         self.assertEqual(data_en["unit"], "cup")
-        self.assertEqual(data_en["unit_ru"], "стакан")
-        self.assertEqual(data_en["unit_uz"], "stakan")
+        self.assertNotIn("unit_ru", data_en)
+        self.assertNotIn("unit_uz", data_en)
 
         data_ru = IngredientSerializer(ingredient, context={"lang": "ru"}).data
         self.assertEqual(data_ru["unit"], "стакан")
+        self.assertNotIn("unit_ru", data_ru)
+        self.assertNotIn("unit_uz", data_ru)
 
         data_uz = IngredientSerializer(ingredient, context={"lang": "uz"}).data
         self.assertEqual(data_uz["unit"], "stakan")
+        self.assertNotIn("unit_ru", data_uz)
+        self.assertNotIn("unit_uz", data_uz)
 
     def test_create_with_unit_translations(self):
         payload = {
