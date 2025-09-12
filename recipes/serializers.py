@@ -15,14 +15,18 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name', 'name_uz', 'name_ru']
         extra_kwargs = {
+            'name': {'required': False},
             'name_uz': {'write_only': True, 'required': True},
             'name_ru': {'write_only': True, 'required': True},
         }
 
     def create(self, validated_data):
+        name = validated_data.pop('name', None)
         name_uz = validated_data.pop('name_uz')
         name_ru = validated_data.pop('name_ru')
-        return Category.objects.create(name=name_uz, name_uz=name_uz, name_ru=name_ru, **validated_data)
+        if not name:
+            name = name_uz
+        return Category.objects.create(name=name, name_uz=name_uz, name_ru=name_ru, **validated_data)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

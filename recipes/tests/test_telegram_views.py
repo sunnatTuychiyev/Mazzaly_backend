@@ -53,6 +53,7 @@ class TelegramCategoryCreateViewTests(TestCase):
 
         data = {
             'init_data': 'stub',
+            'name': 'Shirinlik',
             'name_uz': 'Shirinlik',
             'name_ru': 'Десерт',
         }
@@ -60,3 +61,18 @@ class TelegramCategoryCreateViewTests(TestCase):
         resp = self.client.post(self.url, data)
         self.assertEqual(resp.status_code, 201, resp.content)
         self.assertTrue(Category.objects.filter(name='Shirinlik', name_uz='Shirinlik', name_ru='Десерт').exists())
+
+    @patch('recipes.telegram_views.get_user_from_init_data')
+    def test_duplicate_category_returns_error(self, mock_get_user):
+        user = get_user_model().objects.create_user(username='cat2', password='pass')
+        mock_get_user.return_value = user
+        Category.objects.create(name='Shirinlik', name_uz='Shirinlik', name_ru='Десерт')
+        data = {
+            'init_data': 'stub',
+            'name': 'Shirinlik',
+            'name_uz': 'Shirinlik',
+            'name_ru': 'Десерт',
+        }
+        resp = self.client.post(self.url, data)
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn('exists', resp.data['error'])

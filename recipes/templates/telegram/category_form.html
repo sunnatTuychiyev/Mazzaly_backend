@@ -20,6 +20,7 @@
 <body>
 <h1>Add Category</h1>
 <form id="category-form">
+    <div class="form-group"><label>Name:</label><input type="text" name="name" required></div>
     <div class="form-group"><label>Name uz:</label><input type="text" name="name_uz" required></div>
     <div class="form-group"><label>Name ru:</label><input type="text" name="name_ru" required></div>
     <div style="margin-top:1rem;"><button class="btn" type="submit">Save</button></div>
@@ -55,9 +56,18 @@ const showMessage = (msg) => {
 const form = document.getElementById('category-form');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = new FormData(form);
-    data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
-    const resp = await fetch('/api/telegram/categories/', { method: 'POST', body: data });
+    const formData = new FormData(form);
+    const payload = {
+        name: formData.get('name'),
+        name_uz: formData.get('name_uz'),
+        name_ru: formData.get('name_ru'),
+        init_data: tg.initData || tg.initDataUnsafe?.raw || ''
+    };
+    const resp = await fetch('/api/telegram/categories/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
     const json = await resp.json();
     if (!resp.ok) {
         showMessage(json.error || 'Creation failed');

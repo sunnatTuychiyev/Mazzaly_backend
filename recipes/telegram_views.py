@@ -9,6 +9,7 @@ import json
 
 from .models import RecipeSubmission, RecipeSubmissionImage, Category
 from .serializers import RecipeSubmissionSerializer, CategorySerializer
+from django.db.models import Q
 
 
 class TelegramRecipeSubmissionCreateView(APIView):
@@ -100,9 +101,17 @@ class TelegramCategoryCreateView(APIView):
             return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         data = {
+            'name': request.data.get('name'),
             'name_uz': request.data.get('name_uz'),
             'name_ru': request.data.get('name_ru'),
         }
+        name_to_check = data.get('name') or data.get('name_uz')
+        if Category.objects.filter(
+            Q(name__iexact=name_to_check)
+            | Q(name_uz__iexact=data.get('name_uz'))
+            | Q(name_ru__iexact=data.get('name_ru'))
+        ).exists():
+            return Response({'error': 'Category already exists'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = CategorySerializer(data=data)
         serializer.is_valid(raise_exception=True)
         category = serializer.save()
