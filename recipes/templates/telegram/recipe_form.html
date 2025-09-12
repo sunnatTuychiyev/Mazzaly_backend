@@ -64,6 +64,7 @@
                 <button class="btn" type="button" id="choose-selected">Choose selected</button>
                 <button class="btn" type="button" id="remove-selected">Remove selected</button>
                 <button class="btn" type="button" id="remove-all">Remove all</button>
+                <button class="btn" type="button" id="add-category">Add category</button>
             </div>
             <select id="chosen-categories" multiple></select>
         </div>
@@ -153,6 +154,9 @@ document.getElementById('choose-all').onclick = () => {
 document.getElementById('remove-all').onclick = () => {
     const src = document.getElementById('chosen-categories');
     Array.from(src.options).forEach(opt => document.getElementById('available-categories').appendChild(opt));
+};
+document.getElementById('add-category').onclick = () => {
+    window.location.href = '/telegram/category-form/';
 };
 
 addIngredientRow();
