@@ -10,8 +10,10 @@ class RecipeSubmissionSerializerTests(TestCase):
         user = user_model.objects.create_user(username="user", password="pass")
 
         data = {
-            "name": "Test recipe",
-            "description": "Desc",
+            "name_uz": "Test recipe",
+            "name_ru": "Тестовый рецепт",
+            "description_uz": "Desc uz",
+            "description_ru": "Desc ru",
             "prep_time": 5,
             "cook_time": 10,
             "servings": 2,
@@ -23,24 +25,28 @@ class RecipeSubmissionSerializerTests(TestCase):
         submission = serializer.save(user=user)
         self.assertEqual(submission.ingredients, [])
         self.assertEqual(submission.steps, [])
+        self.assertEqual(submission.name, "Test recipe")
+        self.assertEqual(submission.description, "Desc uz")
 
     def test_accepts_unit_translations(self):
         user_model = get_user_model()
         user = user_model.objects.create_user(username="user2", password="pass")
 
         data = {
-            "name": "Test recipe",
-            "description": "Desc",
+            "name_uz": "Test recipe",
+            "name_ru": "Тестовый рецепт",
+            "description_uz": "Desc uz",
+            "description_ru": "Desc ru",
             "prep_time": 5,
             "cook_time": 10,
             "servings": 2,
             "subscription_plan": "standard",
             "ingredients": [
                 {
-                    "name": "Sugar",
-                    "unit": "g",
-                    "unit_ru": "г",
+                    "name_uz": "Sugar",
+                    "name_ru": "Сахар",
                     "unit_uz": "g",
+                    "unit_ru": "г",
                     "amount": "100",
                 }
             ],
@@ -51,3 +57,4 @@ class RecipeSubmissionSerializerTests(TestCase):
         submission = serializer.save(user=user)
         self.assertEqual(submission.ingredients[0]["unit_ru"], "г")
         self.assertEqual(submission.ingredients[0]["unit_uz"], "g")
+        self.assertEqual(submission.ingredients[0]["name"], "Sugar")

@@ -301,21 +301,27 @@ class RecipeRatingSerializer(serializers.ModelSerializer):
 
 # RECIPE SUBMISSION
 class IngredientInputSerializer(serializers.Serializer):
-    name = serializers.CharField()
-    name_ru = serializers.CharField(required=False, allow_blank=True, default="")
-    name_uz = serializers.CharField(required=False, allow_blank=True, default="")
+    name_uz = serializers.CharField()
+    name_ru = serializers.CharField()
     amount = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    unit = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    unit_ru = serializers.CharField(required=False, allow_blank=True, default="")
     unit_uz = serializers.CharField(required=False, allow_blank=True, default="")
+    unit_ru = serializers.CharField(required=False, allow_blank=True, default="")
     preparation = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
+    def validate(self, attrs):
+        attrs.setdefault("name", attrs.get("name_uz", ""))
+        attrs.setdefault("unit", attrs.get("unit_uz", ""))
+        return attrs
 
 
 class InstructionInputSerializer(serializers.Serializer):
     step_number = serializers.IntegerField()
-    description = serializers.CharField()
-    description_ru = serializers.CharField(required=False, allow_blank=True, default="")
-    description_uz = serializers.CharField(required=False, allow_blank=True, default="")
+    description_uz = serializers.CharField()
+    description_ru = serializers.CharField()
+
+    def validate(self, attrs):
+        attrs.setdefault("description", attrs.get("description_uz", ""))
+        return attrs
 
 
 class RecipeSubmissionSerializer(serializers.ModelSerializer):
@@ -356,6 +362,12 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["status", "moderator_note", "image", "created_at"]
+        extra_kwargs = {
+            "name_uz": {"required": True, "write_only": True},
+            "name_ru": {"required": True, "write_only": True},
+            "description_uz": {"required": True, "write_only": True},
+            "description_ru": {"required": True, "write_only": True},
+        }
 
     def get_image(self, obj):
         first = obj.images.first()
@@ -367,6 +379,11 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
         if categories:
             submission.categories.set(categories)
         return submission
+
+    def validate(self, attrs):
+        attrs["name"] = attrs.get("name_uz", attrs.get("name", ""))
+        attrs["description"] = attrs.get("description_uz", attrs.get("description", ""))
+        return attrs
 
 
 # SIMPLE USER RECIPE SERIALIZER

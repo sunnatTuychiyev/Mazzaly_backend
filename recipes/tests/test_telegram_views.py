@@ -22,8 +22,10 @@ class TelegramRecipeSubmissionCreateViewTests(TestCase):
         image = SimpleUploadedFile('test.jpg', b'filecontent', content_type='image/jpeg')
         data = {
             'init_data': 'stub',
-            'name': 'Recipe',
-            'description': 'Desc',
+            'name_uz': 'Recipe uz',
+            'name_ru': 'Recipe ru',
+            'description_uz': 'Desc uz',
+            'description_ru': 'Desc ru',
             'prep_time': 1,
             'cook_time': 1,
             'servings': 1,
