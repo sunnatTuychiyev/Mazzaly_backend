@@ -13,11 +13,23 @@ from .models import (
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'name_uz', 'name_ru']
+        extra_kwargs = {
+            'name_uz': {'write_only': True, 'required': True},
+            'name_ru': {'write_only': True, 'required': True},
+        }
+
+    def create(self, validated_data):
+        name_uz = validated_data.pop('name_uz')
+        name_ru = validated_data.pop('name_ru')
+        return Category.objects.create(name=name_uz, name_uz=name_uz, name_ru=name_ru, **validated_data)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         lang = self.context.get('lang')
+        # remove write-only fields
+        data.pop('name_uz', None)
+        data.pop('name_ru', None)
         if lang == 'ru':
             if instance.name_ru:
                 data['name'] = instance.name_ru

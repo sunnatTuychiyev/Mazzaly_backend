@@ -106,6 +106,12 @@ curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
   -F 'instructions=[{"step_number":1,"description":"chop"}]' \
   -F "init_data=<INIT_DATA>"
 
+# Test category creation
+curl -X POST https://localhost:8000/api/telegram/categories/ \
+  -d "name_uz=Shirinlik" \
+  -d "name_ru=Десерт" \
+  -d "init_data=<INIT_DATA>"
+
 # List your submissions
 curl -G --data-urlencode "init_data=<INIT_DATA>" \
   https://localhost:8000/api/telegram/recipe-submissions/mine/

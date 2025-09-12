@@ -39,3 +39,24 @@ class TelegramRecipeSubmissionCreateViewTests(TestCase):
         submission = RecipeSubmission.objects.get()
         self.assertEqual(list(submission.categories.values_list('id', flat=True)), [self.category.id])
         self.assertEqual(submission.images.count(), 1)
+
+
+class TelegramCategoryCreateViewTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse('telegram-category-create')
+
+    @patch('recipes.telegram_views.get_user_from_init_data')
+    def test_create_category(self, mock_get_user):
+        user = get_user_model().objects.create_user(username='cat', password='pass')
+        mock_get_user.return_value = user
+
+        data = {
+            'init_data': 'stub',
+            'name_uz': 'Shirinlik',
+            'name_ru': 'Десерт',
+        }
+
+        resp = self.client.post(self.url, data)
+        self.assertEqual(resp.status_code, 201, resp.content)
+        self.assertTrue(Category.objects.filter(name='Shirinlik', name_uz='Shirinlik', name_ru='Десерт').exists())
