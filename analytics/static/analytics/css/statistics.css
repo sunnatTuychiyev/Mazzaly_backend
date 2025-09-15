@@ -1,3 +1,17 @@
+/* Minimal additions for author stats widgets reuse */
+.stat-card {
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  background: #fff;
+}
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.stat-label {
+  color: #6b7280;
+}
 :root{--bg:#f7f9fc;--text:#111827;--muted:#6b7280;--primary:#0ea5e9;--border:#e5e7eb}
 body{background:var(--bg)}
 .container-fluid{animation:fadeIn .35s ease}

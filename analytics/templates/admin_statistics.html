@@ -12,6 +12,7 @@
   <div class="d-flex align-items-center gap-2 mb-3">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 12h4l3-8 4 16 3-8h3" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <h1 class="mb-0">Usage Statistics</h1>
+    <a href="{% url 'admin:author-statistics' %}" class="btn btn-outline-primary ms-auto">Author statistics</a>
   </div>
   <input type="hidden" id="statistics-data-url" value="{% url 'admin:statistics-data' %}">
 

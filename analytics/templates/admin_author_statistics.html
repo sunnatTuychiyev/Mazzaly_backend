@@ -1,0 +1,198 @@
+{% extends 'admin/base_site.html' %}
+{% load static %}
+
+{% block title %}Author statistics{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'analytics/css/statistics.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM8 10a2 2 0 114 0 2 2 0 01-4 0zm8 7H8a4 4 0 118 0z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h1 class="mb-0">Author statistics</h1>
+    <div class="ms-auto d-flex gap-2">
+      <a href="{% url 'admin:author-statistics-export' %}" class="btn btn-success">Export CSV</a>
+      <a href="{% url 'admin:statistics' %}" class="btn btn-outline-secondary">Back to Statistics</a>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card h-100">
+        <div class="stat-label">Total authors</div>
+        <div class="stat-value">{{ total_authors }}</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card h-100">
+        <div class="stat-label">Total submissions</div>
+        <div class="stat-value">{{ total_submissions }}</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card h-100">
+        <div class="stat-label">Approved submissions</div>
+        <div class="stat-value">{{ total_approved }}</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card h-100">
+        <div class="stat-label">Total recipes</div>
+        <div class="stat-value">{{ total_recipes }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span>Authors overview</span>
+      {% if top_author %}
+      <span class="badge bg-primary">Top author: {{ top_author.name }}</span>
+      {% endif %}
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+          <thead>
+            <tr>
+              <th>Author</th>
+              <th class="text-center">Submissions</th>
+              <th class="text-center">Approved</th>
+              <th class="text-center">Rejected</th>
+              <th class="text-center">Pending</th>
+              <th class="text-center">Total recipes</th>
+              <th class="text-center">Added 30d</th>
+              <th class="text-center">Added 7d</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in page %}
+            <tr>
+              <td>{{ a.name }}</td>
+              <td class="text-center">{{ a.total_submissions }}</td>
+              <td class="text-center">{{ a.approved_submissions }}</td>
+              <td class="text-center">{{ a.rejected_submissions }}</td>
+              <td class="text-center">{{ a.pending_submissions }}</td>
+              <td class="text-center">{{ a.total_recipes }}</td>
+              <td class="text-center">{{ a.recipes_30d }}</td>
+              <td class="text-center">{{ a.recipes_7d }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="text-center">No authors</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="p-3">
+        <nav>
+          <ul class="pagination mb-0">
+            {% if page.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ page.number }} of {{ paginator.num_pages }}</span></li>
+            {% if page.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">Next</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header">Recipes submitted by Author</div>
+        <div class="card-body">
+          <canvas id="authorBar"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="card h-100">
+        <div class="card-header">Approved vs Rejected</div>
+        <div class="card-body">
+          <canvas id="approvePie"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="card h-100">
+        <div class="card-header">Daily submissions (30d)</div>
+        <div class="card-body">
+          <canvas id="submissionsLine"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">Top 10 most active Authors</div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Author</th>
+              <th>Total recipes</th>
+              <th>Approved</th>
+              <th>Total submissions</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  (function(){
+    const dataUrl = '{% url "admin:author-statistics-data" %}';
+    fetch(dataUrl).then(r=>r.json()).then(d=>{
+      // Leaderboard
+      const body = document.getElementById('leaderboardBody');
+      body.innerHTML = d.leaderboard.map((row, idx)=>
+        `<tr data-id="${row.id}"><td>${idx+1}</td><td>${row.name}</td><td>${row.total_recipes}</td><td>${row.approved_submissions}</td><td>${row.total_submissions}</td></tr>`
+      ).join('');
+
+      // Bar chart: recipes per author
+      const labels = d.authors.map(a=>a.name);
+      const values = d.authors.map(a=>a.total_recipes);
+      const ctxBar = document.getElementById('authorBar');
+      const bar = new Chart(ctxBar, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Total recipes', data: values, backgroundColor: '#60a5fa' }] },
+        options: { onClick: (evt, el)=>{
+          if(el && el.length){
+            const idx = el[0].index; const name = labels[idx];
+            const a = d.authors[idx];
+            alert(`${name}:\nSubmissions: ${a.total_submissions}\nApproved: ${a.approved_submissions}\nRejected: ${a.rejected_submissions}\nPending: ${a.pending_submissions}\nTotal recipes: ${a.total_recipes}\n30d: ${a.recipes_30d}\n7d: ${a.recipes_7d}`);
+          }
+        }, scales: { y: { beginAtZero: true } } }
+      });
+
+      // Pie chart: approved vs rejected
+      const ctxPie = document.getElementById('approvePie');
+      new Chart(ctxPie, {
+        type: 'pie',
+        data: { labels: ['Approved','Rejected'], datasets: [{ data: [d.approved_vs_rejected.approved, d.approved_vs_rejected.rejected], backgroundColor: ['#34d399','#f87171'] }] },
+      });
+
+      // Line chart: daily submissions 30d
+      const ctxLine = document.getElementById('submissionsLine');
+      new Chart(ctxLine, {
+        type: 'line',
+        data: { labels: d.daily_submissions_30d.map(x=>x.day), datasets: [{ label: 'Submissions', data: d.daily_submissions_30d.map(x=>x.total), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.2)' }] },
+        options: { scales: { y: { beginAtZero: true } } }
+      });
+    });
+  })();
+</script>
+{% endblock %}
+
+
