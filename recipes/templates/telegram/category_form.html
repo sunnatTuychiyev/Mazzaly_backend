@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Add Category</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 1rem; background: linear-gradient(135deg,#e3f2fd,#fff); }
+        h1 { text-align: center; }
+        form { max-width: 400px; margin: auto; background: #fff; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); animation: fadeIn .6s ease; }
+        .form-group { margin-bottom: 0.75rem; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 0.25rem; }
+        input[type=text] { width: 100%; padding: 0.5rem; border: 1px solid #ccd; border-radius: 6px; }
+        .btn { background: #0088cc; color: #fff; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; transition: background .3s, transform .2s; }
+        .btn:hover { background: #007ab8; }
+        .btn:active { transform: scale(0.97); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+<h1>Add Category</h1>
+<form id="category-form">
+    <div class="form-group"><label>Name:</label><input type="text" name="name" required></div>
+    <div class="form-group"><label>Name uz:</label><input type="text" name="name_uz" required></div>
+    <div class="form-group"><label>Name ru:</label><input type="text" name="name_ru" required></div>
+    <div style="margin-top:1rem;"><button class="btn" type="submit">Save</button></div>
+</form>
+<script>
+const tg = window.Telegram.WebApp;
+
+(async () => {
+    const initData = tg.initData || tg.initDataUnsafe?.raw || '';
+    if (initData) {
+        try {
+            await fetch('/api/telegram-auth/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ init_data: initData }),
+            });
+        } catch (err) {
+            console.error('Auto sign-up failed', err);
+        }
+    }
+})();
+
+const showMessage = (msg) => {
+    if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.2') && tg.showPopup) {
+        tg.showPopup({ message: msg });
+    } else if (tg.showAlert) {
+        tg.showAlert(msg);
+    } else {
+        alert(msg);
+    }
+};
+
+const form = document.getElementById('category-form');
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const payload = {
+        name: formData.get('name'),
+        name_uz: formData.get('name_uz'),
+        name_ru: formData.get('name_ru'),
+        init_data: tg.initData || tg.initDataUnsafe?.raw || ''
+    };
+    const resp = await fetch('/api/telegram/categories/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    const json = await resp.json();
+    if (!resp.ok) {
+        showMessage(json.error || 'Creation failed');
+        return;
+    }
+    showMessage('✅ Category qo\'shildi');
+    form.reset();
+});
+
+if (tg.expand) { tg.expand(); }
+</script>
+</body>
+</html>

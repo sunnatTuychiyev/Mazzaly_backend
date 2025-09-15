@@ -8,7 +8,8 @@ from account.telegram import get_user_from_init_data, TelegramInitDataError
 import json
 
 from .models import RecipeSubmission, RecipeSubmissionImage, Category
-from .serializers import RecipeSubmissionSerializer
+from .serializers import RecipeSubmissionSerializer, CategorySerializer
+from django.db.models import Q
 
 
 class TelegramRecipeSubmissionCreateView(APIView):
@@ -85,3 +86,37 @@ class TelegramRecipeFormView(TemplateView):
         context["categories"] = Category.objects.all()
         context["plans"] = RecipeSubmission.PLAN_CHOICES
         return context
+
+
+class TelegramCategoryCreateView(APIView):
+    """Create a new category directly from a Telegram WebApp."""
+
+    def post(self, request):
+        init_data = request.data.get('init_data')
+        if not init_data:
+            return Response({'error': 'init_data is required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            get_user_from_init_data(init_data)
+        except TelegramInitDataError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = {
+            'name': request.data.get('name'),
+            'name_uz': request.data.get('name_uz'),
+            'name_ru': request.data.get('name_ru'),
+        }
+        name_to_check = data.get('name') or data.get('name_uz')
+        if Category.objects.filter(
+            Q(name__iexact=name_to_check)
+            | Q(name_uz__iexact=data.get('name_uz'))
+            | Q(name_ru__iexact=data.get('name_ru'))
+        ).exists():
+            return Response({'error': 'Category already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = CategorySerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        category = serializer.save()
+        return Response(CategorySerializer(category).data, status=status.HTTP_201_CREATED)
+
+
+class TelegramCategoryFormView(TemplateView):
+    template_name = "telegram/category_form.html"

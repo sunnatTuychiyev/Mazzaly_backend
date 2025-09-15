@@ -23,7 +23,11 @@ class RecipeSubmissionNotificationTests(TestCase):
         sub = RecipeSubmission.objects.create(
             user=self.user,
             name="Cake",
+            name_uz="Tort",
+            name_ru="Торт",
             description="desc",
+            description_uz="desc uz",
+            description_ru="desc ru",
             prep_time=1,
             cook_time=1,
             servings=1,
@@ -44,7 +48,11 @@ class RecipeSubmissionNotificationTests(TestCase):
         sub = RecipeSubmission.objects.create(
             user=self.user,
             name="Soup",
+            name_uz="Sho'rva",
+            name_ru="Суп",
             description="desc",
+            description_uz="desc uz",
+            description_ru="desc ru",
             prep_time=1,
             cook_time=1,
             servings=1,

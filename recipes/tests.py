@@ -297,7 +297,10 @@ class ShoppingListAddRecipeTests(APITestCase):
             subscription_plan=Subscription.PLAN_STANDARD,
         )
         Ingredient.objects.create(
-            recipe=self.fraction_recipe, name="very ripe banana", amount="1/2"
+            recipe=self.fraction_recipe,
+            name="very ripe banana",
+            name_uz="pishgan banan",
+            amount="1/2",
         )
 
         self.decimal_recipe = Recipe.objects.create(
@@ -309,7 +312,10 @@ class ShoppingListAddRecipeTests(APITestCase):
             subscription_plan=Subscription.PLAN_STANDARD,
         )
         Ingredient.objects.create(
-            recipe=self.decimal_recipe, name="very ripe banana", amount="0,5"
+            recipe=self.decimal_recipe,
+            name="very ripe banana",
+            name_uz="pishgan banan",
+            amount="0,5",
         )
 
     def test_duplicate_add_accumulates_amount(self):
@@ -319,7 +325,7 @@ class ShoppingListAddRecipeTests(APITestCase):
         res1 = self.client.post(url, data, format="json")
         assert res1.status_code == 200
         item = ShoppingListItem.objects.get(
-            user=self.user, name="very ripe banana"
+            user=self.user, name="pishgan banan"
         )
         assert item.amount == "1"
         res2 = self.client.post(url, data, format="json")
@@ -334,7 +340,7 @@ class ShoppingListAddRecipeTests(APITestCase):
         res1 = self.client.post(url, data, format="json")
         assert res1.status_code == 200
         item = ShoppingListItem.objects.get(
-            user=self.user, name="very ripe banana"
+            user=self.user, name="pishgan banan"
         )
         assert item.amount == "1/2"
         res2 = self.client.post(url, data, format="json")
@@ -349,7 +355,7 @@ class ShoppingListAddRecipeTests(APITestCase):
         res1 = self.client.post(url, data, format="json")
         assert res1.status_code == 200
         item = ShoppingListItem.objects.get(
-            user=self.user, name="very ripe banana",
+            user=self.user, name="pishgan banan",
         )
         assert item.amount == "0,5"
         res2 = self.client.post(url, data, format="json")
@@ -431,44 +437,39 @@ class MealPlanLanguageTests(APITestCase):
         assert res.status_code == 201
         assert res.data["recipe"]["name"].lower() == "банан"
 
-    def test_create_falls_back_to_translation(self):
-        self.client.force_authenticate(self.user)
-        recipe = Recipe.objects.create(
-            name="Test Meal",
-            description="desc",
-            prep_time=1,
-            cook_time=1,
-            servings=1,
-            subscription_plan=Subscription.PLAN_STANDARD,
-        )
-        MealType.objects.create(name="Dinner")
-        url = reverse("mealplan-list") + "?lang=ru"
-        data = {
-            "date": "2025-08-15",
-            "type": "Dinner",
-            "time": "19:00",
-            "recipe_id": recipe.id,
-            "custom_meal": None,
-        }
-        with patch("recipes.translation_utils.translate_text", side_effect=lambda text, lang: f"{text}-{lang}"):
-            res = self.client.post(url, data, format="json")
-        assert res.status_code == 201
-        assert res.data["recipe"]["name"] == "Test Meal-ru"
-
     def test_create_translates_nested_fields(self):
         self.client.force_authenticate(self.user)
-        category = Category.objects.create(name="Dessert")
+        category = Category.objects.create(name="Dessert", name_ru="Десерт", name_uz="Shirinlik")
         recipe = Recipe.objects.create(
             name="Test Recipe",
+            name_ru="Тестовый рецепт",
+            name_uz="Sinov retsepti",
             description="desc",
+            description_ru="описание",
+            description_uz="tasnif",
             prep_time=1,
             cook_time=1,
             servings=1,
             subscription_plan=Subscription.PLAN_STANDARD,
         )
         recipe.categories.add(category)
-        Ingredient.objects.create(recipe=recipe, name="Sugar", amount="1", unit="cup")
-        Instruction.objects.create(recipe=recipe, step_number=1, description="Mix well")
+        Ingredient.objects.create(
+            recipe=recipe,
+            name="Sugar",
+            name_ru="Сахар",
+            name_uz="Shakar",
+            amount="1",
+            unit="cup",
+            unit_ru="стакан",
+            unit_uz="stakan",
+        )
+        Instruction.objects.create(
+            recipe=recipe,
+            step_number=1,
+            description="Mix well",
+            description_ru="Хорошо перемешать",
+            description_uz="Yaxshi aralashtiring",
+        )
         MealType.objects.create(name="Dinner")
         url = reverse("mealplan-list") + "?lang=ru"
         data = {
@@ -478,14 +479,13 @@ class MealPlanLanguageTests(APITestCase):
             "recipe_id": recipe.id,
             "custom_meal": None,
         }
-        with patch("recipes.translation_utils.translate_text", side_effect=lambda text, lang: f"{text}-{lang}"):
-            res = self.client.post(url, data, format="json")
+        res = self.client.post(url, data, format="json")
         assert res.status_code == 201
-        assert res.data["recipe"]["name"] == "Test Recipe-ru"
-        assert res.data["recipe"]["categories"][0]["name"] == "Dessert-ru"
-        assert res.data["recipe"]["ingredients"][0]["name"] == "Sugar-ru"
-        assert res.data["recipe"]["instructions"][0]["description"] == "Mix well-ru"
-        assert res.data["type"].lower() == "dinner-ru"
+        assert res.data["recipe"]["name"] == "Тестовый рецепт"
+        assert res.data["recipe"]["categories"][0]["name"] == "Десерт"
+        assert res.data["recipe"]["ingredients"][0]["name"] == "Сахар"
+        assert res.data["recipe"]["instructions"][0]["description"] == "Хорошо перемешать"
+        assert res.data["type"].lower() == "ужин"
 
 
 class TestRecipeSubmissionApproval(APITestCase):
@@ -525,4 +525,70 @@ class TestRecipeSubmissionApproval(APITestCase):
         assert ingredient.unit_ru == "г"
         assert ingredient.unit_uz == "g"
         assert recipe.instructions.first().description == "mix"
+
+
+class CategoryTranslationTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="cat@example.com",
+            first_name="Cat",
+            last_name="User",
+            password="StrongPass1",
+        )
+        Subscription.objects.create(user=self.user, plan=Subscription.PLAN_STANDARD)
+
+    def _create_recipe_with_category(self, category):
+        recipe = Recipe.objects.create(
+            name="R",
+            name_uz="R uz",
+            name_ru="R ru",
+            description="d",
+            description_uz="d uz",
+            description_ru="d ru",
+            prep_time=1,
+            cook_time=1,
+            servings=1,
+            subscription_plan=Subscription.PLAN_STANDARD,
+        )
+        recipe.categories.add(category)
+        Ingredient.objects.create(
+            recipe=recipe,
+            name="i",
+            name_uz="i uz",
+            name_ru="i ru",
+            amount="1",
+            unit="u",
+            unit_uz="u uz",
+            unit_ru="u ru",
+        )
+        Instruction.objects.create(
+            recipe=recipe,
+            step_number=1,
+            description="s",
+            description_uz="s uz",
+            description_ru="s ru",
+        )
+        return recipe
+
+    def test_uz_category_translates_to_ru(self):
+        category = Category.objects.create(name="Shirinlik", name_uz="Shirinlik", name_ru="")
+        recipe = self._create_recipe_with_category(category)
+        with patch("recipes.translation_utils.translate_text", return_value="Десерт") as mock_trans:
+            self.client.force_authenticate(self.user)
+            url = reverse("recipe-detail", args=[recipe.id]) + "?lang=ru"
+            res = self.client.get(url)
+            assert res.status_code == 200
+            assert res.data["categories"][0]["name"] == "Десерт"
+            mock_trans.assert_called_once_with("Shirinlik", "ru", "uz")
+
+    def test_ru_category_translates_to_uz(self):
+        category = Category.objects.create(name="Десерт", name_ru="Десерт", name_uz="")
+        recipe = self._create_recipe_with_category(category)
+        with patch("recipes.translation_utils.translate_text", return_value="Shirinlik") as mock_trans:
+            self.client.force_authenticate(self.user)
+            url = reverse("recipe-detail", args=[recipe.id]) + "?lang=uz"
+            res = self.client.get(url)
+            assert res.status_code == 200
+            assert res.data["categories"][0]["name"] == "Shirinlik"
+            mock_trans.assert_called_once_with("Десерт", "uz", "ru")
 

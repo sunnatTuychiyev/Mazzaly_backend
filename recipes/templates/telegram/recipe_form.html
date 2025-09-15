@@ -31,12 +31,10 @@
 <body>
 <h1>Submit Recipe</h1>
 <form id="recipe-form">
-    <div class="form-group"><label>Name:</label><input type="text" name="name" required></div>
-    <div class="form-group"><label>Name uz:</label><input type="text" name="name_uz"></div>
-    <div class="form-group"><label>Name ru:</label><input type="text" name="name_ru"></div>
-    <div class="form-group"><label>Description:</label><textarea name="description" required></textarea></div>
-    <div class="form-group"><label>Description uz:</label><textarea name="description_uz"></textarea></div>
-    <div class="form-group"><label>Description ru:</label><textarea name="description_ru"></textarea></div>
+    <div class="form-group"><label>Name uz:</label><input type="text" name="name_uz" required></div>
+    <div class="form-group"><label>Name ru:</label><input type="text" name="name_ru" required></div>
+    <div class="form-group"><label>Description uz:</label><textarea name="description_uz" required></textarea></div>
+    <div class="form-group"><label>Description ru:</label><textarea name="description_ru" required></textarea></div>
     <div class="form-group"><label>Image:</label><input type="file" name="images" multiple></div>
     <div class="form-group"><label>Prep time:</label><input type="number" name="prep_time" min="0" required><small> in minutes</small></div>
     <div class="form-group"><label>Cook time:</label><input type="number" name="cook_time" min="0" required><small> in minutes</small></div>
@@ -66,6 +64,7 @@
                 <button class="btn" type="button" id="choose-selected">Choose selected</button>
                 <button class="btn" type="button" id="remove-selected">Remove selected</button>
                 <button class="btn" type="button" id="remove-all">Remove all</button>
+                <button class="btn" type="button" id="add-category">Add category</button>
             </div>
             <select id="chosen-categories" multiple></select>
         </div>
@@ -74,7 +73,7 @@
     <h3>Ingredients</h3>
     <table id="ingredients-table">
         <thead>
-            <tr><th>NAME</th><th>NAME UZ</th><th>NAME RU</th><th>AMOUNT</th><th>UNIT</th><th>UNIT UZ</th><th>UNIT RU</th><th>PREPARATION <span style="font-weight:normal;">(Optional: large, grated, cubed, etc.)</span></th><th>DELETE?</th></tr>
+            <tr><th>NAME UZ</th><th>NAME RU</th><th>AMOUNT</th><th>UNIT UZ</th><th>UNIT RU</th><th>PREPARATION <span style="font-weight:normal;">(Optional: large, grated, cubed, etc.)</span></th><th>DELETE?</th></tr>
         </thead>
         <tbody></tbody>
     </table>
@@ -82,7 +81,7 @@
     <h3>Instructions</h3>
     <table id="instructions-table">
         <thead>
-            <tr><th>STEP NUMBER</th><th>DESCRIPTION</th><th>DESCRIPTION UZ</th><th>DESCRIPTION RU</th><th>DELETE?</th></tr>
+            <tr><th>STEP NUMBER</th><th>DESCRIPTION UZ</th><th>DESCRIPTION RU</th><th>DELETE?</th></tr>
         </thead>
         <tbody></tbody>
     </table>
@@ -111,11 +110,9 @@ function addIngredientRow() {
     const tr = document.createElement('tr');
     tr.classList.add('ingredient-row', 'fade-row');
     tr.innerHTML = `
-      <td><input name="ing_name"/></td>
-      <td><input name="ing_name_uz"/></td>
-      <td><input name="ing_name_ru"/></td>
+      <td><input name="ing_name_uz" required/></td>
+      <td><input name="ing_name_ru" required/></td>
       <td><input name="ing_amount"/></td>
-      <td><input name="ing_unit"/></td>
       <td><input name="ing_unit_uz"/></td>
       <td><input name="ing_unit_ru"/></td>
       <td><input name="ing_preparation" placeholder="large, grated, cubed, etc."/></td>
@@ -136,9 +133,8 @@ function addInstructionRow() {
     tr.classList.add('instruction-row', 'fade-row');
     tr.innerHTML = `
       <td class="step-number"></td>
-      <td><input name="step_description"/></td>
-      <td><input name="step_description_uz"/></td>
-      <td><input name="step_description_ru"/></td>
+      <td><input name="step_description_uz" required/></td>
+      <td><input name="step_description_ru" required/></td>
       <td><span class="remove-btn">✖</span></td>
     `;
     tr.querySelector('.remove-btn').onclick = () => { tr.remove(); updateInstructionNumbers(); };
@@ -158,6 +154,9 @@ document.getElementById('choose-all').onclick = () => {
 document.getElementById('remove-all').onclick = () => {
     const src = document.getElementById('chosen-categories');
     Array.from(src.options).forEach(opt => document.getElementById('available-categories').appendChild(opt));
+};
+document.getElementById('add-category').onclick = () => {
+    window.location.href = '/telegram/category-form/';
 };
 
 addIngredientRow();
@@ -182,11 +181,9 @@ form.addEventListener('submit', async (e) => {
     const ingredients = [];
     document.querySelectorAll('.ingredient-row').forEach(row => {
         ingredients.push({
-            name: row.querySelector('[name="ing_name"]').value,
             name_uz: row.querySelector('[name="ing_name_uz"]').value,
             name_ru: row.querySelector('[name="ing_name_ru"]').value,
             amount: row.querySelector('[name="ing_amount"]').value,
-            unit: row.querySelector('[name="ing_unit"]').value,
             unit_uz: row.querySelector('[name="ing_unit_uz"]').value,
             unit_ru: row.querySelector('[name="ing_unit_ru"]').value,
             preparation: row.querySelector('[name="ing_preparation"]').value,
@@ -197,7 +194,6 @@ form.addEventListener('submit', async (e) => {
     document.querySelectorAll('.instruction-row').forEach((row, idx) => {
         instructions.push({
             step_number: idx + 1,
-            description: row.querySelector('[name="step_description"]').value,
             description_uz: row.querySelector('[name="step_description_uz"]').value,
             description_ru: row.querySelector('[name="step_description_ru"]').value,
         });

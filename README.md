@@ -106,6 +106,12 @@ curl -X POST https://localhost:8000/api/telegram/recipe-submissions/ \
   -F 'instructions=[{"step_number":1,"description":"chop"}]' \
   -F "init_data=<INIT_DATA>"
 
+# Test category creation
+curl -X POST https://localhost:8000/api/telegram/categories/ \
+  -d "name_uz=Shirinlik" \
+  -d "name_ru=Десерт" \
+  -d "init_data=<INIT_DATA>"
+
 # List your submissions
 curl -G --data-urlencode "init_data=<INIT_DATA>" \
   https://localhost:8000/api/telegram/recipe-submissions/mine/
@@ -186,12 +192,15 @@ HTTP status code and response body to help debug invalid credentials.
 
 ### Recipe Translations
 
-Imported recipes are stored in English and automatically translated to Uzbek and
-Russian. Ingredient and category names are translated as well. Use the `lang`
-query parameter on the `/api/recipes/`, `/api/categories/` and ingredient search
-endpoints to retrieve data in a specific language. The simplified
-`/api/recipe-cards/` endpoint accepts the same parameter. Valid values are `en`,
-`uz` or `ru`; any other value defaults to English:
+Imported recipes are stored in Uzbek or Russian. Ingredient and category names
+are translated as well. When adding recipes through the API, supply Uzbek and
+Russian fields (`name_uz`/`name_ru`, `description_uz`/`description_ru` and
+translations for ingredients and instructions). The Django admin and Telegram
+mini app only expose these Uzbek and Russian fields; English values are filled
+automatically from the Uzbek text. Use the `lang` query parameter on the `/api/recipes/`,
+`/api/categories/` and ingredient search endpoints to retrieve data in a
+specific language. The simplified `/api/recipe-cards/` endpoint accepts the same
+parameter. Valid values are `uz` or `ru`; any other value defaults to Uzbek:
 
 ```bash
 curl '/api/recipes/?lang=uz'
@@ -221,8 +230,8 @@ credentials. The admin header and dashboard titles show **Mazzaly Admin** and a
 few style tweaks are applied via `account/static/account/css/admin_custom.css`.
 
 Ingredient, category, recipe and instruction forms expose additional fields
-for Uzbek and Russian translations so text can be entered in all three
-supported languages.
+for Uzbek and Russian translations so text can be entered in both supported
+languages.
 
 ## Telegram Mini App Example
 
@@ -338,7 +347,7 @@ date, time and meal type by name. A recipe can be referenced with
 recipe is selected:
 
 All meal plan endpoints accept an optional `lang` query parameter to select the
-response language (`en`, `uz` or `ru`). If omitted, English is used.
+response language (`uz` or `ru`). If omitted, Uzbek is used.
 
 Default meal types (**breakfast**, **lunch**, **dinner**) are created by the
 database migrations. If you provide a new meal type name it will be added

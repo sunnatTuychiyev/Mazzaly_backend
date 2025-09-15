@@ -22,8 +22,10 @@ class TelegramRecipeSubmissionCreateViewTests(TestCase):
         image = SimpleUploadedFile('test.jpg', b'filecontent', content_type='image/jpeg')
         data = {
             'init_data': 'stub',
-            'name': 'Recipe',
-            'description': 'Desc',
+            'name_uz': 'Recipe uz',
+            'name_ru': 'Recipe ru',
+            'description_uz': 'Desc uz',
+            'description_ru': 'Desc ru',
             'prep_time': 1,
             'cook_time': 1,
             'servings': 1,
@@ -37,3 +39,40 @@ class TelegramRecipeSubmissionCreateViewTests(TestCase):
         submission = RecipeSubmission.objects.get()
         self.assertEqual(list(submission.categories.values_list('id', flat=True)), [self.category.id])
         self.assertEqual(submission.images.count(), 1)
+
+
+class TelegramCategoryCreateViewTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse('telegram-category-create')
+
+    @patch('recipes.telegram_views.get_user_from_init_data')
+    def test_create_category(self, mock_get_user):
+        user = get_user_model().objects.create_user(username='cat', password='pass')
+        mock_get_user.return_value = user
+
+        data = {
+            'init_data': 'stub',
+            'name': 'Shirinlik',
+            'name_uz': 'Shirinlik',
+            'name_ru': 'Десерт',
+        }
+
+        resp = self.client.post(self.url, data)
+        self.assertEqual(resp.status_code, 201, resp.content)
+        self.assertTrue(Category.objects.filter(name='Shirinlik', name_uz='Shirinlik', name_ru='Десерт').exists())
+
+    @patch('recipes.telegram_views.get_user_from_init_data')
+    def test_duplicate_category_returns_error(self, mock_get_user):
+        user = get_user_model().objects.create_user(username='cat2', password='pass')
+        mock_get_user.return_value = user
+        Category.objects.create(name='Shirinlik', name_uz='Shirinlik', name_ru='Десерт')
+        data = {
+            'init_data': 'stub',
+            'name': 'Shirinlik',
+            'name_uz': 'Shirinlik',
+            'name_ru': 'Десерт',
+        }
+        resp = self.client.post(self.url, data)
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn('exists', resp.data['error'])

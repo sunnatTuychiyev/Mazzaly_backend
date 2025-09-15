@@ -226,7 +226,11 @@ SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'Mazzaly_backend.urls.schema_view',
 }
 # === Internationalization ===
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uz'
+LANGUAGES = [
+    ('uz', 'Uzbek'),
+    ('ru', 'Russian'),
+]
 TIME_ZONE = 'Asia/Tashkent'
 USE_I18N = True
 USE_L10N = True
