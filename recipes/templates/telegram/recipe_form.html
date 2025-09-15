@@ -460,28 +460,31 @@ form.addEventListener('submit', async (e) => {
     const author = document.getElementById('author-select').value;
     if (author) data.append('author', author);
 
-    let resp, json;
+    let resp, text, json;
     const sendBtn = document.getElementById('send-btn');
     const original = sendBtn.innerHTML;
     sendBtn.classList.add('loading');
     sendBtn.innerHTML = '<span class="spinner"></span><span> Sending...</span>';
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
     try {
-        resp = await fetch('/api/telegram/recipe-submissions/', { method: 'POST', body: data });
-        const text = await resp.text();
-        json = text ? JSON.parse(text) : {};
-    } catch (networkErr) {
-        showMessage('Network error. Please try again.');
-        sendBtn.classList.remove('loading');
-        sendBtn.innerHTML = original;
-        return;
-    }
+        resp = await fetch('/api/telegram/recipe-submissions/', { method: 'POST', body: data, signal: controller.signal });
+        text = await resp.text();
+        try { json = text ? JSON.parse(text) : {}; } catch { json = null; }
 
-    if (!resp.ok) {
-        const msg = json && (json.error || json.detail || formatErrors(json)) || 'Submission failed';
-        showMessage(`❌ Yuborilmadi\n${msg}`);
+        if (!resp.ok) {
+            const details = (json && (json.error || json.detail || formatErrors(json))) || (text && text.slice(0, 500)) || 'Submission failed';
+            showMessage(`❌ Yuborilmadi (HTTP ${resp.status})\n${details}`);
+            return;
+        }
+    } catch (err) {
+        const aborted = err && err.name === 'AbortError';
+        showMessage(aborted ? 'So\'rov vaqti tugadi. Iltimos, qayta urinib ko\'ring.' : 'Tarmoq xatosi. Qayta urinib ko\'ring.');
+        return;
+    } finally {
+        clearTimeout(timeout);
         sendBtn.classList.remove('loading');
         sendBtn.innerHTML = original;
-        return;
     }
 
     showMessage('✅ Retsept qo\'shishga so\'rovingiz yuborildi');
