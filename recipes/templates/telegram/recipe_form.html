@@ -50,6 +50,28 @@
         @keyframes rowEnter { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: translateY(0) } }
         @keyframes pop { 0% { transform: scale(.98)} 100% { transform: scale(1)} }
         @keyframes spin { to { transform: rotate(360deg) } }
+
+        /* Mobile-first layout adjustments */
+        @media (max-width: 768px) {
+            main { padding: 12px; }
+            form { padding: 12px; border-radius: 12px; }
+            .row { grid-template-columns: 1fr; gap: 10px; }
+            .categories-container { grid-template-columns: 1fr; gap: 8px; }
+            .categories-buttons { flex-direction: row; flex-wrap: wrap; }
+            .categories-buttons button { flex: 1 1 48%; min-width: 140px; }
+            #author-select { max-width: 100%; }
+            table { font-size: 12px; }
+            th, td { padding: 6px; }
+            .btn { padding: 10px 12px; }
+        }
+        @media (max-width: 420px) {
+            .appbar { padding: 8px 12px; }
+            h1 { font-size: 16px; }
+            input[type=text], input[type=number], textarea, select { padding: 10px; font-size: 14px; }
+            .categories-container select { height: 150px; }
+            .categories-buttons button { min-width: 120px; font-size: 13px; }
+            .helptext { font-size: 11px; }
+        }
     </style>
 </head>
 <body>

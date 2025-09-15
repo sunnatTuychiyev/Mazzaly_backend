@@ -39,7 +39,7 @@ from .serializers import (
     RecipeSerializer, RecipeCardSerializer,
     IngredientSerializer, IngredientNameSerializer,
     MealPlanSerializer, ShoppingListItemSerializer, CategorySerializer,
-    MealTypeSerializer
+    MealTypeSerializer, CategoryLocalizedSerializer
 )
 from .translation_utils import get_requested_lang, SUPPORTED_LANGUAGES
 from .permissions import IsHealthySubscriber, IsPremiumSubscriber
@@ -99,6 +99,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context['lang'] = get_requested_lang(self.request)
         return context
+
+    def get_serializer_class(self):
+        # For reads, return localized name only: {id, name}
+        if self.action in ['list', 'retrieve']:
+            return CategoryLocalizedSerializer
+        # For writes, use full serializer with name_uz/name_ru fields
+        return CategorySerializer
 
     @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     def list(self, request, *args, **kwargs):  # pragma: no cover - docs only
