@@ -107,6 +107,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
         # For writes, use full serializer with name_uz/name_ru fields
         return CategorySerializer
 
+    @action(detail=False, methods=['get'], url_path='all-with-translations')
+    def all_with_translations(self, request):
+        """Return categories with both name_uz and name_ru for UIs that need both."""
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        serializer_class = CategorySerializer
+        if page is not None:
+            serializer = serializer_class(page, many=True, context=self.get_serializer_context())
+            return self.get_paginated_response(serializer.data)
+        serializer = serializer_class(queryset, many=True, context=self.get_serializer_context())
+        return Response(serializer.data)
+
     @swagger_auto_schema(manual_parameters=[LANG_PARAM])
     def list(self, request, *args, **kwargs):  # pragma: no cover - docs only
         """List categories with optional language selection."""

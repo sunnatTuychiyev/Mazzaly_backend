@@ -233,7 +233,7 @@ let catSearchTimer;
 async function fetchAllCategories(search){
     const all = [];
     try {
-        let url = new URL(window.location.origin + '/api/categories/');
+        let url = new URL(window.location.origin + '/api/categories/all-with-translations/');
         if (search) url.searchParams.set('search', search);
         // try to request big page size if backend supports it
         url.searchParams.set('page_size', '1000');

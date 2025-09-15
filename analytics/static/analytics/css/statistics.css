@@ -1,26 +1,16 @@
-.card-header {
-  font-weight: 500;
-}
-#viewsChart {
-  max-height: 600px;
-}
-#subsChart,
-#verifyChart,
-#verifySubsChart,
-#viewsDayChart,
-#newRecipeChart,
-#visits24Chart,
-#visits7Chart,
-#visits30Chart {
-  max-height: 300px;
-}
+:root{--bg:#f7f9fc;--text:#111827;--muted:#6b7280;--primary:#0ea5e9;--border:#e5e7eb}
+body{background:var(--bg)}
+.container-fluid{animation:fadeIn .35s ease}
+.card{border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 24px rgba(2,8,20,.06);transition:transform .25s ease,box-shadow .25s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(2,8,20,.12)}
+.card-header{font-weight:600;background:linear-gradient(90deg,rgba(14,165,233,.08),rgba(14,165,233,.02));border-bottom:1px solid var(--border)}
+.card-body{background:#fff}
+.list-group-item{display:flex;justify-content:space-between;align-items:center}
+.table{background:#fff}
+.btn-primary{background:var(--primary);border-color:var(--primary)}
+.btn-primary:hover{background:#0284c7;border-color:#0284c7}
 
-.card {
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  perspective: 1000px;
-}
-.card:hover {
-  transform: translateY(-3px) rotateX(2deg);
-  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
-}
+#viewsChart{max-height:600px}
+#subsChart,#verifyChart,#verifySubsChart,#viewsDayChart,#newRecipeChart,#visits24Chart,#visits7Chart,#visits30Chart{max-height:300px}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
