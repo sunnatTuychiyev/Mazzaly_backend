@@ -372,10 +372,19 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["status", "moderator_note", "image", "created_at"]
         extra_kwargs = {
+            "name": {"required": False, "allow_blank": True},
+            "description": {"required": False, "allow_blank": True},
             "name_uz": {"required": True, "write_only": True},
             "name_ru": {"required": True, "write_only": True},
             "description_uz": {"required": True, "write_only": True},
             "description_ru": {"required": True, "write_only": True},
+            "prep_time": {"required": False, "allow_null": True},
+            "cook_time": {"required": False, "allow_null": True},
+            "servings": {"required": False, "allow_null": True},
+            "calories": {"required": False, "allow_null": True},
+            "protein": {"required": False, "allow_null": True},
+            "fats": {"required": False, "allow_null": True},
+            "carbs": {"required": False, "allow_null": True},
         }
 
     def get_image(self, obj):
@@ -390,8 +399,14 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
         return submission
 
     def validate(self, attrs):
+        # Map translated fields into canonical fields
         attrs["name"] = attrs.get("name_uz", attrs.get("name", ""))
         attrs["description"] = attrs.get("description_uz", attrs.get("description", ""))
+        # Coerce empty strings to None for numeric fields
+        for key in ["prep_time", "cook_time", "servings", "calories", "protein", "fats", "carbs"]:
+            val = attrs.get(key)
+            if val == "":
+                attrs[key] = None
         return attrs
 
 
