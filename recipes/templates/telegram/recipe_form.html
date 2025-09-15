@@ -434,6 +434,11 @@ function restoreFormState() {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(form);
+    // Remove optional numeric fields if empty so backend doesn't get empty strings
+    ['prep_time','cook_time','servings','calories','protein','fats','carbs'].forEach(k=>{
+        const v = data.get(k);
+        if (v === '' || v === null) data.delete(k);
+    });
     const ingredients = [];
     document.querySelectorAll('.ingredient-row').forEach(row => {
         ingredients.push({
@@ -466,7 +471,7 @@ form.addEventListener('submit', async (e) => {
     sendBtn.classList.add('loading');
     sendBtn.innerHTML = '<span class="spinner"></span><span> Sending...</span>';
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
+    const timeout = setTimeout(() => controller.abort(), 35000);
     try {
         resp = await fetch('/api/telegram/recipe-submissions/', { method: 'POST', body: data, signal: controller.signal });
         text = await resp.text();
