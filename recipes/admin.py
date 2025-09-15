@@ -26,8 +26,22 @@ from .models import (
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["name", "name_uz", "name_ru"]
-    fields = ["name", "name_uz", "name_ru"]
+    list_display = ["display_name", "name_uz", "name_ru"]
+    fields = ["name_uz", "name_ru"]
+    exclude = ("name",)
+
+    def display_name(self, obj):
+        uz = obj.name_uz or obj.name
+        ru = obj.name_ru or obj.name
+        return f"{uz} / {ru}"
+
+    display_name.short_description = "UZ / RU"
+
+    def save_model(self, request, obj, form, change):
+        # Ensure canonical name is set from Uzbek (fallback to Russian)
+        if not obj.name:
+            obj.name = (obj.name_uz or obj.name_ru or obj.name or "").strip()
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(MealType)
@@ -104,6 +118,7 @@ class RecipeAdminForm(forms.ModelForm):
             "fats",
             "carbs",
             "categories",
+            "author",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -145,6 +160,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "fats",
         "carbs",
         "categories",
+        "author",
     ]
     filter_horizontal = ["categories"]
 

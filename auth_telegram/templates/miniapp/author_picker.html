@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pick or Create Author</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      body{font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;padding:16px}
+      label{display:block;margin:12px 0 6px}
+      select, input, textarea{width:100%;padding:8px;margin-bottom:12px}
+      button{padding:8px 12px}
+      dialog{border:none;border-radius:8px;padding:16px}
+    </style>
+  </head>
+  <body>
+    <h2>Author</h2>
+    <label for="authorSelect">Select author</label>
+    <select id="authorSelect"></select>
+    <div>
+      <button id="openModal">Add author</button>
+    </div>
+
+    <dialog id="modal">
+      <form id="form" method="dialog">
+        <h3>New Author</h3>
+        <label>Name</label>
+        <input id="name" required />
+        <label>Bio</label>
+        <textarea id="bio" rows="3"></textarea>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button id="submit" type="submit">Create</button>
+          <button id="cancel" type="button">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script>
+    (function(){
+      const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+      if (tg && tg.ready) tg.ready();
+      if (tg && tg.expand) tg.expand();
+
+      const selectEl = document.getElementById('authorSelect');
+      const openBtn = document.getElementById('openModal');
+      const modal = document.getElementById('modal');
+      const form = document.getElementById('form');
+      const cancelBtn = document.getElementById('cancel');
+      const nameEl = document.getElementById('name');
+      const bioEl = document.getElementById('bio');
+
+      const access = localStorage.getItem('access');
+      const headers = access ? { 'Authorization': 'Bearer ' + access } : {};
+
+      async function fetchAuthors(search){
+        const url = new URL(window.location.origin + '/api/authors/');
+        if (search) url.searchParams.set('search', search);
+        const res = await fetch(url, { headers, credentials: 'include' });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return data.results || data;
+      }
+
+      async function populateAuthors(){
+        const authors = await fetchAuthors();
+        selectEl.innerHTML = '';
+        for (const a of authors){
+          const opt = document.createElement('option');
+          opt.value = a.id;
+          opt.textContent = a.name;
+          selectEl.appendChild(opt);
+        }
+      }
+
+      openBtn.addEventListener('click', ()=> modal.showModal());
+      cancelBtn.addEventListener('click', ()=> modal.close());
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const payload = { name: nameEl.value.trim(), bio: bioEl.value.trim() };
+        if (!payload.name) return;
+        const res = await fetch('/api/authors/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...headers },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+        if (res.ok){
+          const created = await res.json();
+          await populateAuthors();
+          selectEl.value = String(created.id);
+          modal.close();
+          form.reset();
+          if (tg && tg.showPopup) tg.showPopup({ title: 'Author created', message: created.name, buttons:[{type:'ok'}]});
+        } else {
+          const msg = 'Failed to create author';
+          if (tg && tg.showAlert) tg.showAlert(msg); else alert(msg);
+        }
+      });
+
+      populateAuthors();
+    })();
+    </script>
+  </body>
+</html>
+
+

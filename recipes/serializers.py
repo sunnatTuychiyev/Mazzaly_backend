@@ -8,51 +8,40 @@ from .models import (
     RecipeSubmission,
     UserRecipe,
 )
+from account.models import Author
+from account.serializers import AuthorSerializer
 
 # CATEGORY
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'name_uz', 'name_ru']
+        fields = ['id', 'name_uz', 'name_ru']
         extra_kwargs = {
-            'name': {'required': False},
-            'name_uz': {'write_only': True, 'required': True},
-            'name_ru': {'write_only': True, 'required': True},
+            'name_uz': {'required': True},
+            'name_ru': {'required': True},
         }
 
     def create(self, validated_data):
-        name = validated_data.pop('name', None)
+        # Keep canonical 'name' in DB for compatibility, set from Uzbek
         name_uz = validated_data.pop('name_uz')
         name_ru = validated_data.pop('name_ru')
-        if not name:
-            name = name_uz
+        name = name_uz
         return Category.objects.create(name=name, name_uz=name_uz, name_ru=name_ru, **validated_data)
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
+
+class CategoryLocalizedSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+    def get_name(self, instance):
         lang = self.context.get('lang')
-        # remove write-only fields
-        data.pop('name_uz', None)
-        data.pop('name_ru', None)
         if lang == 'ru':
-            if instance.name_ru:
-                data['name'] = instance.name_ru
-            elif instance.name_uz:
-                from .translation_utils import translate_text
-                trans = translate_text(instance.name_uz, 'ru', 'uz')
-                data['name'] = trans or instance.name_uz or instance.name
-            else:
-                data['name'] = instance.name
-        else:
-            if instance.name_uz:
-                data['name'] = instance.name_uz
-            elif instance.name_ru:
-                from .translation_utils import translate_text
-                trans = translate_text(instance.name_ru, 'uz', 'ru')
-                data['name'] = trans or instance.name_ru or instance.name
-            else:
-                data['name'] = instance.name
-        return data
+            return instance.name_ru or instance.name_uz or instance.name
+        # default uz
+        return instance.name_uz or instance.name_ru or instance.name
 
 # MEAL TYPE
 class MealTypeSerializer(serializers.ModelSerializer):
@@ -126,7 +115,8 @@ class InstructionSerializer(serializers.ModelSerializer):
 
 # RECIPE
 class RecipeSerializer(serializers.ModelSerializer):
-    categories = CategorySerializer(many=True, read_only=True)
+    categories = CategoryLocalizedSerializer(many=True, read_only=True)
+    author = AuthorSerializer(read_only=True)
     category_ids = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
         many=True,
@@ -141,7 +131,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'name_uz', 'name_ru', 'categories', 'category_ids', 'description', 'description_uz', 'description_ru', 'image',
             'prep_time', 'cook_time', 'servings', 'subscription_plan', 'healthy',
-            'premium', 'calories', 'protein', 'fats', 'carbs',
+            'premium', 'calories', 'protein', 'fats', 'carbs', 'author',
             'ingredients', 'instructions'
         ]
         extra_kwargs = {
@@ -210,12 +200,13 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class RecipeCardSerializer(serializers.ModelSerializer):
     """Simplified recipe info for listing cards."""
-    categories = CategorySerializer(many=True, read_only=True)
+    categories = CategoryLocalizedSerializer(many=True, read_only=True)
+    author = AuthorSerializer(read_only=True)
 
     class Meta:
         model = Recipe
         fields = [
-            'id', 'name', 'categories', 'description', 'image',
+            'id', 'name', 'categories', 'description', 'image', 'author',
             'prep_time', 'cook_time', 'subscription_plan', 'views'
         ]
 
@@ -349,6 +340,7 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), many=True, required=False
     )
+    author = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), required=False, allow_null=True)
 
     class Meta:
         model = RecipeSubmission
@@ -370,6 +362,7 @@ class RecipeSubmissionSerializer(serializers.ModelSerializer):
             "fats",
             "carbs",
             "categories",
+            "author",
             "ingredients",
             "instructions",
             "status",

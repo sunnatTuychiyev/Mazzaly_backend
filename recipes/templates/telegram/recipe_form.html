@@ -5,40 +5,67 @@
     <title>Submit Recipe</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 1rem; background: linear-gradient(135deg,#e3f2fd,#fff); }
-        h1 { text-align: center; }
-        form { max-width: 900px; margin: auto; background: #fff; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); animation: fadeIn .6s ease; }
-        .form-group { margin-bottom: 0.75rem; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 0.25rem; }
-        input[type=text], input[type=number], textarea, select { width: 100%; padding: 0.5rem; border: 1px solid #ccd; border-radius: 6px; }
-        textarea { min-height: 60px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
-        th, td { border: 1px solid #ccc; padding: 4px; }
-        th { background: #dfe9f3; }
-        .remove-btn { color: #e53935; cursor: pointer; }
-        .btn { background: #0088cc; color: #fff; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; transition: background .3s, transform .2s; }
-        .btn:hover { background: #007ab8; }
-        .btn:active { transform: scale(0.97); }
-        .categories-container { display: flex; gap: 0.5rem; align-items: center; }
-        .categories-container select { width: 200px; height: 120px; }
-        .categories-buttons { display: flex; flex-direction: column; gap: 0.25rem; }
-        .categories-buttons button { width: 120px; }
-        .fade-row { animation: rowFade .3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes rowFade { from { opacity: 0; } to { opacity: 1; } }
+        :root { --bg:#f6f7fb; --card:#ffffff; --text:#111827; --muted:#6b7280; --primary:#0ea5e9; --primary-dark:#0284c7; --border:#e5e7eb; --success:#10b981; --danger:#ef4444; }
+        * { box-sizing: border-box; }
+        body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 0; background: radial-gradient(1200px 600px at 100% -10%, #e0f2fe 0%, transparent 60%), var(--bg); color: var(--text); }
+        .appbar { position: sticky; top: 0; z-index: 3; backdrop-filter: saturate(140%) blur(6px); background: linear-gradient(90deg, rgba(14,165,233,0.12), rgba(14,165,233,0.04)); border-bottom: 1px solid rgba(2,8,20,0.06); padding: 10px 16px; display: flex; align-items: center; justify-content: center; }
+        h1 { text-align: center; font-size: 18px; margin: 0; letter-spacing: 0.2px; }
+        main { padding: 16px; }
+        form { max-width: 920px; margin: 0 auto; background: var(--card); padding: 16px; border-radius: 14px; box-shadow: 0 10px 26px rgba(2,8,20,0.08); animation: cardEnter .5s ease; border: 1px solid var(--border); }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+        input[type=text], input[type=number], textarea, select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: #fff; outline: none; transition: border-color .2s, box-shadow .2s, transform .06s ease; }
+        input[type=text]:focus, input[type=number]:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+        input[type=text]:active, input[type=number]:active, textarea:active, select:active { transform: translateY(1px); }
+        textarea { min-height: 80px; }
+        small { color: var(--muted); }
+        .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; cursor: pointer; transition: background .2s, transform .08s, box-shadow .2s; box-shadow: 0 8px 18px rgba(14,165,233,0.25); }
+        .btn:hover { background: var(--primary-dark); box-shadow: 0 10px 22px rgba(2,8,20,0.18); }
+        .btn:active { transform: translateY(1px); box-shadow: 0 6px 14px rgba(2,8,20,0.16); }
+        .btn.secondary { background: #eef2f7; color: #0b1220; }
+        .btn.secondary:hover { background: #e6ebf3; }
+        .inline { display: flex; gap: 8px; align-items: center; }
+        .categories-container { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: start; }
+        .categories-container select { width: 100%; height: 180px; border-radius: 10px; }
+        .categories-buttons { display: flex; flex-direction: column; gap: 6px; }
+        .categories-buttons button { width: 140px; }
+        table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+        th, td { border-bottom: 1px solid var(--border); padding: 8px; font-size: 13px; }
+        th { background: #f5f7fb; text-align: left; color: #374151; }
+        tbody tr:last-child td { border-bottom: none; }
+        .remove-btn { color: var(--danger); cursor: pointer; font-weight: 600; transition: transform .1s ease; }
+        .remove-btn:active { transform: scale(0.92); }
+        .helptext { color: var(--muted); font-size: 12px; }
+        #author-select { max-width: 320px; }
+        #category-search { width: 100%; }
+        .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.5); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+        .btn.loading { pointer-events: none; opacity: .85; }
+        .fade-in { animation: fadeIn .35s ease; }
+        .row-enter { animation: rowEnter .25s ease; }
+        .pop { animation: pop .18s ease; }
+
+        @keyframes cardEnter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes rowEnter { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: translateY(0) } }
+        @keyframes pop { 0% { transform: scale(.98)} 100% { transform: scale(1)} }
+        @keyframes spin { to { transform: rotate(360deg) } }
     </style>
 </head>
 <body>
-<h1>Submit Recipe</h1>
-<form id="recipe-form">
+<div class="appbar"><h1>Submit Recipe</h1></div>
+<main><form id="recipe-form" class="fade-in">
+    <div class="form-group"><label>Author:</label>
+        <select id="author-select" name="author"></select>
+    </div>
     <div class="form-group"><label>Name uz:</label><input type="text" name="name_uz" required></div>
     <div class="form-group"><label>Name ru:</label><input type="text" name="name_ru" required></div>
     <div class="form-group"><label>Description uz:</label><textarea name="description_uz" required></textarea></div>
     <div class="form-group"><label>Description ru:</label><textarea name="description_ru" required></textarea></div>
     <div class="form-group"><label>Image:</label><input type="file" name="images" multiple></div>
-    <div class="form-group"><label>Prep time:</label><input type="number" name="prep_time" min="0" required><small> in minutes</small></div>
-    <div class="form-group"><label>Cook time:</label><input type="number" name="cook_time" min="0" required><small> in minutes</small></div>
-    <div class="form-group"><label>Servings:</label><input type="number" name="servings" min="1" required></div>
+    <div class="form-group"><label>Prep time:</label><input type="number" name="prep_time" min="0"><small> in minutes</small></div>
+    <div class="form-group"><label>Cook time:</label><input type="number" name="cook_time" min="0"><small> in minutes</small></div>
+    <div class="form-group"><label>Servings:</label><input type="number" name="servings" min="1"></div>
     <div class="form-group"><label>Subscription plan:</label>
         <select name="subscription_plan">
             {% for val, label in plans %}
@@ -48,17 +75,20 @@
         <small>Required subscription tier</small>
     </div>
     <div class="form-group"><label><input type="checkbox" name="healthy"> Healthy</label><small> Show as Healthy Recipe</small></div>
-    <div class="form-group"><label>Calories:</label><input type="number" name="calories" min="0"><small> Calories in kcal (optional)</small></div>
-    <div class="form-group"><label>Protein:</label><input type="number" name="protein" min="0"><small> Protein in grams (optional)</small></div>
-    <div class="form-group"><label>Fats:</label><input type="number" name="fats" min="0"><small> Fats in grams (optional)</small></div>
-    <div class="form-group"><label>Carbs:</label><input type="number" name="carbs" min="0"><small> Carbs in grams (optional)</small></div>
+    <div class="form-group"><label>Calories:</label><input type="number" name="calories" min="0"></div>
+    <div class="form-group"><label>Protein:</label><input type="number" name="protein" min="0"></div>
+    <div class="form-group"><label>Fats:</label><input type="number" name="fats" min="0"></div>
+    <div class="form-group"><label>Carbs:</label><input type="number" name="carbs" min="0"></div>
     <div class="form-group"><label>Categories:</label>
         <div class="categories-container">
-            <select id="available-categories" multiple>
-                {% for c in categories %}
-                <option value="{{ c.id }}">{{ c.name }}</option>
-                {% endfor %}
-            </select>
+            <div>
+                <input type="text" id="category-search" placeholder="Search categories..." style="width:200px;margin-bottom:6px;padding:6px;border:1px solid #ccd;border-radius:6px;" />
+                <select id="available-categories" multiple>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" data-ru="{{ c.name_ru }}" data-uz="{{ c.name_uz }}">{{ c.name_uz|default:c.name }} / {{ c.name_ru|default:c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="categories-buttons">
                 <button class="btn" type="button" id="choose-all">Choose all</button>
                 <button class="btn" type="button" id="choose-selected">Choose selected</button>
@@ -86,8 +116,11 @@
         <tbody></tbody>
     </table>
     <button class="btn" type="button" id="add-instruction">Add another Instruction</button>
-    <div style="margin-top:1rem;"><button class="btn" type="submit">Send</button></div>
-</form>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn secondary" type="button" id="preview-btn">Preview</button>
+        <button class="btn" type="submit" id="send-btn"><span>Send</span></button>
+    </div>
+</form></main>
 <script>
 const tg = window.Telegram.WebApp;
 
@@ -95,15 +128,33 @@ const tg = window.Telegram.WebApp;
     const initData = tg.initData || tg.initDataUnsafe?.raw || '';
     if (initData) {
         try {
-            await fetch('/api/telegram-auth/', {
+            const authRes = await fetch('/api/telegram-auth/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ init_data: initData }),
             });
+            const authJson = await authRes.json();
+            if (authRes.ok && authJson.token) {
+                localStorage.setItem('access', authJson.token);
+            }
         } catch (err) {
             console.error('Auto sign-up failed', err);
         }
     }
+    // Fetch authors and populate select (use JWT if available)
+    try {
+        const token = localStorage.getItem('access');
+        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+        const resp = await fetch('/api/authors/', { credentials: 'include', headers });
+        const data = await resp.json();
+        const authors = data.results || data;
+        const sel = document.getElementById('author-select');
+        sel.innerHTML = '';
+        authors.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a.id; opt.textContent = a.name; sel.appendChild(opt);
+        });
+    } catch(e) { console.warn('authors load failed', e); }
 })();
 
 function addIngredientRow() {
@@ -155,7 +206,64 @@ document.getElementById('remove-all').onclick = () => {
     const src = document.getElementById('chosen-categories');
     Array.from(src.options).forEach(opt => document.getElementById('available-categories').appendChild(opt));
 };
+// Category search mirroring admin behavior (server-side ?search= across name/name_ru/name_uz)
+let catSearchTimer;
+async function fetchAllCategories(search){
+    const all = [];
+    try {
+        let url = new URL(window.location.origin + '/api/categories/');
+        if (search) url.searchParams.set('search', search);
+        // try to request big page size if backend supports it
+        url.searchParams.set('page_size', '1000');
+        while (url) {
+            const resp = await fetch(url);
+            if (!resp.ok) break;
+            const data = await resp.json();
+            if (Array.isArray(data)) { all.push(...data); break; }
+            if (Array.isArray(data.results)) all.push(...data.results);
+            const next = data.next;
+            if (next) {
+                url = new URL(next, window.location.origin);
+            } else {
+                url = null;
+            }
+        }
+    } catch(e) { console.warn('fetchAllCategories failed', e); }
+    return all;
+}
+
+async function loadCategories(search){
+    const items = await fetchAllCategories(search);
+    const available = document.getElementById('available-categories');
+    const chosen = document.getElementById('chosen-categories');
+    const chosenIds = new Set(Array.from(chosen.options).map(o => o.value));
+    available.innerHTML = '';
+    items.forEach(c => {
+        if (chosenIds.has(String(c.id))) return; // don't duplicate
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        const uz = c.name_uz || c.name;
+        const ru = c.name_ru || c.name;
+        opt.textContent = `${uz} / ${ru}`;
+        if (c.name_ru) opt.setAttribute('data-ru', c.name_ru);
+        if (c.name_uz) opt.setAttribute('data-uz', c.name_uz);
+        available.appendChild(opt);
+    });
+}
+document.getElementById('category-search').addEventListener('input', (e) => {
+    const q = e.target.value;
+    clearTimeout(catSearchTimer);
+    catSearchTimer = setTimeout(() => loadCategories(q), 300);
+});
+
+// Initial populate to reflect latest server data
+loadCategories('');
 document.getElementById('add-category').onclick = () => {
+    // Save current form state before navigating
+    try {
+        const state = collectFormState();
+        localStorage.setItem('recipe_form_state', JSON.stringify(state));
+    } catch(e) { console.warn('state save failed', e); }
     window.location.href = '/telegram/category-form/';
 };
 
@@ -174,7 +282,133 @@ const showMessage = (msg) => {
     }
 };
 
+function formatErrors(err){
+    try {
+        if (!err) return 'Unknown error';
+        if (typeof err === 'string') return err;
+        if (Array.isArray(err)) return err.map(formatErrors).join('\n');
+        if (typeof err === 'object') {
+            // DRF error dict: { field: [messages] }
+            const lines = [];
+            for (const [key, value] of Object.entries(err)) {
+                if (key === 'non_field_errors' || key === 'detail') {
+                    lines.push(formatErrors(value));
+                } else {
+                    lines.push(`${key}: ${formatErrors(value)}`);
+                }
+            }
+            return lines.join('\n');
+        }
+    } catch(e) {}
+    return 'Unknown error';
+}
+
 const form = document.getElementById('recipe-form');
+function collectFormState() {
+    const data = {};
+    data.name_uz = form.querySelector('[name="name_uz"]').value;
+    data.name_ru = form.querySelector('[name="name_ru"]').value;
+    data.description_uz = form.querySelector('[name="description_uz"]').value;
+    data.description_ru = form.querySelector('[name="description_ru"]').value;
+    data.prep_time = form.querySelector('[name="prep_time"]').value;
+    data.cook_time = form.querySelector('[name="cook_time"]').value;
+    data.servings = form.querySelector('[name="servings"]').value;
+    data.subscription_plan = form.querySelector('[name="subscription_plan"]').value;
+    data.healthy = form.querySelector('[name="healthy"]').checked;
+    data.calories = form.querySelector('[name="calories"]').value;
+    data.protein = form.querySelector('[name="protein"]').value;
+    data.fats = form.querySelector('[name="fats"]').value;
+    data.carbs = form.querySelector('[name="carbs"]').value;
+    const chosen = [];
+    document.querySelectorAll('#chosen-categories option').forEach(o => chosen.push(o.value));
+    data.category_ids = chosen;
+    const ingredients = [];
+    document.querySelectorAll('.ingredient-row').forEach(row => {
+        ingredients.push({
+            name_uz: row.querySelector('[name="ing_name_uz"]').value,
+            name_ru: row.querySelector('[name="ing_name_ru"]').value,
+            amount: row.querySelector('[name="ing_amount"]').value,
+            unit_uz: row.querySelector('[name="ing_unit_uz"]').value,
+            unit_ru: row.querySelector('[name="ing_unit_ru"]').value,
+            preparation: row.querySelector('[name="ing_preparation"]').value,
+        });
+    });
+    data.ingredients = ingredients;
+    const instructions = [];
+    document.querySelectorAll('.instruction-row').forEach((row, idx) => {
+        instructions.push({
+            step_number: idx + 1,
+            description_uz: row.querySelector('[name="step_description_uz"]').value,
+            description_ru: row.querySelector('[name="step_description_ru"]').value,
+        });
+    });
+    data.instructions = instructions;
+    const authorSel = document.getElementById('author-select');
+    data.author = authorSel ? authorSel.value : null;
+    return data;
+}
+
+function restoreFormState() {
+    try {
+        const raw = localStorage.getItem('recipe_form_state');
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        form.querySelector('[name="name_uz"]').value = data.name_uz || '';
+        form.querySelector('[name="name_ru"]').value = data.name_ru || '';
+        form.querySelector('[name="description_uz"]').value = data.description_uz || '';
+        form.querySelector('[name="description_ru"]').value = data.description_ru || '';
+        form.querySelector('[name="prep_time"]').value = data.prep_time || '';
+        form.querySelector('[name="cook_time"]').value = data.cook_time || '';
+        form.querySelector('[name="servings"]').value = data.servings || '';
+        form.querySelector('[name="subscription_plan"]').value = data.subscription_plan || form.querySelector('[name="subscription_plan"]').value;
+        form.querySelector('[name="healthy"]').checked = !!data.healthy;
+        form.querySelector('[name="calories"]').value = data.calories || '';
+        form.querySelector('[name="protein"]').value = data.protein || '';
+        form.querySelector('[name="fats"]').value = data.fats || '';
+        form.querySelector('[name="carbs"]').value = data.carbs || '';
+        // Restore ingredients
+        document.querySelector('#ingredients-table tbody').innerHTML = '';
+        (data.ingredients || []).forEach((ing) => {
+            addIngredientRow();
+            const last = document.querySelector('#ingredients-table tbody tr:last-child');
+            last.querySelector('[name="ing_name_uz"]').value = ing.name_uz || '';
+            last.querySelector('[name="ing_name_ru"]').value = ing.name_ru || '';
+            last.querySelector('[name="ing_amount"]').value = ing.amount || '';
+            last.querySelector('[name="ing_unit_uz"]').value = ing.unit_uz || '';
+            last.querySelector('[name="ing_unit_ru"]').value = ing.unit_ru || '';
+            last.querySelector('[name="ing_preparation"]').value = ing.preparation || '';
+        });
+        if (!(data.ingredients || []).length) addIngredientRow();
+        // Restore instructions
+        document.querySelector('#instructions-table tbody').innerHTML = '';
+        (data.instructions || []).forEach((st) => {
+            addInstructionRow();
+            const last = document.querySelector('#instructions-table tbody tr:last-child');
+            last.querySelector('[name="step_description_uz"]').value = st.description_uz || '';
+            last.querySelector('[name="step_description_ru"]').value = st.description_ru || '';
+        });
+        if (!(data.instructions || []).length) addInstructionRow();
+        // Restore categories
+        const chosen = document.getElementById('chosen-categories');
+        const available = document.getElementById('available-categories');
+        (data.category_ids || []).forEach(id => {
+            const opt = available.querySelector(`option[value="${id}"]`);
+            if (opt) chosen.appendChild(opt);
+        });
+        // Auto move just-added category into chosen
+        try {
+            const added = localStorage.getItem('recipe_form_category_just_added');
+            if (added) {
+                const opt = available.querySelector(`option[value="${added}"]`);
+                if (opt) chosen.appendChild(opt);
+                localStorage.removeItem('recipe_form_category_just_added');
+            }
+        } catch(e) {}
+        // Restore author after authors loaded
+        const sel = document.getElementById('author-select');
+        if (sel && data.author) sel.value = String(data.author);
+    } catch(e) { console.warn('state restore failed', e); }
+}
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(form);
@@ -201,12 +435,30 @@ form.addEventListener('submit', async (e) => {
     data.append('instructions', JSON.stringify(instructions));
     document.querySelectorAll('#chosen-categories option').forEach(o => data.append('categories', o.value));
     data.append('init_data', tg.initData || tg.initDataUnsafe?.raw || '');
+    const author = document.getElementById('author-select').value;
+    if (author) data.append('author', author);
 
-    const resp = await fetch('/api/telegram/recipe-submissions/', { method: 'POST', body: data });
-    const json = await resp.json();
+    let resp, json;
+    const sendBtn = document.getElementById('send-btn');
+    const original = sendBtn.innerHTML;
+    sendBtn.classList.add('loading');
+    sendBtn.innerHTML = '<span class="spinner"></span><span> Sending...</span>';
+    try {
+        resp = await fetch('/api/telegram/recipe-submissions/', { method: 'POST', body: data });
+        const text = await resp.text();
+        json = text ? JSON.parse(text) : {};
+    } catch (networkErr) {
+        showMessage('Network error. Please try again.');
+        sendBtn.classList.remove('loading');
+        sendBtn.innerHTML = original;
+        return;
+    }
 
     if (!resp.ok) {
-        showMessage(json.error || 'Submission failed');
+        const msg = json && (json.error || json.detail || formatErrors(json)) || 'Submission failed';
+        showMessage(`❌ Yuborilmadi\n${msg}`);
+        sendBtn.classList.remove('loading');
+        sendBtn.innerHTML = original;
         return;
     }
 
@@ -225,9 +477,15 @@ form.addEventListener('submit', async (e) => {
     }
     addIngredientRow();
     addInstructionRow();
+    try { localStorage.removeItem('recipe_form_state'); } catch(e) {}
+    sendBtn.classList.remove('loading');
+    sendBtn.innerHTML = original;
 });
 
 if (tg.expand) { tg.expand(); }
+
+// Try to restore saved state (after returning from add-category page)
+restoreFormState();
 </script>
 </body>
 </html>

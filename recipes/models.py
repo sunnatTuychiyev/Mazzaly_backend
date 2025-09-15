@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from account.models import Author
 
 # --- CATEGORY ---
 class Category(models.Model):
@@ -8,7 +9,9 @@ class Category(models.Model):
     name_uz = models.CharField(max_length=100, blank=True, default="")
 
     def __str__(self):
-        return self.name
+        uz = self.name_uz or self.name
+        ru = self.name_ru or self.name
+        return f"{uz} / {ru}"
 
 # --- MEAL TYPE ---
 class MealType(models.Model):
@@ -53,6 +56,7 @@ class Recipe(models.Model):
     servings = models.PositiveIntegerField(default=1)
     views = models.PositiveIntegerField(default=0, help_text="Number of times the recipe has been viewed")
     created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='recipes')
     #tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags like 'healthy,vegetarian'")
 
     class Meta:
@@ -162,15 +166,16 @@ class RecipeSubmission(models.Model):
         on_delete=models.CASCADE,
         related_name="recipe_submissions",
     )
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='recipe_submissions')
     name = models.CharField(max_length=255)
     name_ru = models.CharField(max_length=255, blank=True, default="")
     name_uz = models.CharField(max_length=255, blank=True, default="")
     description = models.TextField()
     description_ru = models.TextField(blank=True, default="")
     description_uz = models.TextField(blank=True, default="")
-    prep_time = models.PositiveIntegerField(help_text="in minutes")
-    cook_time = models.PositiveIntegerField(help_text="in minutes")
-    servings = models.PositiveIntegerField()
+    prep_time = models.PositiveIntegerField(help_text="in minutes", null=True, blank=True)
+    cook_time = models.PositiveIntegerField(help_text="in minutes", null=True, blank=True)
+    servings = models.PositiveIntegerField(null=True, blank=True)
     subscription_plan = models.CharField(
         max_length=20,
         choices=Recipe.PLAN_CHOICES,
@@ -216,15 +221,16 @@ class RecipeSubmission(models.Model):
             description=self.description,
             description_ru=self.description_ru,
             description_uz=self.description_uz,
-            prep_time=self.prep_time,
-            cook_time=self.cook_time,
-            servings=self.servings,
+            prep_time=self.prep_time or 1,
+            cook_time=self.cook_time or 1,
+            servings=self.servings or 1,
             subscription_plan=self.subscription_plan,
             healthy=self.healthy,
             calories=self.calories,
             protein=self.protein,
             fats=self.fats,
             carbs=self.carbs,
+            author=self.author,
         )
         if self.categories.exists():
             recipe.categories.add(*self.categories.all())

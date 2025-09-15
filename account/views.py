@@ -1,10 +1,10 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import User, EmailOTP
-from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializer, TelegramAuthSerializer
+from .models import User, EmailOTP, Author
+from .serializers import RegisterSerializer, UserSerializer, VerifyEmailSerializer, TelegramAuthSerializer, AuthorSerializer, AdminUserCreateSerializer
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -164,6 +164,27 @@ class ProfileView(APIView):
     )
     def get(self, request):
         return Response(UserSerializer(request.user).data)
+
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    queryset = Author.objects.all().order_by('name')
+    serializer_class = AuthorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return super().get_permissions()
+
+
+class AdminUserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = AdminUserCreateSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 class GoogleAuthView(APIView):
     @swagger_auto_schema(

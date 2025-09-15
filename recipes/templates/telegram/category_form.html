@@ -20,10 +20,12 @@
 <body>
 <h1>Add Category</h1>
 <form id="category-form">
-    <div class="form-group"><label>Name:</label><input type="text" name="name" required></div>
     <div class="form-group"><label>Name uz:</label><input type="text" name="name_uz" required></div>
     <div class="form-group"><label>Name ru:</label><input type="text" name="name_ru" required></div>
-    <div style="margin-top:1rem;"><button class="btn" type="submit">Save</button></div>
+    <div style="margin-top:1rem;display:flex;gap:8px;">
+        <button class="btn" type="button" id="back-btn">Nazad</button>
+        <button class="btn" type="submit">Save</button>
+    </div>
 </form>
 <script>
 const tg = window.Telegram.WebApp;
@@ -54,11 +56,14 @@ const showMessage = (msg) => {
 };
 
 const form = document.getElementById('category-form');
+document.getElementById('back-btn').addEventListener('click', () => {
+    // Navigate back to recipe form, keep its saved state
+    window.location.href = '/telegram/recipe-form/';
+});
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
     const payload = {
-        name: formData.get('name'),
         name_uz: formData.get('name_uz'),
         name_ru: formData.get('name_ru'),
         init_data: tg.initData || tg.initDataUnsafe?.raw || ''
@@ -74,7 +79,12 @@ form.addEventListener('submit', async (e) => {
         return;
     }
     showMessage('✅ Category qo\'shildi');
-    form.reset();
+    // Mark the newly created category to be auto-selected when returning
+    try {
+        localStorage.setItem('recipe_form_category_just_added', String(json.id));
+    } catch(err) {}
+    // After save go back to recipe form; state is preserved in localStorage
+    window.location.href = '/telegram/recipe-form/';
 });
 
 if (tg.expand) { tg.expand(); }

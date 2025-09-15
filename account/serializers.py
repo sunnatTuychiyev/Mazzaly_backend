@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken
 from django.contrib.auth import get_user_model
-from .models import User, EmailOTP
+from .models import User, EmailOTP, Author
 import re
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -28,9 +28,40 @@ class RegisterSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 class UserSerializer(serializers.ModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), allow_null=True, required=False)
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'telegram_id')
+        fields = ('id', 'first_name', 'last_name', 'email', 'telegram_id', 'author')
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ('id', 'name', 'bio')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Do not include empty bio in API output
+        if not data.get('bio'):
+            data.pop('bio', None)
+        return data
+
+
+class AdminUserCreateSerializer(serializers.ModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), allow_null=True, required=False)
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'first_name', 'last_name', 'telegram_id', 'password', 'author')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        user = User.objects.create_user(**validated_data)
+        if password:
+            user.set_password(password)
+            user.save(update_fields=['password'])
+        return user
 
 
 class VerifyEmailSerializer(serializers.Serializer):

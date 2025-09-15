@@ -16,6 +16,10 @@ class MiniAppIndexView(TemplateView):
     template_name = 'miniapp/index.html'
 
 
+class AuthorPickerView(TemplateView):
+    template_name = 'miniapp/author_picker.html'
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class TelegramLoginView(APIView):
     permission_classes = [AllowAny]

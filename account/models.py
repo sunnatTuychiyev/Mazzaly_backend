@@ -16,11 +16,11 @@ SUB_PLAN_CHOICES = [
 ]
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, password=None):
+    def create_user(self, email, first_name, last_name, password=None, **extra_fields):
         if not email:
             raise ValueError('Email required')
         email = self.normalize_email(email)
-        user = self.model(email=email, first_name=first_name, last_name=last_name)
+        user = self.model(email=email, first_name=first_name, last_name=last_name, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -32,11 +32,20 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+class Author(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    bio = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     telegram_id = models.CharField(max_length=64, unique=True, null=True, blank=True)
+    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_email_verified = models.BooleanField(default=False)
