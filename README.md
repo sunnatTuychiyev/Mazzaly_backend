@@ -5,6 +5,7 @@ It now includes email verification using one-time passwords (OTP).
 
 ## Setup
 
+
 1. Install dependencies:
    ```bash
    pip install -r requirements.txt
