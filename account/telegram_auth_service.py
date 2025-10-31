@@ -24,6 +24,8 @@ class TelegramAuthService:
         """
         Verify Telegram WebApp initData signature.
         
+        Uses the same algorithm as auth_telegram/utils.py which is proven to work.
+        
         Args:
             init_data_string: Raw init_data string from Telegram WebApp
             
@@ -33,32 +35,44 @@ class TelegramAuthService:
         Raises:
             ValueError: If signature is invalid or data is expired
         """
-        # Parse init_data
+        # Use the same approach as auth_telegram/utils.py which works correctly
+        # Parse init_data - parse_qsl handles URL decoding automatically
         params = dict(parse_qsl(init_data_string, keep_blank_values=True))
         hash_value = params.pop('hash', None)
         
         if not hash_value:
             raise ValueError('Missing hash in init_data')
         
-        # Create data check string (alphabetically sorted key=value pairs)
-        data_check_arr = [f"{k}={v}" for k, v in sorted(params.items()) if v]
-        data_check_string = '\n'.join(data_check_arr)
+        # Create data check string: sort alphabetically, join with newline
+        # This matches auth_telegram/utils.py exactly
+        data_check_string = '\n'.join(f"{k}={v}" for k, v in sorted(params.items()))
         
-        # Calculate expected hash using HMAC-SHA256
+        # Calculate secret key: HMAC-SHA256('WebAppData', bot_token)
         secret_key = hmac.new(
             b'WebAppData',
             settings.TELEGRAM_BOT_TOKEN.encode(),
             hashlib.sha256
         ).digest()
         
+        # Calculate hash: HMAC-SHA256(secret_key, data_check_string)
         calculated_hash = hmac.new(
             secret_key,
             data_check_string.encode(),
             hashlib.sha256
         ).hexdigest()
         
-        # Verify hash
+        # Verify hash using constant-time comparison
         if not hmac.compare_digest(calculated_hash, hash_value):
+            # Enhanced error logging for debugging
+            logger.error(
+                f"Telegram hash verification failed.\n"
+                f"Expected hash: {calculated_hash}\n"
+                f"Received hash: {hash_value}\n"
+                f"Data check string length: {len(data_check_string)}\n"
+                f"Data check string (first 300 chars): {data_check_string[:300]}\n"
+                f"Params keys: {sorted(params.keys())}\n"
+                f"Bot token configured: {bool(settings.TELEGRAM_BOT_TOKEN)}"
+            )
             raise ValueError('Invalid Telegram authentication hash')
         
         # Check auth_date (must be within last 24 hours)

@@ -296,6 +296,8 @@ class TelegramAuthView(APIView):
         serializer.is_valid(raise_exception=True)
         init_data = serializer.validated_data['init_data']
         
+        # parse_qsl in verify_telegram_auth handles URL decoding automatically
+        
         try:
             # Verify Telegram authentication
             telegram_data = TelegramAuthService.verify_telegram_auth(init_data)
@@ -487,18 +489,50 @@ class TelegramLinkConfirmView(APIView):
         
         # Check if telegram_id is already linked to another user
         existing_user = User.objects.filter(telegram_id=telegram_id).first()
-        if existing_user and existing_user != link_token.user:
+        user = link_token.user
+        
+        # If telegram_id is already linked to this user, just update and return success
+        if existing_user and existing_user.id == user.id:
+            # Already linked to the same user - just update username if needed
+            with transaction.atomic():
+                if username and user.telegram_username != username:
+                    user.telegram_username = username
+                    user.save(update_fields=['telegram_username'])
+                
+                link_token.used_at = timezone.now()
+                link_token.save(update_fields=['used_at'])
+            
+            logger.info(
+                f"Telegram ID {telegram_id} already linked to user {user.id}, updated username"
+            )
+            
+            return Response({
+                'detail': 'Telegram account already linked to this account',
+                'user_id': user.id,
+                'email': user.email,
+            }, status=status.HTTP_200_OK)
+        
+        # If telegram_id is linked to a different user, reject
+        if existing_user and existing_user.id != user.id:
             logger.warning(
-                f"Telegram ID {telegram_id} already linked to user {existing_user.id}"
+                f"Telegram ID {telegram_id} already linked to user {existing_user.id}, "
+                f"but token belongs to user {user.id}"
             )
             return Response(
                 {'detail': 'This Telegram account is already linked to another user'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Link telegram_id to user
+        # Link telegram_id to user (new link)
         with transaction.atomic():
-            user = link_token.user
+            # Check again within transaction to prevent race conditions
+            existing_in_transaction = User.objects.filter(telegram_id=telegram_id).exclude(id=user.id).first()
+            if existing_in_transaction:
+                return Response(
+                    {'detail': 'This Telegram account is already linked to another user'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
             user.telegram_id = telegram_id
             user.telegram_username = username if username else None
             user.telegram_linked_at = timezone.now()
