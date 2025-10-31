@@ -291,17 +291,32 @@ class TelegramAuthView(APIView):
     )
     def post(self, request):
         from .telegram_auth_service import TelegramAuthService
+        from auth_telegram.utils import verify_init_data, TelegramInitDataError
         
         serializer = TelegramAuthSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         init_data = serializer.validated_data['init_data']
         
-        # parse_qsl in verify_telegram_auth handles URL decoding automatically
-        
         try:
-            # Verify Telegram authentication
-            telegram_data = TelegramAuthService.verify_telegram_auth(init_data)
+            # Use auth_telegram/utils.py verify_init_data which is proven to work
+            # This ensures we use the exact same algorithm that works elsewhere
+            verified_data = verify_init_data(init_data, settings.TELEGRAM_BOT_TOKEN)
             
+            # Extract user data
+            user_data = verified_data.get('user') or {}
+            params = verified_data.get('data', {})
+            
+            telegram_data = {
+                'telegram_id': str(user_data.get('id')) if user_data.get('id') else None,
+                'username': user_data.get('username'),
+                'first_name': user_data.get('first_name', ''),
+                'last_name': user_data.get('last_name', ''),
+                'photo_url': user_data.get('photo_url'),
+                'auth_date': int(params.get('auth_date', '0')),
+                'raw_params': params
+            }
+            
+            # Verify telegram_id exists
             if not telegram_data['telegram_id']:
                 return Response(
                     {'detail': 'Invalid user data'},
@@ -323,6 +338,28 @@ class TelegramAuthView(APIView):
                 status=status.HTTP_200_OK
             )
             
+        except TelegramInitDataError as e:
+            # Convert to ValueError for consistent error handling
+            error_msg = str(e)
+            # Log failed attempt
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            ip_address = x_forwarded_for.split(',')[0].strip() if x_forwarded_for else request.META.get('REMOTE_ADDR')
+            user_agent = request.META.get('HTTP_USER_AGENT', '')
+            
+            AuthAuditLog.objects.create(
+                user=None,
+                action='telegram_login',
+                platform='telegram',
+                ip_address=ip_address,
+                user_agent=user_agent,
+                success=False,
+                error_message=error_msg
+            )
+            
+            return Response(
+                {'detail': error_msg},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         except ValueError as e:
             # Log failed attempt
             x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

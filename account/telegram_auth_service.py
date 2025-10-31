@@ -24,7 +24,8 @@ class TelegramAuthService:
         """
         Verify Telegram WebApp initData signature.
         
-        Uses the same algorithm as auth_telegram/utils.py which is proven to work.
+        Uses the EXACT same algorithm as auth_telegram/utils.py which is proven to work.
+        This method matches verify_init_data() from auth_telegram/utils.py byte-for-byte.
         
         Args:
             init_data_string: Raw init_data string from Telegram WebApp
@@ -35,8 +36,8 @@ class TelegramAuthService:
         Raises:
             ValueError: If signature is invalid or data is expired
         """
-        # Use the same approach as auth_telegram/utils.py which works correctly
-        # Parse init_data - parse_qsl handles URL decoding automatically
+        # EXACT COPY of auth_telegram/utils.py verify_init_data logic
+        # Parse init_data using parse_qsl (handles URL decoding automatically)
         params = dict(parse_qsl(init_data_string, keep_blank_values=True))
         hash_value = params.pop('hash', None)
         
@@ -44,10 +45,11 @@ class TelegramAuthService:
             raise ValueError('Missing hash in init_data')
         
         # Create data check string: sort alphabetically, join with newline
-        # This matches auth_telegram/utils.py exactly
+        # EXACTLY as in auth_telegram/utils.py line 25
         data_check_string = '\n'.join(f"{k}={v}" for k, v in sorted(params.items()))
         
         # Calculate secret key: HMAC-SHA256('WebAppData', bot_token)
+        # EXACTLY as in auth_telegram/utils.py line 26
         secret_key = hmac.new(
             b'WebAppData',
             settings.TELEGRAM_BOT_TOKEN.encode(),
@@ -55,6 +57,7 @@ class TelegramAuthService:
         ).digest()
         
         # Calculate hash: HMAC-SHA256(secret_key, data_check_string)
+        # EXACTLY as in auth_telegram/utils.py line 27
         calculated_hash = hmac.new(
             secret_key,
             data_check_string.encode(),
@@ -62,26 +65,30 @@ class TelegramAuthService:
         ).hexdigest()
         
         # Verify hash using constant-time comparison
+        # EXACTLY as in auth_telegram/utils.py line 28
         if not hmac.compare_digest(calculated_hash, hash_value):
-            # Enhanced error logging for debugging
-            logger.error(
-                f"Telegram hash verification failed.\n"
-                f"Expected hash: {calculated_hash}\n"
-                f"Received hash: {hash_value}\n"
-                f"Data check string length: {len(data_check_string)}\n"
-                f"Data check string (first 300 chars): {data_check_string[:300]}\n"
-                f"Params keys: {sorted(params.keys())}\n"
-                f"Bot token configured: {bool(settings.TELEGRAM_BOT_TOKEN)}"
-            )
+            # Enhanced error logging for debugging (only in debug mode)
+            if settings.DEBUG:
+                logger.error(
+                    f"Telegram hash verification failed.\n"
+                    f"Expected hash: {calculated_hash}\n"
+                    f"Received hash: {hash_value}\n"
+                    f"Data check string length: {len(data_check_string)}\n"
+                    f"Data check string: {data_check_string}\n"
+                    f"Params keys: {sorted(params.keys())}\n"
+                    f"Bot token length: {len(settings.TELEGRAM_BOT_TOKEN) if settings.TELEGRAM_BOT_TOKEN else 0}"
+                )
             raise ValueError('Invalid Telegram authentication hash')
         
         # Check auth_date (must be within last 24 hours)
+        # EXACTLY as in auth_telegram/utils.py lines 31-33
         auth_date = int(params.get('auth_date', '0'))
         if time.time() - auth_date > 86400:  # 24 hours
             raise ValueError('Telegram authentication data expired')
         
         # Parse user data
-        user_json = params.get('user', '{}')
+        # EXACTLY as in auth_telegram/utils.py lines 35-36
+        user_json = params.get('user')
         try:
             user_data = json.loads(user_json) if user_json else {}
         except json.JSONDecodeError:
