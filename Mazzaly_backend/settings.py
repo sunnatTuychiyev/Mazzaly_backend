@@ -7,16 +7,26 @@ import re
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # === Required environment variables ===
-TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()
+# Ikkita bot token:
+# 1. TELEGRAM_BOT_TOKEN - retsept bot uchun (recipes/signals.py da ishlatiladi)
+# 2. TELEGRAM_AUTH_BOT_TOKEN (mini_app_bot_t) - auth/login bot uchun
+TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()  # Retsept bot
+TELEGRAM_AUTH_BOT_TOKEN = config("mini_app_bot_t", default="").strip()  # Auth bot (login uchun)
+
+# Agar TELEGRAM_AUTH_BOT_TOKEN bo'lmasa, TELEGRAM_BOT_TOKEN ni fallback sifatida ishlat
+if not TELEGRAM_AUTH_BOT_TOKEN:
+    TELEGRAM_AUTH_BOT_TOKEN = TELEGRAM_BOT_TOKEN
+
 BOT_INTERNAL_SECRET = config("BOT_INTERNAL_SECRET", default="").strip()  # Secret for bot→backend authentication
 WEBAPP_URL = config("WEBAPP_URL", default="").strip()
 BACKEND_ORIGIN = config("BACKEND_ORIGIN", default="").strip()
 FRONTEND_ORIGIN = config("FRONTEND_ORIGIN", default=BACKEND_ORIGIN).strip()
 SECRET_KEY = config("SECRET_KEY", default="").strip()
 
-if not re.fullmatch(r"\d{6,12}:[A-Za-z0-9_-]{30,}", TELEGRAM_BOT_TOKEN):
+# Auth bot token tekshiruvi (majburiy)
+if not re.fullmatch(r"\d{6,12}:[A-Za-z0-9_-]{30,}", TELEGRAM_AUTH_BOT_TOKEN):
     raise SystemExit(
-        "TELEGRAM_BOT_TOKEN missing/invalid. Set TELEGRAM_BOT_TOKEN in .env or environment"
+        "mini_app_bot_t missing/invalid. Set mini_app_bot_t in .env or environment (required for authentication)"
     )
 if not WEBAPP_URL.startswith("https://"):
     raise SystemExit("WEBAPP_URL must start with https://")

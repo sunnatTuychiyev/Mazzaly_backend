@@ -13,7 +13,9 @@ def get_user_from_init_data(init_data: str) -> User:
     user does not yet exist it will be created automatically using their
     Telegram ID.
     """
-    res = verify_init_data(init_data, settings.TELEGRAM_BOT_TOKEN)
+    # Use TELEGRAM_AUTH_BOT_TOKEN (mini_app_bot_t) for authentication
+    auth_bot_token = getattr(settings, 'TELEGRAM_AUTH_BOT_TOKEN', None) or settings.TELEGRAM_BOT_TOKEN
+    res = verify_init_data(init_data, auth_bot_token)
     user_data = res.get("user") or {}
     telegram_id = str(user_data.get("id")) if user_data else None
     if not telegram_id:

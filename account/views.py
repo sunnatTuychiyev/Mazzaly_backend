@@ -298,9 +298,27 @@ class TelegramAuthView(APIView):
         init_data = serializer.validated_data['init_data']
         
         try:
+            # Check auth bot token is configured (mini_app_bot_t)
+            auth_bot_token = getattr(settings, 'TELEGRAM_AUTH_BOT_TOKEN', None) or settings.TELEGRAM_BOT_TOKEN
+            if not auth_bot_token:
+                logger.error("TELEGRAM_AUTH_BOT_TOKEN (mini_app_bot_t) not configured")
+                return Response(
+                    {'detail': 'Server configuration error'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
             # Use auth_telegram/utils.py verify_init_data which is proven to work
             # This ensures we use the exact same algorithm that works elsewhere
-            verified_data = verify_init_data(init_data, settings.TELEGRAM_BOT_TOKEN)
+            # Use TELEGRAM_AUTH_BOT_TOKEN (mini_app_bot_t) for authentication
+            try:
+                verified_data = verify_init_data(init_data, auth_bot_token)
+            except TelegramInitDataError as e:
+                # Re-raise to be caught by outer handler
+                raise e
+            except Exception as e:
+                # Log unexpected errors during verification
+                logger.error(f"Error during init_data verification: {str(e)}", exc_info=True)
+                raise TelegramInitDataError(f"Verification error: {str(e)}")
             
             # Extract user data
             user_data = verified_data.get('user') or {}

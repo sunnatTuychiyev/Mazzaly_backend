@@ -49,10 +49,11 @@ class TelegramAuthService:
         data_check_string = '\n'.join(f"{k}={v}" for k, v in sorted(params.items()))
         
         # Calculate secret key: HMAC-SHA256('WebAppData', bot_token)
-        # EXACTLY as in auth_telegram/utils.py line 26
+        # Use TELEGRAM_AUTH_BOT_TOKEN (mini_app_bot_t) for authentication
+        auth_bot_token = getattr(settings, 'TELEGRAM_AUTH_BOT_TOKEN', None) or settings.TELEGRAM_BOT_TOKEN
         secret_key = hmac.new(
             b'WebAppData',
-            settings.TELEGRAM_BOT_TOKEN.encode(),
+            auth_bot_token.encode(),
             hashlib.sha256
         ).digest()
         
@@ -69,6 +70,7 @@ class TelegramAuthService:
         if not hmac.compare_digest(calculated_hash, hash_value):
             # Enhanced error logging for debugging (only in debug mode)
             if settings.DEBUG:
+                auth_bot_token = getattr(settings, 'TELEGRAM_AUTH_BOT_TOKEN', None) or settings.TELEGRAM_BOT_TOKEN
                 logger.error(
                     f"Telegram hash verification failed.\n"
                     f"Expected hash: {calculated_hash}\n"
@@ -76,7 +78,7 @@ class TelegramAuthService:
                     f"Data check string length: {len(data_check_string)}\n"
                     f"Data check string: {data_check_string}\n"
                     f"Params keys: {sorted(params.keys())}\n"
-                    f"Bot token length: {len(settings.TELEGRAM_BOT_TOKEN) if settings.TELEGRAM_BOT_TOKEN else 0}"
+                    f"Auth bot token length: {len(auth_bot_token) if auth_bot_token else 0}"
                 )
             raise ValueError('Invalid Telegram authentication hash')
         
