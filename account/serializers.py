@@ -29,9 +29,16 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), allow_null=True, required=False)
+    login_method = serializers.CharField(read_only=True)
+    
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'telegram_id', 'author')
+        fields = (
+            'id', 'first_name', 'last_name', 'email', 'telegram_id', 'author',
+            'telegram_username', 'telegram_first_name', 'telegram_last_name', 'telegram_photo_url',
+            'login_method', 'created_via', 'telegram_linked_at', 'last_login_at'
+        )
+        read_only_fields = ('id', 'login_method', 'created_via', 'telegram_linked_at', 'last_login_at')
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -81,4 +88,30 @@ class SafeTokenRefreshSerializer(TokenRefreshSerializer):
             return super().validate(attrs)
         except get_user_model().DoesNotExist:
             raise InvalidToken('User not found')
+
+
+class TelegramLinkTokenResponseSerializer(serializers.Serializer):
+    """Response serializer for link token creation."""
+    token = serializers.CharField()
+    link = serializers.CharField()
+
+
+class TelegramLinkConfirmSerializer(serializers.Serializer):
+    """Serializer for bot confirming token and linking telegram_id."""
+    token = serializers.CharField()
+    telegram_id = serializers.CharField()
+    username = serializers.CharField(required=False, allow_blank=True)
+
+
+class EmailOTPSendSerializer(serializers.Serializer):
+    """Serializer for sending OTP to email for Telegram linking."""
+    email = serializers.EmailField()
+    telegram_id = serializers.CharField()
+
+
+class EmailOTPVerifySerializer(serializers.Serializer):
+    """Serializer for verifying OTP and linking email to Telegram."""
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=6)
+    telegram_id = serializers.CharField()
 

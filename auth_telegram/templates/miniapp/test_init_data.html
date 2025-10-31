@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App - Init Data Test</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .data-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-wrap: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+            color: #333;
+        }
+        
+        .data-box.empty {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .info-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        .button:hover {
+            background: #5568d3;
+        }
+        
+        .button:active {
+            transform: scale(0.98);
+        }
+        
+        .json-pretty {
+            white-space: pre-wrap;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        
+        .user-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .user-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .user-card-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .user-card-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Telegram Mini App Init Data Test</h1>
+        <p class="subtitle">Bu sahifa Mini App dan kelgan init_data ni ko'rsatadi</p>
+        
+        <!-- Telegram WebApp holati -->
+        <div class="section">
+            <div class="section-title">📱 Telegram WebApp Holati</div>
+            <div id="webapp-status">
+                <span class="info-badge badge-warning">Yuklanmoqda...</span>
+            </div>
+        </div>
+        
+        <!-- Init Data -->
+        <div class="section">
+            <div class="section-title">📦 Init Data (Raw)</div>
+            <div id="init-data" class="data-box empty">Init data topilmadi...</div>
+        </div>
+        
+        <!-- Parsed Init Data -->
+        <div class="section">
+            <div class="section-title">📋 Parsed Init Data (JSON)</div>
+            <div id="parsed-data" class="data-box empty">Ma'lumot tayyorlanmoqda...</div>
+        </div>
+        
+        <!-- User Ma'lumotlari -->
+        <div class="section">
+            <div class="section-title">👤 Foydalanuvchi Ma'lumotlari</div>
+            <div id="user-info" class="user-info">
+                <div class="user-card">
+                    <div class="user-card-label">Telegram ID</div>
+                    <div class="user-card-value" id="user-id">-</div>
+                </div>
+                <div class="user-card">
+                    <div class="user-card-label">Ism</div>
+                    <div class="user-card-value" id="user-first-name">-</div>
+                </div>
+                <div class="user-card">
+                    <div class="user-card-label">Familiya</div>
+                    <div class="user-card-value" id="user-last-name">-</div>
+                </div>
+                <div class="user-card">
+                    <div class="user-card-label">Username</div>
+                    <div class="user-card-value" id="user-username">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Qo'shimcha Ma'lumotlar -->
+        <div class="section">
+            <div class="section-title">🔧 Qo'shimcha Ma'lumotlar</div>
+            <div id="additional-info" class="data-box empty">Ma'lumotlar tayyorlanmoqda...</div>
+        </div>
+        
+        <button class="button" onclick="refreshData()">🔄 Yangilash</button>
+        <button class="button" onclick="copyInitData()">📋 Init Data ni nusxalash</button>
+    </div>
+    
+    <script>
+        const tg = window.Telegram?.WebApp;
+        
+        // Telegram WebApp ni ishga tushirish
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+        
+        function parseInitData(initDataString) {
+            if (!initDataString) return null;
+            
+            const params = {};
+            const pairs = initDataString.split('&');
+            
+            for (const pair of pairs) {
+                const [key, value] = pair.split('=');
+                if (key && value) {
+                    params[decodeURIComponent(key)] = decodeURIComponent(value);
+                }
+            }
+            
+            // user ni JSON sifatida parse qilish
+            if (params.user) {
+                try {
+                    params.user = JSON.parse(params.user);
+                } catch (e) {
+                    // JSON parse qilishda xatolik
+                }
+            }
+            
+            return params;
+        }
+        
+        function updateDisplay() {
+            const initData = tg?.initData || '';
+            const initDataUnsafe = tg?.initDataUnsafe || {};
+            
+            // WebApp holati
+            const statusEl = document.getElementById('webapp-status');
+            if (tg) {
+                statusEl.innerHTML = `
+                    <span class="info-badge badge-success">✅ Telegram WebApp mavjud</span>
+                    <span class="info-badge badge-info">Platform: ${initDataUnsafe.platform || 'unknown'}</span>
+                `;
+            } else {
+                statusEl.innerHTML = `
+                    <span class="info-badge badge-warning">⚠️ Telegram WebApp topilmadi (brauzerda ochilgan)</span>
+                `;
+            }
+            
+            // Init Data (Raw)
+            const initDataEl = document.getElementById('init-data');
+            if (initData) {
+                initDataEl.textContent = initData;
+                initDataEl.classList.remove('empty');
+            } else {
+                initDataEl.textContent = 'Init data topilmadi (Telegram dan ochilmagan yoki xatolik bor)';
+                initDataEl.classList.add('empty');
+            }
+            
+            // Parsed Data
+            const parsed = parseInitData(initData);
+            const parsedEl = document.getElementById('parsed-data');
+            if (parsed && Object.keys(parsed).length > 0) {
+                parsedEl.textContent = JSON.stringify(parsed, null, 2);
+                parsedEl.classList.remove('empty');
+                parsedEl.classList.add('json-pretty');
+            } else {
+                parsedEl.textContent = 'Parse qilib bo\'lmadi yoki init data bo\'sh';
+                parsedEl.classList.add('empty');
+                parsedEl.classList.remove('json-pretty');
+            }
+            
+            // User ma'lumotlari
+            const user = initDataUnsafe.user || parsed?.user || null;
+            if (user) {
+                document.getElementById('user-id').textContent = user.id || '-';
+                document.getElementById('user-first-name').textContent = user.first_name || '-';
+                document.getElementById('user-last-name').textContent = user.last_name || '-';
+                document.getElementById('user-username').textContent = user.username || '@username yo\'q';
+            } else {
+                document.getElementById('user-id').textContent = '-';
+                document.getElementById('user-first-name').textContent = '-';
+                document.getElementById('user-last-name').textContent = '-';
+                document.getElementById('user-username').textContent = '-';
+            }
+            
+            // Qo'shimcha ma'lumotlar
+            const additionalEl = document.getElementById('additional-info');
+            const additional = {
+                auth_date: parsed?.auth_date || initDataUnsafe.auth_date || null,
+                hash: parsed?.hash || 'N/A',
+                query_id: parsed?.query_id || initDataUnsafe.query_id || null,
+                start_param: initDataUnsafe.start_param || null,
+                version: initDataUnsafe.version || 'N/A',
+                platform: initDataUnsafe.platform || 'N/A',
+                color_scheme: tg?.colorScheme || 'N/A',
+                theme_params: tg?.themeParams || null
+            };
+            
+            additionalEl.textContent = JSON.stringify(additional, null, 2);
+            additionalEl.classList.remove('empty');
+            additionalEl.classList.add('json-pretty');
+        }
+        
+        function refreshData() {
+            updateDisplay();
+            if (tg?.showAlert) {
+                tg.showAlert('Ma\'lumotlar yangilandi!');
+            } else {
+                alert('Ma\'lumotlar yangilandi!');
+            }
+        }
+        
+        function copyInitData() {
+            const initData = tg?.initData || '';
+            if (!initData) {
+                if (tg?.showAlert) {
+                    tg.showAlert('Init data topilmadi!');
+                } else {
+                    alert('Init data topilmadi!');
+                }
+                return;
+            }
+            
+            navigator.clipboard.writeText(initData).then(() => {
+                if (tg?.showAlert) {
+                    tg.showAlert('Init data nusxalandi!');
+                } else {
+                    alert('Init data nusxalandi!');
+                }
+            }).catch(err => {
+                if (tg?.showAlert) {
+                    tg.showAlert('Nusxalashda xatolik: ' + err.message);
+                } else {
+                    alert('Nusxalashda xatolik: ' + err.message);
+                }
+            });
+        }
+        
+        // Dastlabki yuklash
+        updateDisplay();
+        
+        // Hash o'zgarishlarini kuzatish (Telegram WebApp yangilanishlari uchun)
+        if (tg) {
+            tg.onEvent('viewportChanged', updateDisplay);
+        }
+    </script>
+</body>
+</html>
+

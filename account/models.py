@@ -41,26 +41,96 @@ class Author(models.Model):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    # Core fields (existing)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True)  # Placeholder emails for telegram-only users
     telegram_id = models.CharField(max_length=64, unique=True, null=True, blank=True)
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_email_verified = models.BooleanField(default=False)
+    
+    # New unified auth fields (all nullable, additive only)
+    telegram_username = models.CharField(max_length=255, null=True, blank=True)
+    telegram_first_name = models.CharField(max_length=255, null=True, blank=True)
+    telegram_last_name = models.CharField(max_length=255, null=True, blank=True)
+    telegram_photo_url = models.URLField(max_length=500, null=True, blank=True)
+    
+    LOGIN_METHOD_EMAIL = 'email'
+    LOGIN_METHOD_TELEGRAM = 'telegram'
+    LOGIN_METHOD_BOTH = 'both'
+    LOGIN_METHOD_CHOICES = [
+        (LOGIN_METHOD_EMAIL, 'Email'),
+        (LOGIN_METHOD_TELEGRAM, 'Telegram'),
+        (LOGIN_METHOD_BOTH, 'Both'),
+    ]
+    login_method = models.CharField(
+        max_length=20,
+        choices=LOGIN_METHOD_CHOICES,
+        default=LOGIN_METHOD_EMAIL,
+        null=True,
+        blank=True
+    )
+    
+    CREATED_VIA_WEB = 'web'
+    CREATED_VIA_TELEGRAM = 'telegram'
+    CREATED_VIA_CHOICES = [
+        (CREATED_VIA_WEB, 'Web'),
+        (CREATED_VIA_TELEGRAM, 'Telegram'),
+    ]
+    created_via = models.CharField(
+        max_length=20,
+        choices=CREATED_VIA_CHOICES,
+        default=CREATED_VIA_WEB,
+        null=True,
+        blank=True
+    )
+    
+    telegram_linked_at = models.DateTimeField(null=True, blank=True)
+    last_login_at = models.DateTimeField(null=True, blank=True)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['telegram_id']),
+            models.Index(fields=['login_method']),
+            models.Index(fields=['email']),
+        ]
+
     def __str__(self):
-        return self.email
+        if self.email:
+            return self.email
+        elif self.telegram_id:
+            return f"Telegram:{self.telegram_id}"
+        else:
+            return f"User:{self.id}"
 
     @property
     def current_plan(self):
         return get_user_current_plan(self)
+    
+    def get_login_method(self):
+        """Automatically determine login method based on user data"""
+        # Check if email is a real email (not a placeholder)
+        has_email = bool(
+            self.email and 
+            not self.email.startswith('tg_') and 
+            '@telegram.local' not in self.email and
+            '@example.com' not in self.email
+        )
+        has_telegram = bool(self.telegram_id)
+        
+        if has_email and has_telegram:
+            return self.LOGIN_METHOD_BOTH
+        elif has_telegram:
+            return self.LOGIN_METHOD_TELEGRAM
+        else:
+            return self.LOGIN_METHOD_EMAIL
 
 
 class EmailOTP(models.Model):
@@ -69,7 +139,100 @@ class EmailOTP(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"OTP for {self.user.email}"
+        user_id = self.user.email or f"Telegram:{self.user.telegram_id}" or f"User:{self.user.id}"
+        return f"OTP for {user_id}"
+
+
+class TelegramLinkToken(models.Model):
+    """One-time token for linking Telegram account to web user account."""
+    token = models.CharField(max_length=64, unique=True, db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='telegram_link_tokens')
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used_at = models.DateTimeField(null=True, blank=True)
+    client_ip = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['token', 'used_at']),
+            models.Index(fields=['expires_at', 'used_at']),
+        ]
+
+    def __str__(self):
+        user_id = self.user.email or f"Telegram:{self.user.telegram_id}" or f"User:{self.user.id}"
+        return f"Token {self.token[:8]}... for {user_id}"
+
+    @property
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+    @property
+    def is_used(self):
+        return self.used_at is not None
+
+    @property
+    def is_valid(self):
+        return not self.is_expired and not self.is_used
+
+
+class EmailOTPTelegramLink(models.Model):
+    """OTP for linking email to Telegram account during Mini App registration."""
+    email = models.EmailField()
+    code = models.CharField(max_length=6)
+    telegram_id = models.CharField(max_length=64, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    attempts = models.IntegerField(default=0)
+    verified_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['email', 'telegram_id']),
+            models.Index(fields=['telegram_id', 'expires_at']),
+        ]
+
+    def __str__(self):
+        return f"OTP for {self.email} (Telegram: {self.telegram_id})"
+
+    @property
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+    @property
+    def is_verified(self):
+        return self.verified_at is not None
+
+    @property
+    def is_valid(self):
+        return not self.is_expired and not self.is_verified and self.attempts < 5
+
+
+class AuthAuditLog(models.Model):
+    """Audit log for all authentication actions"""
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='auth_logs')
+    action = models.CharField(max_length=50)  # login, logout, link_telegram, link_email, etc.
+    platform = models.CharField(max_length=20)  # web, telegram
+    telegram_id = models.CharField(max_length=64, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+    success = models.BooleanField(default=True)
+    error_message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user_id']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['action', 'platform']),
+        ]
+
+    def __str__(self):
+        return f"{self.action} - {self.platform} - {self.user_id if self.user else 'No user'}"
 
 
 class Subscription(models.Model):
@@ -97,7 +260,8 @@ class Subscription(models.Model):
         )
 
     def __str__(self):
-        return f"{self.user.email} - {self.plan}"
+        user_identifier = self.user.email or f"Telegram:{self.user.telegram_id}" or f"User:{self.user.id}"
+        return f"{user_identifier} - {self.plan}"
 
 
 def get_user_current_plan(user):

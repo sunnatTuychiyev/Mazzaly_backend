@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # === Required environment variables ===
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()
+BOT_INTERNAL_SECRET = config("BOT_INTERNAL_SECRET", default="").strip()  # Secret for bot→backend authentication
 WEBAPP_URL = config("WEBAPP_URL", default="").strip()
 BACKEND_ORIGIN = config("BACKEND_ORIGIN", default="").strip()
 FRONTEND_ORIGIN = config("FRONTEND_ORIGIN", default=BACKEND_ORIGIN).strip()
