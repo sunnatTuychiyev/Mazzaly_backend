@@ -19,7 +19,7 @@ load_dotenv()
 
 # Bot token va sozlamalar .env fayilidan olinadi
 TOKEN = (os.getenv("TELEGRAM_BOT_TOKEN") or "").strip()
-BOT_USERNAME = (os.getenv("TELEGRAM_BOT_USERNAME") or "SHOP_AKBA_bot").strip()
+BOT_USERNAME = (os.getenv("TELEGRAM_BOT_USERNAME") or "Mazzalybot").strip()
 WEBAPP_URL = (os.getenv("WEBAPP_URL") or "").strip()
 BACKEND_ORIGIN = (os.getenv("BACKEND_ORIGIN") or "").strip()
 BOT_INTERNAL_SECRET = (os.getenv("BOT_INTERNAL_SECRET") or "").strip()
@@ -188,11 +188,7 @@ async def handle_link_token(update: Update, token: str):
             logger.info(f"Webhook response body: {response.text}")
             
             if response.status_code == 200:
-                # Webhook o'zi user'ga xabar yuboradi, lekin biz ham yuboramiz
-                await update.message.reply_text(
-                    "✅ Muvaffaqiyat! Telegram akkauntingiz web saytga ulandi. "
-                    "Endi siz ham web'dan, ham Telegram'dan kira olasiz!"
-                )
+                # Webhook o'zi user'ga xabar yuboradi, bot duplicate xabar yubormasin
                 logger.info(f"Successfully linked Telegram ID {telegram_id} using token {token[:8]}...")
             else:
                 # Agar webhook xatolik qaytarsa

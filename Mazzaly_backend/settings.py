@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # === Required environment variables ===
 # Telegram Bot Configuration (bitta bot barcha funksiyalar uchun)
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()
-TELEGRAM_BOT_USERNAME = config("TELEGRAM_BOT_USERNAME", default="SHOP_AKBA_bot").strip()
+TELEGRAM_BOT_USERNAME = config("TELEGRAM_BOT_USERNAME", default="Mazzalybot").strip()
 
 # Legacy support: eski kod uchun
 TELEGRAM_AUTH_BOT_TOKEN = TELEGRAM_BOT_TOKEN  # Bir xil bot ishlatiladi

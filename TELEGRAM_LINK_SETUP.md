@@ -2,14 +2,14 @@
 
 ## ✅ Bitta Bot Konfiguratsiyasi
 
-Siz bitta `@SHOP_AKBA_bot` ishlatmoqchisiz, barcha funksiyalar uchun:
+Siz bitta `@Mazzalybot` ishlatmoqchisiz, barcha funksiyalar uchun:
 
 ### .env sozlamalari:
 
 ```bash
 # === Telegram Bot Configuration ===
 TELEGRAM_BOT_TOKEN=2060951767:AAFcvGaYkm3N8fxp_4love7rrzIgueh5HkE
-TELEGRAM_BOT_USERNAME=SHOP_AKBA_bot
+TELEGRAM_BOT_USERNAME=Mazzalybot
 
 WEBAPP_URL=https://127.0.0.1:8000/telegram/recipes/
 BACKEND_ORIGIN=https://127.0.0.1:8000
@@ -95,7 +95,7 @@ curl -X POST https://127.0.0.1:8000/api/mini-app/auth/connect-telegram/link/ \
 **Response:**
 ```json
 {
-  "deep_link": "https://t.me/SHOP_AKBA_bot?start=550e8400-e29b-41d4-a716-446655440000",
+  "deep_link": "https://t.me/Mazzalybot?start=550e8400-e29b-41d4-a716-446655440000",
   "expires_in": 600,
   "expires_at": "2025-11-04T12:10:00Z"
 }
@@ -103,7 +103,7 @@ curl -X POST https://127.0.0.1:8000/api/mini-app/auth/connect-telegram/link/ \
 
 ### 2. Telegram botda:
 
-1. Deep linkni oching: `https://t.me/SHOP_AKBA_bot?start=550e8400-...`
+1. Deep linkni oching: `https://t.me/Mazzalybot?start=550e8400-...`
 2. Bot `/start` commandni qabul qiladi
 3. Server webhook orqali payload tekshiradi
 4. Akkaunt bog'lanadi ✅
@@ -178,7 +178,7 @@ print(f"Expired: {nonce.is_expired}")
 ## ✅ Final Checklist
 
 - [x] `.env` da `TELEGRAM_BOT_TOKEN` to'g'ri
-- [x] `.env` da `TELEGRAM_BOT_USERNAME=SHOP_AKBA_bot`
+- [x] `.env` da `TELEGRAM_BOT_USERNAME=Mazzalybot`
 - [x] Migration ishga tushirilgan: `0011_add_telegram_link_nonce`
 - [x] Webhook o'rnatilgan
 - [x] Webhook HTTPS orqali ochiq

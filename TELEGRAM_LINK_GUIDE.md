@@ -43,7 +43,7 @@ Foydalanuvchi web saytga kirganda "Link Telegram" tugmasini bosib, Telegram bot 
 # === Telegram Bot Configuration ===
 # Bitta bot barcha funksiyalar uchun (recipes, auth, mini-app, linking)
 TELEGRAM_BOT_TOKEN=2060951767:AAFcvGaYkm3N8fxp_4love7rrzIgueh5HkE
-TELEGRAM_BOT_USERNAME=SHOP_AKBA_bot
+TELEGRAM_BOT_USERNAME=Mazzalybot
 ```
 
 **Eslatma:** Siz bitta bot ishlatmoqchisiz, shuning uchun `TELEGRAM_BOT_TOKEN` barcha funksiyalar uchun ishlatiladi:
@@ -101,7 +101,7 @@ Authorization: <JWT_ACCESS_TOKEN>
 **Response (200):**
 ```json
 {
-  "deep_link": "https://t.me/SHOP_AKBA_bot?start=550e8400-e29b-41d4-a716-446655440000",
+  "deep_link": "https://t.me/Mazzalybot?start=550e8400-e29b-41d4-a716-446655440000",
   "expires_in": 600,
   "expires_at": "2025-11-04T12:10:00Z"
 }
@@ -175,7 +175,7 @@ curl -X POST https://api.mazzaly.uz/api/mini-app/auth/connect-telegram/link/ \
 
 # Response:
 # {
-#   "deep_link": "https://t.me/SHOP_AKBA_bot?start=550e8400-e29b-41d4-a716-446655440000",
+#   "deep_link": "https://t.me/Mazzalybot?start=550e8400-e29b-41d4-a716-446655440000",
 #   "expires_in": 600,
 #   "expires_at": "2025-11-04T12:10:00Z"
 # }
