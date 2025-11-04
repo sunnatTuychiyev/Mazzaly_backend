@@ -15,15 +15,16 @@ try:
 
     schema_view = get_schema_view(
         openapi.Info(
-            title="Recipe API",
+            title="Mazzaly API",
             default_version='v1',
-            description="Cookbook API: Recipes, Ingredients, Meal Plan, Shopping List, Auth (JWT/Google), etc.",
+            description="Mazzaly API: Recipes, Ingredients, Meal Plan, Shopping List, Auth (JWT/Telegram/Google), Mini App Email Connection, etc.",
             terms_of_service="https://www.google.com/policies/terms/",
             contact=openapi.Contact(email="your@email.com"),
             license=openapi.License(name="MIT License"),
         ),
         public=True,
         permission_classes=(permissions.AllowAny,),
+        authentication_classes=[],
     )
     swagger_urls = [
         path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

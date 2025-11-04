@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
+import uuid
 
 # Subscription plan constants shared between User and Subscription models
 SUB_PLAN_STANDARD = 'standard'
@@ -21,7 +22,10 @@ class UserManager(BaseUserManager):
             raise ValueError('Email required')
         email = self.normalize_email(email)
         user = self.model(email=email, first_name=first_name, last_name=last_name, **extra_fields)
-        user.set_password(password)
+        if password:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()
         user.save(using=self._db)
         return user
 
@@ -179,8 +183,10 @@ class TelegramLinkToken(models.Model):
 
 class EmailOTPTelegramLink(models.Model):
     """OTP for linking email to Telegram account during Mini App registration."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='email_otp_links')
     email = models.EmailField()
-    code = models.CharField(max_length=6)
+    code_hash = models.CharField(max_length=128, null=True, blank=True)  # Hashed OTP for security
+    password = models.CharField(max_length=128, null=True, blank=True)  # Hashed password for the account
     telegram_id = models.CharField(max_length=64, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
@@ -192,6 +198,7 @@ class EmailOTPTelegramLink(models.Model):
         indexes = [
             models.Index(fields=['email', 'telegram_id']),
             models.Index(fields=['telegram_id', 'expires_at']),
+            models.Index(fields=['email', 'expires_at']),
         ]
 
     def __str__(self):
@@ -208,6 +215,35 @@ class EmailOTPTelegramLink(models.Model):
     @property
     def is_valid(self):
         return not self.is_expired and not self.is_verified and self.attempts < 5
+
+
+class TelegramLinkNonce(models.Model):
+    """One-time token for linking web account to Telegram."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='telegram_link_nonces')
+    nonce = models.UUIDField(unique=True, default=uuid.uuid4, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used = models.BooleanField(default=False)
+    used_at = models.DateTimeField(null=True, blank=True)
+    telegram_user_id = models.CharField(max_length=64, null=True, blank=True)  # Set when used
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['nonce', 'used']),
+            models.Index(fields=['user', 'expires_at']),
+        ]
+    
+    def __str__(self):
+        return f"Link nonce for {self.user.email} - {'Used' if self.used else 'Pending'}"
+    
+    @property
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+    
+    @property
+    def is_valid(self):
+        return not self.used and not self.is_expired
 
 
 class AuthAuditLog(models.Model):

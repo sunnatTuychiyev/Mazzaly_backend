@@ -17,9 +17,10 @@ logger = logging.getLogger(__name__)
 # .env fayilini yuklash
 load_dotenv()
 
-# Bot token .env fayilidan mini_app_bot_t nomi bilan olinadi
-TOKEN = (os.getenv("mini_app_bot_t") or "").strip()
-WEBAPP_URL = (os.getenv("WEBAPP_main_URL") or "").strip()
+# Bot token va sozlamalar .env fayilidan olinadi
+TOKEN = (os.getenv("TELEGRAM_BOT_TOKEN") or "").strip()
+BOT_USERNAME = (os.getenv("TELEGRAM_BOT_USERNAME") or "SHOP_AKBA_bot").strip()
+WEBAPP_URL = (os.getenv("WEBAPP_URL") or "").strip()
 BACKEND_ORIGIN = (os.getenv("BACKEND_ORIGIN") or "").strip()
 BOT_INTERNAL_SECRET = (os.getenv("BOT_INTERNAL_SECRET") or "").strip()
 
@@ -36,15 +37,15 @@ def validate_config():
     
     # Token tekshiruvi
     if not TOKEN:
-        errors.append("mini_app_bot_t missing. .env fayiliga mini_app_bot_t=YOUR_BOT_TOKEN qo'shing.")
+        errors.append("TELEGRAM_BOT_TOKEN missing. .env fayiliga TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN qo'shing.")
     elif not valid_token(TOKEN):
-        errors.append("mini_app_bot_t invalid format. Token formati: 123456:ABC-DEF...")
+        errors.append("TELEGRAM_BOT_TOKEN invalid format. Token formati: 123456:ABC-DEF...")
     
     # WEBAPP_URL tekshiruvi
     if not WEBAPP_URL:
-        warnings.append("WEBAPP_main_URL not set. Mini App button won't work.")
+        warnings.append("WEBAPP_URL not set. Mini App button won't work.")
     elif not WEBAPP_URL.startswith("https://"):
-        warnings.append("WEBAPP_main_URL must start with https://")
+        warnings.append("WEBAPP_URL must start with https://")
     
     # Xatoliklarni ko'rsatish
     if errors:
@@ -80,8 +81,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not WEBAPP_URL or not WEBAPP_URL.startswith("https://"):
             error_msg = (
                 "❌ Mini App URL sozlanmagan.\n\n"
-                "WEBAPP_main_URL ni .env fayiliga qo'shing:\n"
-                "WEBAPP_main_URL=https://your-domain.com/telegram/test-init-data/"
+                "WEBAPP_URL ni .env fayiliga qo'shing:\n"
+                "WEBAPP_URL=https://your-domain.com/telegram/recipes/"
             )
             await update.message.reply_text(error_msg)
             logger.warning(f"User {update.effective_user.id} tried to start bot but WEBAPP_URL not configured")
@@ -130,71 +131,86 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 pass
 
 async def handle_link_token(update: Update, token: str):
-    """Token tekshirish va backend ga yuborish"""
+    """
+    Token tekshirish va backend webhook ga yuborish.
+    Bu funksiya webhook endpoint'ini chaqiradi (yangi tizim).
+    """
     import httpx
     
     user = update.effective_user
     telegram_id = str(user.id) if user else None
     username = user.username if user else ''
+    first_name = user.first_name if user else ''
+    last_name = user.last_name if user else ''
     
     if not telegram_id:
         await update.message.reply_text("❌ Telegram user ID topilmadi.")
         return
     
-    if not BACKEND_ORIGIN or not BOT_INTERNAL_SECRET:
+    if not BACKEND_ORIGIN:
         await update.message.reply_text(
             "❌ Server sozlamalari to'liq emas. Iltimos, administrator bilan bog'laning."
         )
-        logger.error("BACKEND_ORIGIN yoki BOT_INTERNAL_SECRET sozlanmagan")
+        logger.error("BACKEND_ORIGIN sozlanmagan")
         return
     
     try:
-        # Backend ga token tekshirish so'rovi yuborish
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.post(
-                f"{BACKEND_ORIGIN}/api/telegram/link/confirm/",
-                json={
-                    "token": token,
-                    "telegram_id": telegram_id,
+        # Backend webhook endpoint'iga Telegram update formatida yuborish
+        # Bu yangi /api/mini-app/auth/telegram-webhook/ endpoint'i
+        webhook_payload = {
+            "update_id": update.update_id,
+            "message": {
+                "message_id": update.message.message_id,
+                "from": {
+                    "id": int(telegram_id),
+                    "first_name": first_name,
+                    "last_name": last_name,
                     "username": username
                 },
+                "text": f"/start {token}"
+            }
+        }
+        
+        webhook_url = f"{BACKEND_ORIGIN}/api/mini-app/auth/telegram-webhook/"
+        logger.info(f"Calling webhook: {webhook_url}")
+        logger.info(f"Payload: {webhook_payload}")
+        
+        async with httpx.AsyncClient(timeout=10.0, verify=False) as client:
+            response = await client.post(
+                webhook_url,
+                json=webhook_payload,
                 headers={
-                    "Authorization": f"Bearer {BOT_INTERNAL_SECRET}",
                     "Content-Type": "application/json"
                 }
             )
             
+            logger.info(f"Webhook response status: {response.status_code}")
+            logger.info(f"Webhook response body: {response.text}")
+            
             if response.status_code == 200:
+                # Webhook o'zi user'ga xabar yuboradi, lekin biz ham yuboramiz
                 await update.message.reply_text(
-                    "✅ Hisobingiz muvaffaqiyatli Telegram akkauntiga ulandi!"
+                    "✅ Muvaffaqiyat! Telegram akkauntingiz web saytga ulandi. "
+                    "Endi siz ham web'dan, ham Telegram'dan kira olasiz!"
                 )
                 logger.info(f"Successfully linked Telegram ID {telegram_id} using token {token[:8]}...")
-            elif response.status_code == 400:
-                error_data = response.json()
-                error_msg = error_data.get('detail', 'Hisobni ulashda xatolik yuz berdi')
-                await update.message.reply_text(f"❌ {error_msg}")
-                logger.warning(f"Failed to link Telegram ID {telegram_id}: {error_msg}")
-            elif response.status_code == 404:
-                await update.message.reply_text(
-                    "❌ Bu link eskirgan yoki noto'g'ri. Iltimos, veb-saytdan yangi link oling."
-                )
-                logger.warning(f"Invalid or expired token: {token[:8]}...")
             else:
+                # Agar webhook xatolik qaytarsa
                 await update.message.reply_text(
-                    "❌ Hisobni ulashda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring."
+                    "❌ Link yaroqsiz yoki muddati o'tgan. Iltimos, web saytdan yangi link oling."
                 )
-                logger.error(f"Unexpected error linking account: {response.status_code} - {response.text}")
+                logger.warning(f"Webhook returned error for token {token[:8]}...: {response.status_code}")
                 
     except httpx.TimeoutException:
         await update.message.reply_text(
             "❌ Server javob bermayapti. Iltimos, keyinroq qayta urinib ko'ring."
         )
-        logger.error("Timeout while linking account")
+        logger.error("Timeout while calling webhook")
     except Exception as e:
         await update.message.reply_text(
             "❌ Xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring."
         )
-        logger.error(f"Exception while linking account: {str(e)}", exc_info=True)
+        logger.error(f"Exception while calling webhook: {str(e)}", exc_info=True)
 
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
@@ -219,8 +235,9 @@ def main():
         # Bot ma'lumotlarini ko'rsatish
         logger.info("=" * 50)
         logger.info("Bot ishga tushmoqda...")
-        logger.info(f"Bot username: @SHOP_AKBAR_bot")
+        logger.info(f"Bot username: @{BOT_USERNAME}")
         logger.info(f"Mini App URL: {WEBAPP_URL if WEBAPP_URL else 'Not set'}")
+        logger.info(f"Backend: {BACKEND_ORIGIN if BACKEND_ORIGIN else 'Not set'}")
         logger.info("=" * 50)
         
         # Botni ishga tushirish

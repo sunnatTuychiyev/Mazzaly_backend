@@ -202,7 +202,8 @@ class VerifyEmailView(APIView):
         tokens = get_tokens_for_user(user)
         
         # Return unified format
-        return UnifiedJWTService.create_unified_response(user, tokens)
+        response_data = UnifiedJWTService.create_unified_response(user, tokens)
+        return Response(response_data, status=status.HTTP_200_OK)
 
 class ProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]

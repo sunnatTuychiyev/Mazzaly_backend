@@ -7,15 +7,12 @@ import re
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # === Required environment variables ===
-# Ikkita bot token:
-# 1. TELEGRAM_BOT_TOKEN - retsept bot uchun (recipes/signals.py da ishlatiladi)
-# 2. TELEGRAM_AUTH_BOT_TOKEN (mini_app_bot_t) - auth/login bot uchun
-TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()  # Retsept bot
-TELEGRAM_AUTH_BOT_TOKEN = config("mini_app_bot_t", default="").strip()  # Auth bot (login uchun)
+# Telegram Bot Configuration (bitta bot barcha funksiyalar uchun)
+TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="").strip()
+TELEGRAM_BOT_USERNAME = config("TELEGRAM_BOT_USERNAME", default="SHOP_AKBA_bot").strip()
 
-# Agar TELEGRAM_AUTH_BOT_TOKEN bo'lmasa, TELEGRAM_BOT_TOKEN ni fallback sifatida ishlat
-if not TELEGRAM_AUTH_BOT_TOKEN:
-    TELEGRAM_AUTH_BOT_TOKEN = TELEGRAM_BOT_TOKEN
+# Legacy support: eski kod uchun
+TELEGRAM_AUTH_BOT_TOKEN = TELEGRAM_BOT_TOKEN  # Bir xil bot ishlatiladi
 
 BOT_INTERNAL_SECRET = config("BOT_INTERNAL_SECRET", default="").strip()  # Secret for bot→backend authentication
 WEBAPP_URL = config("WEBAPP_URL", default="").strip()

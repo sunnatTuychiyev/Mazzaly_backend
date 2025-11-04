@@ -8,6 +8,7 @@ __pycache__/
 # Environment files
 .env
 *.env
+.env.README.md
 
 # Databases
 *.sqlite3

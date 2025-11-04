@@ -115,3 +115,45 @@ class EmailOTPVerifySerializer(serializers.Serializer):
     code = serializers.CharField(max_length=6)
     telegram_id = serializers.CharField()
 
+
+class MiniAppConnectEmailSerializer(serializers.Serializer):
+    """Serializer for Mini App email connection endpoint."""
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True, min_length=8)
+    
+    def validate_email(self, value):
+        """Validate email format and prevent placeholder emails."""
+        value = value.lower().strip()
+        if '@telegram.local' in value or '@example.com' in value:
+            raise serializers.ValidationError('Cannot use placeholder email addresses')
+        return value
+    
+    def validate_password(self, value):
+        """Validate password strength."""
+        if len(value) < 8:
+            raise serializers.ValidationError('Password must be at least 8 characters long')
+        if not re.search(r'[A-Z]', value):
+            raise serializers.ValidationError('Password must contain at least one uppercase letter')
+        if not re.search(r'[a-z]', value):
+            raise serializers.ValidationError('Password must contain at least one lowercase letter')
+        if not re.search(r'\d', value):
+            raise serializers.ValidationError('Password must contain at least one digit')
+        return value
+
+
+class MiniAppVerifyOTPSerializer(serializers.Serializer):
+    """Serializer for Mini App OTP verification endpoint."""
+    email = serializers.EmailField()
+    otp = serializers.CharField(max_length=6, min_length=6)
+    
+    def validate_email(self, value):
+        """Normalize email."""
+        return value.lower().strip()
+    
+    def validate_otp(self, value):
+        """Validate OTP format (6 digits)."""
+        if not value.isdigit():
+            raise serializers.ValidationError('OTP must be 6 digits')
+        if len(value) != 6:
+            raise serializers.ValidationError('OTP must be exactly 6 digits')
+        return value

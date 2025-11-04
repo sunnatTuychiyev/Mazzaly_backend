@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
-    User, Subscription, Author, TelegramLinkToken, EmailOTPTelegramLink, AuthAuditLog
+    User, Subscription, Author, TelegramLinkToken, EmailOTPTelegramLink, 
+    TelegramLinkNonce, AuthAuditLog
 )
 from django.contrib.sites.models import Site
 
@@ -65,16 +66,30 @@ class TelegramLinkTokenAdmin(admin.ModelAdmin):
 
 @admin.register(EmailOTPTelegramLink)
 class EmailOTPTelegramLinkAdmin(admin.ModelAdmin):
-    list_display = ('email', 'telegram_id', 'created_at', 'expires_at', 'attempts', 'is_verified', 'is_valid')
+    list_display = ('email', 'telegram_id', 'user', 'created_at', 'expires_at', 'attempts', 'is_verified', 'is_valid')
     list_filter = ('verified_at', 'expires_at', 'created_at')
-    search_fields = ('email', 'telegram_id', 'code')
-    readonly_fields = ('code', 'created_at', 'verified_at')
+    search_fields = ('email', 'telegram_id', 'user__email')
+    readonly_fields = ('code_hash', 'password', 'created_at', 'verified_at')
     date_hierarchy = 'created_at'
     
     def is_verified(self, obj):
         return obj.is_verified
     is_verified.boolean = True
     is_verified.short_description = 'Verified'
+    
+    def is_valid(self, obj):
+        return obj.is_valid
+    is_valid.boolean = True
+    is_valid.short_description = 'Valid'
+
+
+@admin.register(TelegramLinkNonce)
+class TelegramLinkNonceAdmin(admin.ModelAdmin):
+    list_display = ('nonce', 'user', 'created_at', 'expires_at', 'used', 'used_at', 'telegram_user_id', 'is_valid')
+    list_filter = ('used', 'expires_at', 'created_at')
+    search_fields = ('user__email', 'nonce', 'telegram_user_id')
+    readonly_fields = ('nonce', 'created_at', 'used_at')
+    date_hierarchy = 'created_at'
     
     def is_valid(self, obj):
         return obj.is_valid

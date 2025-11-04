@@ -160,28 +160,30 @@ class TelegramAuthService:
             # But we'll mark login_method as 'telegram'
             placeholder_email = f'tg_{telegram_id}@telegram.local'
             
-            # Ensure uniqueness by checking
-            counter = 0
-            while User.objects.filter(email=placeholder_email).exists():
-                counter += 1
-                placeholder_email = f'tg_{telegram_id}_{counter}@telegram.local'
-            
-            user = User.objects.create(
+            # Use get_or_create to avoid race conditions
+            user, created = User.objects.get_or_create(
                 telegram_id=telegram_id,
-                email=placeholder_email,  # Placeholder, not a real email
-                telegram_username=telegram_data.get('username'),
-                telegram_first_name=telegram_data.get('first_name', ''),
-                telegram_last_name=telegram_data.get('last_name', ''),
-                telegram_photo_url=telegram_data.get('photo_url'),
-                first_name=telegram_data.get('first_name', 'User'),
-                last_name=telegram_data.get('last_name', ''),
-                login_method=User.LOGIN_METHOD_TELEGRAM,
-                created_via=User.CREATED_VIA_TELEGRAM,
-                is_email_verified=False,  # Not a real email, so not verified
-                last_login_at=timezone.now()
+                defaults={
+                    'email': placeholder_email,
+                    'telegram_username': telegram_data.get('username'),
+                    'telegram_first_name': telegram_data.get('first_name', ''),
+                    'telegram_last_name': telegram_data.get('last_name', ''),
+                    'telegram_photo_url': telegram_data.get('photo_url'),
+                    'first_name': telegram_data.get('first_name', 'User'),
+                    'last_name': telegram_data.get('last_name', ''),
+                    'login_method': User.LOGIN_METHOD_TELEGRAM,
+                    'created_via': User.CREATED_VIA_TELEGRAM,
+                    'is_email_verified': False,
+                    'last_login_at': timezone.now()
+                }
             )
             
-            is_new_user = True
+            # Set unusable password for telegram-only users (no password authentication)
+            if created:
+                user.set_unusable_password()
+                user.save(update_fields=['password'])
+            
+            is_new_user = created
         
         # Generate unified JWT tokens (same as web login)
         from .jwt_service import UnifiedJWTService

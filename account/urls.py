@@ -16,6 +16,8 @@ from .views import (
     EmailOTPSendView,
     EmailOTPVerifyView,
 )
+from .miniapp_views import MiniAppConnectEmailView, MiniAppVerifyOTPView
+from .telegram_link_views import TelegramLinkCreateView, TelegramWebhookView
 
 router = DefaultRouter()
 router.register(r'authors', AuthorViewSet, basename='author')
@@ -34,6 +36,12 @@ urlpatterns = [
     # New email verification for Telegram linking
     path('verify-email/send/', EmailOTPSendView.as_view(), name='verify-email-send'),
     path('verify-email/telegram/', EmailOTPVerifyView.as_view(), name='verify-email-telegram'),
+    # Mini App email connection endpoints
+    path('mini-app/auth/connect-email/', MiniAppConnectEmailView.as_view(), name='miniapp-connect-email'),
+    path('mini-app/auth/OTP/', MiniAppVerifyOTPView.as_view(), name='miniapp-verify-otp'),
+    # Telegram linking endpoints (web to telegram bot)
+    path('mini-app/auth/connect-telegram/link/', TelegramLinkCreateView.as_view(), name='telegram-link-create'),
+    path('mini-app/auth/telegram-webhook/', TelegramWebhookView.as_view(), name='telegram-webhook'),
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('', include(router.urls)),
