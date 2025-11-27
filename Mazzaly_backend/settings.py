@@ -163,6 +163,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 # === Middleware ===
 MIDDLEWARE = [
+    'Mazzaly_backend.middleware.DisableSSLRedirectForSwagger',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
