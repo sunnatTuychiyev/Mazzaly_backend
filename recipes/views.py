@@ -447,11 +447,12 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
                 ing_name = translate_text(ing.name, lang) or ing.name
             else:
                 ing_name = ing_name or ing.name
+            amount_val = ing.amount or ""
             item, created = ShoppingListItem.objects.get_or_create(
                 user=request.user,
                 name=ing_name,
                 unit=ing.unit or "",
-                defaults={'amount': ing.amount, 'checked': False}
+                defaults={'amount': amount_val, 'checked': False}
             )
             if not created:
                 item_amt = _parse_amount(item.amount)
@@ -459,6 +460,6 @@ class ShoppingListItemViewSet(viewsets.ModelViewSet):
                 if item_amt is not None and ing_amt is not None:
                     item.amount = str(item_amt + ing_amt)
                 else:
-                    item.amount = f"{item.amount} + {ing.amount}"
+                    item.amount = f"{item.amount} + {(ing.amount or '')}"
                 item.save()
         return Response({'status': 'Ingredients added to shopping list'})
