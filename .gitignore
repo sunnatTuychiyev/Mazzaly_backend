@@ -17,7 +17,14 @@ __pycache__/
 media/
 
 # Logs
-debug.log
+*.log
+nohup.out
+server.log
+access.log
+error.log
+
+# Service files
+*.service
 
 # Virtual environment
 venv/
@@ -25,3 +32,12 @@ venv/
 db.sqlite3
 
 *.pem
+# Static files (collected)
+/static/
+/staticfiles/
+
+# Media files (uploads)
+/media/
+
+# Local environment
+.env
