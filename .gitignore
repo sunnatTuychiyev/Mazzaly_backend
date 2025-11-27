@@ -12,9 +12,14 @@ __pycache__/
 
 # Databases
 *.sqlite3
+db.sqlite3
 
-# Media
+# Media files (uploads)
 media/
+
+# Static files (collected)
+static/
+staticfiles/
 
 # Logs
 *.log
@@ -29,15 +34,5 @@ error.log
 # Virtual environment
 venv/
 
-db.sqlite3
-
+# SSL / certificates
 *.pem
-# Static files (collected)
-/static/
-/staticfiles/
-
-# Media files (uploads)
-/media/
-
-# Local environment
-.env
