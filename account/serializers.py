@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken
 from django.contrib.auth import get_user_model
-from .models import User, EmailOTP, Author
+from .models import User, EmailOTP, Author, Subscription
 import re
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -27,18 +27,34 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = ('plan', 'start_date', 'end_date', 'is_active')
+        read_only_fields = fields
+
+
 class UserSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), allow_null=True, required=False)
     login_method = serializers.CharField(read_only=True)
+    subscription_plan = serializers.SerializerMethodField()
+    subscriptions = SubscriptionSerializer(many=True, read_only=True)
     
     class Meta:
         model = User
         fields = (
             'id', 'first_name', 'last_name', 'email', 'telegram_id', 'author',
             'telegram_username', 'telegram_first_name', 'telegram_last_name', 'telegram_photo_url',
-            'login_method', 'created_via', 'telegram_linked_at', 'last_login_at'
+            'login_method', 'created_via', 'telegram_linked_at', 'last_login_at',
+            'subscription_plan', 'subscriptions'
         )
-        read_only_fields = ('id', 'login_method', 'created_via', 'telegram_linked_at', 'last_login_at')
+        read_only_fields = (
+            'id', 'login_method', 'created_via', 'telegram_linked_at', 'last_login_at',
+            'subscription_plan', 'subscriptions'
+        )
+
+    def get_subscription_plan(self, obj):
+        return obj.current_plan
 
 
 class AuthorSerializer(serializers.ModelSerializer):

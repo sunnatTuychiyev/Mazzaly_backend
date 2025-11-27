@@ -38,6 +38,9 @@ if not SECRET_KEY:
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
+# === Feature flags ===
+# Grant 1-month Premium on signup when enabled
+PROMO_PREMIUM_ON_SIGNUP = config('PROMO_PREMIUM_ON_SIGNUP', default=False, cast=bool)
 
 # === Installed apps ===
 INSTALLED_APPS = [
