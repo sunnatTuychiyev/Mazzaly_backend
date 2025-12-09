@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from account.models import Author
+from utils.image_utils import convert_to_webp
 
 # --- CATEGORY ---
 class Category(models.Model):
@@ -73,6 +74,14 @@ class Recipe(models.Model):
         else:
             self.premium = False
             self.healthy = False
+
+        # Convert image to WebP format before saving
+        if self.image and hasattr(self.image, 'file'):
+            # Check if it's a new upload (not already saved)
+            if not self.image.name.endswith('.webp'):
+                webp_image = convert_to_webp(self.image)
+                if webp_image:
+                    self.image = webp_image
 
         super().save(*args, **kwargs)
     
@@ -271,6 +280,16 @@ class RecipeSubmission(models.Model):
 class RecipeSubmissionImage(models.Model):
     submission = models.ForeignKey(RecipeSubmission, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='recipe_submissions/')
+
+    def save(self, *args, **kwargs):
+        """Convert image to WebP format before saving."""
+        if self.image and hasattr(self.image, 'file'):
+            # Check if it's a new upload (not already saved)
+            if not self.image.name.endswith('.webp'):
+                webp_image = convert_to_webp(self.image)
+                if webp_image:
+                    self.image = webp_image
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Image for {self.submission_id}"
